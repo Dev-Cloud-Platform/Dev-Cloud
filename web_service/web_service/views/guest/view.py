@@ -18,12 +18,15 @@
 # @COPYRIGHT_end
 
 from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
 
 import datetime
 
 def current_datetime(request):
     now = datetime.datetime.now()
-    html = "<html><body>Teraz jest %s.</body></html>" % now
+    t = get_template('current_datetime.html')
+    html = t.render(Context({'current_date': now}))
     return HttpResponse(html)
 
 def hello(request):
