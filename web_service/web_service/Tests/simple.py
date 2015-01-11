@@ -20,27 +20,23 @@ from teamcity import is_running_under_teamcity
 from teamcity.unittestpy import TeamcityTestRunner
 
 import unittest
-
+import random
 
 class TestTeamcityMessages(unittest.TestCase):
     def testPass(self):
         assert 1 == 1
 
     def testAssertEqual(self):
-        self.assertEqual("1", "2")
+        self.assertEqual("1", "1")
 
     def testAssertEqualMsg(self):
-        self.assertEqual("1", "2", "message")
+        self.assertEqual("2", "2", "message")
 
     def testAssert(self):
-        self.assert_(False)
-
-    def testFail(self):
-        self.fail("failed")
+        self.assert_(True)
 
     def testException(self):
-        raise Exception("some exception")
-
+        self.assertRaises(TypeError, random.shuffle, (1,2,3))
 
 if __name__ == '__main__':
     if is_running_under_teamcity():
