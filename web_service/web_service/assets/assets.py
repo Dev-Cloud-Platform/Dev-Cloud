@@ -19,6 +19,8 @@
 
 from django_assets import Bundle, register
 
-js = Bundle('common/jquery.js', 'site/base.js', 'site/widgets.js',
-            filters='jsmin', output='gen/packed.js')
-register('js_all', js)
+js = Bundle('dist/js/bootstrap.min.js', filters='bootstrap', output='gen/packed.js')
+register('bootstrap_js', js)
+
+css = Bundle('dist/css/bootstrap.min.css', 'dev-cloud.css', filters='bootstrap', output='gen/packed.css')
+register('bootstrap_css', css)
