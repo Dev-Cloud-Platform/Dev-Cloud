@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from dev_cloud.database.models.template_instances import TemplateInstances
+from template_instances import TemplateInstances
 
 
 class VirtualMachines(models.Model):
@@ -31,6 +31,7 @@ class VirtualMachines(models.Model):
     public_ip = models.CharField(max_length=45, blank=True)
     private_ip = models.CharField(max_length=45, blank=True)
     template_instance = models.ForeignKey(TemplateInstances)
+
     class Meta:
         managed = False
         db_table = 'Virtual_machines'

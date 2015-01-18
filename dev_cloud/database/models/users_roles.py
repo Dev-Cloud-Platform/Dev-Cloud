@@ -21,13 +21,14 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from dev_cloud.database.models.roles import Roles
+from roles import Roles
 from users import Users
 
 
 class UsersInRoles(models.Model):
     user = models.ForeignKey(Users)
     role = models.ForeignKey(Roles)
+
     class Meta:
         managed = False
         db_table = 'Users_in_roles'

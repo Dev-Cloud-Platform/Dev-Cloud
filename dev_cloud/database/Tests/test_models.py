@@ -17,15 +17,17 @@
 #
 # @COPYRIGHT_end
 
+import unittest
+
 from teamcity import is_running_under_teamcity
 from teamcity.unittestpy import TeamcityTestRunner
-from dev_cloud.web_service.models.applications import Applications
 
-import unittest
+from dev_cloud.database.models.applications import Applications
+
 
 class ApplicationTestCase(unittest.TestCase):
     def test_model_application(self):
-        instance = Applications.objects.create(name="Test Instance")
+        instance = Applications(application_name="application_test")
         self.assertTrue(instance)
 
 if __name__ == '__main__':

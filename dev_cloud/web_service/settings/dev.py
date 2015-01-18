@@ -17,6 +17,7 @@
 #
 # @COPYRIGHT_end
 """Development settings and globals."""
+import sys
 
 from common import *
 
@@ -97,3 +98,8 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
     }
 ########## END TOOLBAR CONFIGURATION
+
+########## TEST DATABASE CONFIGURATION
+if 'test' in sys.argv:
+    DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
+########## END TEST DATABASE CONFIGURATION

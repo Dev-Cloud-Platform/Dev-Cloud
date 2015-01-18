@@ -45,7 +45,7 @@ path.append(DJANGO_ROOT)
 
 ########## DEBUG CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = True
+DEBUG = False
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
 TEMPLATE_DEBUG = DEBUG
@@ -231,8 +231,7 @@ THIRD_PARTY_APPS = (
 
 LOCAL_APPS = (
     # Dev Cloud apps:
-    'web_service.models.applications',
-    # 'web_service',
+    'database',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

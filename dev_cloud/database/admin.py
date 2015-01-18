@@ -18,19 +18,20 @@
 # @COPYRIGHT_end
 
 from django.contrib import admin
-from dev_cloud.web_service.models.applications import Applications
-admin.autodiscover()
-# from web_service.web_service.models.installed_applications import InstalledApplications
-# from web_service.web_service.models.roles import Roles
-# from web_service.web_service.models.template_instances import TemplateInstances
-# from web_service.web_service.models.users import Users
-# from web_service.web_service.models.users_roles import UsersInRoles
-# from web_service.web_service.models.virtual_machines import VirtualMachines
+
+from models.applications import Applications
+
+from models.installed_applications import InstalledApplications
+from models.roles import Roles
+from models.template_instances import TemplateInstances
+from models.users import Users
+from models.users_roles import UsersInRoles
+from models.virtual_machines import VirtualMachines
 
 admin.site.register(Applications)
-# admin.site.register(InstalledApplications)
-# admin.site.register(Roles)
-# admin.site.register(TemplateInstances)
-# admin.site.register(Users)
-# admin.site.register(UsersInRoles)
-# admin.site.register(VirtualMachines)
+admin.site.register(InstalledApplications)
+admin.site.register(Roles)
+admin.site.register(TemplateInstances)
+admin.site.register(Users)
+admin.site.register(UsersInRoles)
+admin.site.register(VirtualMachines)

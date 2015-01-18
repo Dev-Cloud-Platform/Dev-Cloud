@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from dev_cloud.database.models.applications import Applications
+from applications import Applications
 
 
 class InstalledApplications(models.Model):
@@ -32,6 +32,7 @@ class InstalledApplications(models.Model):
     user = models.ForeignKey('Users')
     application = models.ForeignKey(Applications)
     virtual_machine = models.ForeignKey('VirtualMachines')
+
     class Meta:
         managed = False
         db_table = 'Installed_applications'

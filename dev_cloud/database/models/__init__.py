@@ -20,10 +20,10 @@
 
 # Import order is very important
 
-from dev_cloud.database.models.applications import Applications
-from dev_cloud.database.models.installed_applications import InstalledApplications
-from dev_cloud.database.models.roles import Roles
-from dev_cloud.database.models.template_instances import TemplateInstances
-from dev_cloud.database.models.users import Users
-from dev_cloud.database.models.users_roles import UsersInRoles
-from dev_cloud.database.models.virtual_machines import VirtualMachines
+from applications import Applications
+from installed_applications import InstalledApplications
+from roles import Roles
+from template_instances import TemplateInstances
+from users import Users
+from users_roles import UsersInRoles
+from virtual_machines import VirtualMachines
