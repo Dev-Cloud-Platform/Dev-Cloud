@@ -16,3 +16,22 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+from __future__ import unicode_literals
+
+from django.db import models
+
+from dev_cloud.database.models.template_instances import TemplateInstances
+
+
+class VirtualMachines(models.Model):
+    id = models.IntegerField()
+    ctx = models.CharField(max_length=45, blank=True)
+    disk_space = models.CharField(max_length=45, blank=True)
+    public_ip = models.CharField(max_length=45, blank=True)
+    private_ip = models.CharField(max_length=45, blank=True)
+    template_instance = models.ForeignKey(TemplateInstances)
+    class Meta:
+        managed = False
+        db_table = 'Virtual_machines'
+        app_label = 'web_service'

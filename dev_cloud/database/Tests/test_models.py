@@ -16,3 +16,21 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+from teamcity import is_running_under_teamcity
+from teamcity.unittestpy import TeamcityTestRunner
+from dev_cloud.web_service.models.applications import Applications
+
+import unittest
+
+class ApplicationTestCase(unittest.TestCase):
+    def test_model_application(self):
+        instance = Applications.objects.create(name="Test Instance")
+        self.assertTrue(instance)
+
+if __name__ == '__main__':
+    if is_running_under_teamcity():
+        runner = TeamcityTestRunner()
+    else:
+        runner = unittest.TextTestRunner()
+    unittest.main(testRunner=runner)

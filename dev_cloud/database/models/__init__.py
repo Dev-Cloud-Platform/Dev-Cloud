@@ -16,3 +16,14 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+
+# Import order is very important
+
+from dev_cloud.database.models.applications import Applications
+from dev_cloud.database.models.installed_applications import InstalledApplications
+from dev_cloud.database.models.roles import Roles
+from dev_cloud.database.models.template_instances import TemplateInstances
+from dev_cloud.database.models.users import Users
+from dev_cloud.database.models.users_roles import UsersInRoles
+from dev_cloud.database.models.virtual_machines import VirtualMachines

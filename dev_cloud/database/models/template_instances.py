@@ -16,3 +16,17 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+from __future__ import unicode_literals
+
+from django.db import models
+
+class TemplateInstances(models.Model):
+    template_id = models.IntegerField(primary_key=True)
+    template_name = models.CharField(max_length=45)
+    cpu = models.IntegerField()
+    memory = models.FloatField()
+    class Meta:
+        managed = False
+        db_table = 'Template_instances'
+        app_label = 'web_service'

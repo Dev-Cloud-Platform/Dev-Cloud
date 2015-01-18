@@ -16,3 +16,11 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+from django_assets import Bundle, register
+
+js = Bundle('../assets/dist/js/bootstrap.js', output='gen/packed.js')
+register('bootstrap_js', js)
+
+css = Bundle('../assets/dist/css/bootstrap.css', '../assets/dev-cloud.css', output='gen/packed.css')
+register('bootstrap_css', css)

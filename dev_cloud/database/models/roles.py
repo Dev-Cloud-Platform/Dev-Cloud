@@ -16,3 +16,15 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+from __future__ import unicode_literals
+
+from django.db import models
+
+class Roles(models.Model):
+    id = models.IntegerField(primary_key=True)
+    role_name = models.CharField(max_length=45)
+    class Meta:
+        managed = False
+        db_table = 'Roles'
+        app_label = 'web_service'

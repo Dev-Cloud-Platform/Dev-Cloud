@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Dev Cloud
+web_service/web_service/static/gen

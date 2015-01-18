@@ -45,7 +45,7 @@ path.append(DJANGO_ROOT)
 
 ########## DEBUG CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = False
+DEBUG = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
 TEMPLATE_DEBUG = DEBUG
@@ -67,12 +67,12 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Dev_Cloud_db',
+        'USER': 'root',
+        'PASSWORD': 'qetuo1357',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 ########## END DATABASE CONFIGURATION
@@ -114,12 +114,17 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/static/'
+STATIC_URL = '/assets/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'assets')),
 )
+
+#http://django-assets.readthedocs.org/en/latest/settings.html
+ASSETS_MODULES = [
+    'web_service.assets.assets',
+]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
@@ -209,7 +214,7 @@ DJANGO_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
 
-    # Django assets
+    # Django assets:
     'django_assets',
 )
 
@@ -225,6 +230,9 @@ THIRD_PARTY_APPS = (
 )
 
 LOCAL_APPS = (
+    # Dev Cloud apps:
+    'web_service.models.applications',
+    # 'web_service',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
