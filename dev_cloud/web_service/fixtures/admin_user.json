@@ -1,0 +1,20 @@
+[
+{
+  "pk": 1, 
+  "model": "auth.user", 
+  "fields": {
+    "username": "m4gik", 
+    "first_name": "", 
+    "last_name": "", 
+    "is_active": true, 
+    "is_superuser": true, 
+    "is_staff": true, 
+    "last_login": "2015-01-19T16:12:17Z", 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "pbkdf2_sha256$12000$0w9axzmzlIgX$smEprY3HW6pC6l3Et0hyycQjyBArx//BbaxXzevoN5o=", 
+    "email": "m4giksoftware@gmail.com", 
+    "date_joined": "2015-01-17T20:57:40Z"
+  }
+}
+]

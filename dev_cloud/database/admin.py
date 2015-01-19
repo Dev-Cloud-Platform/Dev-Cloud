@@ -28,10 +28,21 @@ from models.users import Users
 from models.users_roles import UsersInRoles
 from models.virtual_machines import VirtualMachines
 
-admin.site.register(Applications)
+class ApplicationAdmin(admin.ModelAdmin):
+    list_display = ('application_name', 'description', 'update_time')
+    search_fields = ('application_name', 'description')
+    list_filter = ('update_time',)
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('login', 'email', 'create_time', 'last_activity')
+    search_fields = ('login',)
+    list_filter = ('create_time',)
+    date_hierarchy = 'create_time'
+
+admin.site.register(Applications, ApplicationAdmin)
 admin.site.register(InstalledApplications)
 admin.site.register(Roles)
 admin.site.register(TemplateInstances)
-admin.site.register(Users)
+admin.site.register(Users, UserAdmin)
 admin.site.register(UsersInRoles)
 admin.site.register(VirtualMachines)
