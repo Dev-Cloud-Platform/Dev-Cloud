@@ -23,12 +23,33 @@ from teamcity import is_running_under_teamcity
 from teamcity.unittestpy import TeamcityTestRunner
 
 from dev_cloud.database.models.applications import Applications
+from dev_cloud.database.models.installed_applications import InstalledApplications
+from dev_cloud.database.models.template_instances import TemplateInstances
+from dev_cloud.database.models.virtual_machines import VirtualMachines
 
 
 class ApplicationTestCase(unittest.TestCase):
     def test_model_application(self):
         instance = Applications(application_name="application_test")
         self.assertTrue(instance)
+
+    def test_model_template_instance(self):
+        instance = TemplateInstances(template_name="template_test")
+        self.assertTrue(instance)
+
+    def test_model_virtual_machine(self):
+        example_instance = TemplateInstances(template_name="template_test")
+        instance = VirtualMachines(template_instance=example_instance)
+        self.assertTrue(instance)
+
+    def test_model_installed_aplication(self):
+        example_app = Applications(application_name="application_test")
+        example_instance = TemplateInstances(template_name="template_test")
+        example_virtual_machine = VirtualMachines(template_instance=example_instance)
+        instance = InstalledApplications(workspace="test_workspace", application=example_app,
+                                         virtual_machine=example_virtual_machine)
+        self.assertTrue(instance)
+
 
 if __name__ == '__main__':
     if is_running_under_teamcity():
