@@ -17,9 +17,8 @@
 #
 # @COPYRIGHT_end
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, include
 from django.contrib import admin
-from views.guest.view import *
 
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
@@ -31,7 +30,7 @@ urlpatterns = patterns('',
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    ('^hello/$', hello),
-    ('^czas/$', current_datetime),
-    (r'^czas/plus/(\d{1,2})/$', hours_ahead)
+    ('^hello/$', 'web_service.views.guest.view.hello'),
+    ('^czas/$', 'web_service.views.guest.view.current_datetime'),
+    (r'^czas/plus/(\d{1,2})/$', 'web_service.views.guest.view.hours_ahead')
 )

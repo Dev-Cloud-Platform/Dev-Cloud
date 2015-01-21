@@ -36,4 +36,4 @@ class InstalledApplications(models.Model):
     class Meta:
         managed = False
         db_table = 'Installed_applications'
-        app_label = 'web_service'
+        # app_label = 'database'

@@ -54,5 +54,5 @@ class AdminTest(LiveServerTestCase):
         self.assertIn('Site administration', body.text)
 
         # She now sees a couple of hyperlink that says "Web_Service"
-        web_service_links = self.browser.find_elements_by_link_text('Web_Service')
+        web_service_links = self.browser.find_elements_by_link_text('Models')
         self.assertEquals(len(web_service_links), 1)

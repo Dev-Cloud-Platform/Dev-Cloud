@@ -21,16 +21,16 @@
 
 
 from datetime import timedelta
-from os.path import abspath, basename, dirname, join, normpath
 from sys import path
-import os
+from os.path import abspath, basename, dirname, join, normpath, pardir
 from djcelery import setup_loader
 
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DJANGO_ROOT = BASE_DIR
+BASE_DIR = dirname(dirname(__file__))
+DJANGO_ROOT = abspath(normpath(join(dirname(__file__), pardir, pardir, 'web_service')))
+
 # Absolute filesystem path to the top-level project folder:
 SITE_ROOT = dirname(DJANGO_ROOT)
 
@@ -193,7 +193,7 @@ MIDDLEWARE_CLASSES = (
 
 ########## URL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
-ROOT_URLCONF = 'web_service.urls' #% SITE_NAME
+ROOT_URLCONF = 'web_service.urls'  #% SITE_NAME
 ########## END URL CONFIGURATION
 
 
@@ -232,6 +232,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     # Dev Cloud apps:
     'database',
+    'web_service',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

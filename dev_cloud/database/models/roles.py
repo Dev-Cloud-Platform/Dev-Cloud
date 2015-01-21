@@ -27,4 +27,4 @@ class Roles(models.Model):
     class Meta:
         managed = False
         db_table = 'Roles'
-        app_label = 'web_service'
+        # app_label = 'database'

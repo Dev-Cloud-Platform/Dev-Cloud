@@ -29,4 +29,4 @@ class TemplateInstances(models.Model):
     class Meta:
         managed = False
         db_table = 'Template_instances'
-        app_label = 'web_service'
+        # app_label = 'database'

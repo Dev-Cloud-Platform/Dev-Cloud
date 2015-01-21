@@ -42,7 +42,7 @@ class Applications(models.Model):
     class Meta:
         managed = False
         db_table = 'Applications'
-        app_label = 'web_service'
+        # app_label = 'database'
 
 
     def __unicode__(self):

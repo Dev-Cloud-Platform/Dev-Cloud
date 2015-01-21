@@ -35,4 +35,4 @@ class VirtualMachines(models.Model):
     class Meta:
         managed = False
         db_table = 'Virtual_machines'
-        app_label = 'web_service'
+        # app_label = 'database'

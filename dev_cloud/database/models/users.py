@@ -32,7 +32,8 @@ class Users(models.Model):
     language = models.CharField(max_length=45, blank=True)
     picture = models.FileField(blank=True)
     last_activity = models.DateTimeField(blank=True, null=True)
+
     class Meta:
         managed = False
         db_table = 'Users'
-        app_label = 'web_service'
+        # app_label = 'database'

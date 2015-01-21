@@ -32,4 +32,4 @@ class UsersInRoles(models.Model):
     class Meta:
         managed = False
         db_table = 'Users_in_roles'
-        app_label = 'web_service'
+        # app_label = 'database'
