@@ -19,10 +19,9 @@
 
 from django.conf.urls import patterns, include
 from django.contrib import admin
+from django.contrib.auth.views import login, logout
 
-
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
-admin.autodiscover()
+admin.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 
 urlpatterns = patterns('',
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
@@ -32,5 +31,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     ('^hello/$', 'web_service.views.guest.view.hello'),
     ('^czas/$', 'web_service.views.guest.view.current_datetime'),
-    (r'^czas/plus/(\d{1,2})/$', 'web_service.views.guest.view.hours_ahead')
+    (r'^czas/plus/(\d{1,2})/$', 'web_service.views.guest.view.hours_ahead'),
+    (r'^accounts/login/$',  login),
+    (r'^accounts/logout/$', logout)
 )
