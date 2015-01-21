@@ -17,9 +17,15 @@
 #
 # @COPYRIGHT_end
 
+
+
 from django.test import LiveServerTestCase
+from djcelery.tests import utils
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
+import time
+import socket
 
 
 class AdminTest(LiveServerTestCase):
@@ -56,3 +62,39 @@ class AdminTest(LiveServerTestCase):
         # She now sees a couple of hyperlink that says "Web_Service"
         web_service_links = self.browser.find_elements_by_link_text('Models')
         self.assertEquals(len(web_service_links), 1)
+
+    def _wait_until_connectable(self):
+        """
+            Blocks until the extension is connectable in the firefox.
+        """
+        print("!!!!!!!!!!!!!DEBUG!!!!!!!!!!!!!!!!")
+        count = 0
+        while not utils.is_connectable(self.profile.port):
+            if self.process.poll() is not None:
+                # Browser has exited
+                raise WebDriverException("The browser appears to have exited "
+                                         "before we could connect. If you specified a log_file in "
+                                         "the FirefoxBinary constructor, check it for details.")
+            if count == 30:
+                self.kill()
+                raise WebDriverException("Can't load the profile. Profile "
+                                         "Dir: %s If you specified a log_file in the "
+                                         "FirefoxBinary constructor, check it for details.")
+            count += 1
+            time.sleep(1)
+        return True
+
+    def is_connectable(port):
+        """
+            Tries to connect to the server at port to see if it is running.
+            :Args:
+                 - port: The port to connect.
+        """
+        try:
+            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            socket_.settimeout(1)
+            socket_.connect(("127.0.0.1", port))
+            socket_.close()
+            return True
+        except socket.error:
+            return False
