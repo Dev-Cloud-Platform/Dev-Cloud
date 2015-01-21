@@ -38,7 +38,8 @@ class AdminTest(LiveServerTestCase):
 
 
     def tearDown(self):
-        self.browser.quit()
+        if self.BROWSER_IS_WORKING == True:
+            self.browser.quit()
 
 
     def test_can_create_new_poll_via_admin_site(self):
