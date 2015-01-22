@@ -19,6 +19,7 @@
 
 
 from django.test import LiveServerTestCase
+from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
@@ -29,21 +30,27 @@ class AdminTest(LiveServerTestCase):
     BROWSER_IS_WORKING = False
 
     def setUp(self):
-        try:
-            self.browser = webdriver.Firefox()
-            self.browser.implicitly_wait(3)
-            self.BROWSER_IS_WORKING = True
-        except WebDriverException:
-            print 'Solenium have problem to run test'
+        #try:
+        self.display = Display(visible=0, size=(800, 600))
+        self.display.start()
+
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(3)
+        self.BROWSER_IS_WORKING = True
+        # except WebDriverException:
+        #     print 'Selenium have problem to run test'
+
 
 
     def tearDown(self):
-        if self.BROWSER_IS_WORKING == True:
-            self.browser.quit()
+        # if self.BROWSER_IS_WORKING:
+        self.browser.quit()
+        self.display.stop()
+
 
 
     def test_can_create_new_poll_via_admin_site(self):
-        if self.BROWSER_IS_WORKING == True:
+            # if self.BROWSER_IS_WORKING:
             # Solenium opens her web browser, and goes to the admin page
             self.browser.get(self.live_server_url + '/admin/')
 
