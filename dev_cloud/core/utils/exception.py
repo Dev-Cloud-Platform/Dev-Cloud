@@ -16,3 +16,28 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+
+class DevCloudException(Exception):
+    """
+        Class for exception thrown by Dev Cloud functions
+    """
+
+    @property
+    def response(self):
+        from dev_cloud.core.common import response
+
+        return response(str(self))
+
+
+class RestErrorException(Exception):
+    """
+        Exception thrown when REST call returns with an error.
+    """
+    def __init__(self, value):
+        Exception.__init__(self, value)
+        self.value = value
+
+
+    def __str__(self):
+        return repr(self.value)

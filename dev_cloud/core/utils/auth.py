@@ -17,18 +17,26 @@
 #
 # @COPYRIGHT_end
 
+session_key = '_auth_user_id'
 
-import logging
-log = logging.getLogger(__name__)
-
-
-def response(status, data=''):
+def login(request, user):
     """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
+        Saves \c user in session.
     """
+    if session_key in request.session:
+        if request.session[session_key] != user.user_id:
+            # To avoid reusing another user's session, create a new, empty
+            # session if the existing session corresponds to a different
+            # authenticated user.
+            request.session.flush()
+    else:
+        request.session.cycle_key()
 
-    d = {}
-    d['status'] = status
-    d['data'] = data
-    return d
+    request.session[session_key] = user.user_id
+    request.session['user'] = user
+
+def logout(session):
+    """
+        Removes data connected with user from the session.
+    """
+    session.flush()

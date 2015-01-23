@@ -16,19 +16,16 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from django.conf.urls import patterns, url, include
+from dev_cloud.core.utils.decorators import user_permission
+from dev_cloud.core.utils.views import direct_to_template
 
 
-import logging
-log = logging.getLogger(__name__)
+account_patterns = patterns('web_service.views.user.user',
+                            url(r'^$', user_permission(direct_to_template), {'template_name': 'account/base.html'}, name='acc_account'),
+                            )
 
 
-def response(status, data=''):
-    """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
-    """
-
-    d = {}
-    d['status'] = status
-    d['data'] = data
-    return d
+urlpatterns = patterns('',
+                       url(r'^account/', include(account_patterns)),
+                       )

@@ -19,11 +19,11 @@
 
 """Common settings and globals."""
 
-
 from datetime import timedelta
 from sys import path
 from os.path import abspath, basename, dirname, join, normpath, pardir
 from djcelery import setup_loader
+import logging
 
 
 ########## PATH CONFIGURATION
@@ -121,7 +121,7 @@ STATICFILES_DIRS = (
     normpath(join(DJANGO_ROOT, 'assets')),
 )
 
-#http://django-assets.readthedocs.org/en/latest/settings.html
+# http://django-assets.readthedocs.org/en/latest/settings.html
 ASSETS_MODULES = [
     'web_service.assets.assets',
 ]
@@ -160,6 +160,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'core.utils.context_processors.add_variables',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
@@ -193,7 +194,7 @@ MIDDLEWARE_CLASSES = (
 
 ########## URL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
-ROOT_URLCONF = 'web_service.urls'  #% SITE_NAME
+ROOT_URLCONF = 'web_service.urls'  # % SITE_NAME
 ########## END URL CONFIGURATION
 
 
@@ -233,6 +234,9 @@ LOCAL_APPS = (
     # Dev Cloud apps:
     'database',
     'web_service',
+    'web_service.tags',
+    'core.common',
+    'core.utils',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -242,12 +246,20 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 ########## LOGGING CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
+LOG_LEVEL = logging.DEBUG
+
+LOG_DIR = '/var/log/DevCloud/'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-    'require_debug_false': {
+    'filters': {'require_debug_false': {
         '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s - %(message)s'
         }
     },
     'handlers': {
@@ -259,7 +271,13 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler'
-        }
+        },
+        'dev_logger': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': join(LOG_DIR, 'dev_cloud.log').replace('\\', '/'),
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
         'django.request': {
@@ -267,8 +285,14 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'dev_loger': {
+            'handlers': ['console', 'dev_logger'],
+            'propagate': False,
+            'level': 'DEBUG',
+        },
     }
 }
+
 ########## END LOGGING CONFIGURATION
 
 

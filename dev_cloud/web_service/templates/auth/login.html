@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+{% load i18n %}
+{% load formtags %}
+
+<form method="post" action="" id="login-form">
+    {% csrf_token %}
+    {% show_fieldsetform_nrf form %}
+    <div class="fieldset align_center">
+        <input class="big_button" type="submit" value="{% trans "Sign in" %}" tabindex="3" />
+        <input type="hidden" name="next" value="{{ next }}" />
+    </div>
+</form>
+</body>
+</html>

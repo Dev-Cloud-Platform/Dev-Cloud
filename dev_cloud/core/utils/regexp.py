@@ -16,3 +16,18 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import re
+from django.utils.translation import ugettext as _
+
+"""
+    Module contains dictionaries: \c regexp and \c regext_text. Both dictionaries contain fields corresponding to user informations.
+    - \c regexp: Each field contains regular expressions consisting of the characters avaliable in strings describing that user info.
+    - \c regexp_text: Each field contains message (in human-readable form) about how user info should be filled.
+"""
+
+regexp = dict(login=re.compile(r'^[a-zA-Z0-9_]+$'), password=re.compile(r'^[ -~]+$'),
+              dev_name=re.compile(r'^[0-9a-z]([0-9a-z\-]{0,38}[0-9a-z])?$'))
+
+regexp_text = dict(login=_('This value must contain only letters, numbers and underscores.'),
+                   password=_('This value must not contain any diacritic marks.'),
+                   dev_name=_('This value must contain only small letters, numbers and dashes.'))

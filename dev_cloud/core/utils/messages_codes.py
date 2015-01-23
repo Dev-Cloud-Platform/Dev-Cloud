@@ -16,19 +16,21 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from django.template.defaultfilters import force_escape
+from django.utils.translation import ugettext_lazy as _
+
+auth_error_text = _('Authorization error. Re-login required.')
 
 
-import logging
-log = logging.getLogger(__name__)
+# \c errors - dictionary of the errors <b>informations' keys</b> and <b>information</b>
+# (for error informations without parameters):
+ERRORS = {
+    'ok': _('No error'),
+    }
 
 
-def response(status, data=''):
+def get_error(error_key):
     """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
+        If error with \c error_key exists, function returns it's message. Otherwise it returns "*Unknown error :(*" message.
     """
-
-    d = {}
-    d['status'] = status
-    d['data'] = data
-    return d
+    return force_escape(ERRORS.get(error_key) or error_key)

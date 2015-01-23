@@ -16,19 +16,23 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from django import template
 
 
-import logging
-log = logging.getLogger(__name__)
+register = template.Library()
 
 
-def response(status, data=''):
+@register.inclusion_tag('tags/fieldsetForm.html')
+def show_fieldsetform(form):
     """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
+        Renders given form without marking required fields.
     """
+    return {'form': form, 'required_fields': True}
 
-    d = {}
-    d['status'] = status
-    d['data'] = data
-    return d
+
+@register.inclusion_tag('tags/fieldsetForm.html')
+def show_fieldsetform_nrf(form):
+    """
+        Renders given form with required fields marked.
+    """
+    return {'form': form, 'required_fields': False}

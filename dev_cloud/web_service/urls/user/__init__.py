@@ -16,19 +16,9 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from django.conf.urls import patterns, include
 
 
-import logging
-log = logging.getLogger(__name__)
-
-
-def response(status, data=''):
-    """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
-    """
-
-    d = {}
-    d['status'] = status
-    d['data'] = data
-    return d
+urlpatterns = patterns('',
+                       (r'', include('web_service.urls.user.user')),
+                       )

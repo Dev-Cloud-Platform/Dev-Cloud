@@ -16,19 +16,14 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-
-
 import logging
-log = logging.getLogger(__name__)
 
 
-def response(status, data=''):
+def add_variables(request):
     """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
+        Context processor for attaching Dev Cloud configuration list and other data to every request.
     """
+    if request.session.get('user') is None:
+        return {}
 
-    d = {}
-    d['status'] = status
-    d['data'] = data
-    return d
+    #dev_logger = logging.getLogger('dev_logger')
