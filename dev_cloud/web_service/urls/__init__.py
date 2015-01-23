@@ -18,8 +18,12 @@
 # @COPYRIGHT_end
 from django.conf import settings
 from django.conf.urls import patterns, url, include
+from django.contrib import admin
 from django.views.generic import RedirectView
 from dev_cloud.core.utils.views import direct_to_template
+
+
+admin.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 
 urlpatterns = patterns('',
                        url(r'^$', direct_to_template, {'template_name': 'main/home.html'}, name='mai_main'),
@@ -31,7 +35,11 @@ urlpatterns = patterns('',
 
 
 # if settings.DEBUG:
-urlpatterns += patterns('', (r'^media/(?P<path>.*)$',
-                             'django.views.static.serve',
-                             {'document_root': settings.MEDIA_ROOT}),
+urlpatterns += patterns('',
+                        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+                        # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
+                        # to INSTALLED_APPS to enable admin documentation:
+                        (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+                        # Uncomment the next line to enable the admin:
+                        (r'^admin/', include(admin.site.urls)),
                         )

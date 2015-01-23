@@ -80,10 +80,10 @@ DATABASES = {
 
 ########## GENERAL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
@@ -96,6 +96,13 @@ USE_L10N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
+
+ugettext = lambda s: s
+
+LANGUAGES = (
+    ('pl', ugettext('Polski')),
+    ('en', ugettext('English')),
+)
 ########## END GENERAL CONFIGURATION
 
 
@@ -233,8 +240,8 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     # Dev Cloud apps:
     'database',
+    'web_service.templatetags',
     'web_service',
-    'web_service.tags',
     'core.common',
     'core.utils',
 )
@@ -294,6 +301,20 @@ LOGGING = {
 }
 
 ########## END LOGGING CONFIGURATION
+
+
+########## SESSION SETTINGS
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/auth/login/'
+LOGOUT_URL = '/auth/logout/'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+########## END SESSION SETTINGS
 
 
 ########## CELERY CONFIGURATION
