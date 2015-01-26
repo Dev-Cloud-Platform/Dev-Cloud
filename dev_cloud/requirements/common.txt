@@ -8,3 +8,5 @@ django_assets==0.10
 teamcity-messages==1.10
 MySQL-python>=1.2.5
 PyVirtualDisplay>=0.1.5
+recaptcha-client>=1.0.6
+

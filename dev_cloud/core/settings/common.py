@@ -191,6 +191,9 @@ MIDDLEWARE_CLASSES = (
     # Use GZip compression to reduce bandwidth.
     'django.middleware.gzip.GZipMiddleware',
 
+    # ReCaptcha Middleware
+    'core.utils.recaptcha.middleware.ReCaptchaMiddleware',
+
     # Default Django middleware.
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -245,6 +248,7 @@ LOCAL_APPS = (
     'core',
     'web_service',
     'web_service.templatetags',
+    'core.utils.recaptcha',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

@@ -17,6 +17,8 @@
 #
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
+from core.utils.views import direct_to_template
+from web_service.views.guest.user import reg_activate, reg_register
 
 auth_patterns = patterns('web_service.views.guest.user',
                          url(r'^login/$', 'login', name='login'),
@@ -33,11 +35,35 @@ help_patterns = patterns('web_service.views.guest.user',
                          url(r'^$', 'hlp_help', name='hlp_help'),
                          )
 
+registration_patterns = patterns('web_service.views.guest.user',
+                                 # Activation keys get matched by \w+ instead of the more specific
+                                 # [a-fA-F0-9]{40} because a bad activation key should still get to the view;
+                                 # that way it can return a sensible "invalid key" message instead of a
+                                 # confusing 404.
+                                 url(r'^activate/key/(?P<activation_key>\w+)/$', reg_activate, name='reg_activate'),
+                                 url(r'^register/$', reg_register, name='reg_register'),
+                                 url(r'^register/closed/$', direct_to_template,
+                                     {'template_name': 'registration/registration_closed.html'}, name='reg_disallowed'),
+                                 url(r'^register/completed/$', direct_to_template,
+                                     {'template_name': 'registration/registration_completed.html'}, name='registration_completed'),
+                                 url(r'^register/mail_confirmation/$', direct_to_template,
+                                     {'template_name': 'registration/registration_mail_confirmation.html'}, name='registration_mail_confirmation'),
+                                 url(r'^register/admin_confirmation/$', direct_to_template,
+                                     {'template_name': 'registration/registration_admin_confirmation.html'}, name='registration_admin_confirmation'),
+                                 url(r'^register/error/$', direct_to_template,
+                                     {'template_name': 'registration/registration_error.html'}, name='registration_error'),
+                                 url(r'^activate/completed/$', direct_to_template,
+                                     {'template_name': 'registration/activation_completed.html'}, name='activation_completed'),
+                                 url(r'^activate/admin_confirmation/$', direct_to_template,
+                                     {'template_name': 'registration/activation_admin_confirmation.html'}, name='activation_admin_confirmation'),
+                                 url(r'^activate/error/$', direct_to_template,
+                                     {'template_name': 'registration/activation_error.html'}, name='activation_error'),
+                                 )
 
 urlpatterns = patterns('',
                        url(r'^auth/', include(auth_patterns)),
                        url(r'', include(main_patterns)),
                        # url(r'^account/', include(account_patterns)),
                        url(r'^help/', include(help_patterns)),
-                       # url(r'^registration/', include(registration_patterns)),
+                       url(r'^registration/', include(registration_patterns)),
                        )

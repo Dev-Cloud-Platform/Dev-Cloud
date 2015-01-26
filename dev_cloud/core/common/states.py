@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-
 # -*- coding: utf-8 -*-
 # @COPYRIGHT_begin
 #
-# Copyright [2015] Michal Szczygiel, M4GiK Software
+# Copyright [2015] Michał Szczygieł, M4GiK Software
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,15 +18,32 @@
 # @COPYRIGHT_end
 
 
-import os
-import sys
+vm_states = {
+    'init': 0,
+    'running': 1,
+    'closing': 2,
+    'closed': 3,
+    'saving': 4,
+    'failed': 5,
+    'saving failed': 6,
+    'running ctx': 7,
+    'restart': 8,
+    'suspend': 9,
+    'turned off': 10,
+    'erased': 11,
+    'erasing': 12
+}
 
-if __name__ == "__main__":
-    # This will make the python interpreter see your packages as dev_cloud.whatever
-    # os.chdir('..')
+user_active_states = {
+    'inactive': 0,
+    'email_confirmed': 1,
+    'ok': 2,
+    'blocked': 3
+}
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.dev")
-
-    from django.core.management import execute_from_command_line
-
-    execute_from_command_line(sys.argv)
+registration_states = {
+    'completed': 0,
+    'mail_confirmation': 1,
+    'admin_confirmation': 2,
+    'error': 3,
+}

@@ -28,10 +28,14 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from core.common.states import registration_states
 
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.decorators import django_view
-from web_service.forms.user import AuthenticationForm
+from core.utils.registration import register, activate
+from core.utils.views import prep_data
+from web_service.forms.user.authenticate import AuthenticationForm
+from web_service.forms.user.registration import RegistrationForm
 
 
 @django_view
@@ -123,3 +127,51 @@ def change_language(request, lang, success_url='mai_main'):
     request.session.modified = True
 
     return redirect(request.META['HTTP_REFERER'] or success_url)
+
+
+@django_view
+def reg_register(request, form_class=RegistrationForm, template_name='registration/registration_form.html'):
+    """
+        Registration form's handling.
+    """
+    if request.method == 'POST':
+        form = form_class(data=request.POST)
+        if form.is_valid():
+            response = register(**form.cleaned_data)
+
+            if response['status'] != 'ok':
+                import logging
+                wi_logger = logging.getLogger('wi_logger')
+                wi_logger.error('Registration error: %s' % response['status'])
+                wi_logger.error(response['data'])
+
+                return redirect('registration_error')
+
+            if response['data']['registration_state'] == registration_states['completed']:
+                return redirect('registration_completed')
+
+            if response['data']['registration_state'] == registration_states['mail_confirmation']:
+                return redirect('registration_mail_confirmation')
+
+            if response['data']['registration_state'] == registration_states['admin_confirmation']:
+                return redirect('registration_admin_confirmation')
+    else:
+        form = form_class()
+
+    return render_to_response(template_name, {'form': form}, RequestContext(request))
+
+
+@django_view
+def reg_activate(request, **kwargs):
+    """
+    User's email address's confirmation (by entering the HTTP address provided in email message).
+    """
+    act_response = activate(**kwargs)
+    if act_response:
+        if act_response['data']['registration_state'] == registration_states['completed']:
+            return redirect('activation_completed')
+
+        if act_response['data']['registration_state'] == registration_states['admin_confirmation']:
+            return redirect('activation_admin_confirmation')
+
+    return redirect('activation_error')
