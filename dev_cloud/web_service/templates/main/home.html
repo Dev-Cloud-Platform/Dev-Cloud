@@ -1,0 +1,14 @@
+{% extends "main/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+
+{% block title %}{{ block.super }}{% endblock %}
+{% block men_div_name %}nav_main{% endblock %}
+{% block box_content %}
+{#    {% if request.session.user %}#}
+{#        {% include "tutorials/index_logged.html" %}#}
+{#    {% else %}#}
+{#        {% include "tutorials/index_not_logged.html" %}#}
+{#    {% endif %}#}
+{% endblock %}
