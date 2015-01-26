@@ -18,7 +18,8 @@
 # @COPYRIGHT_end
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from dev_cloud.core.utils.regexp import regexp, regexp_text
+
+from core.utils.regexp import regexp, regexp_text
 
 
 class AuthenticationForm(forms.Form):

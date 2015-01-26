@@ -17,12 +17,13 @@
 #
 # @COPYRIGHT_end
 
+import datetime
+
 from django.contrib import auth
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.template import Context
 
-import datetime
 
 def current_datetime(request):
     now = datetime.datetime.now()

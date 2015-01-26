@@ -17,8 +17,11 @@
 #
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
-from dev_cloud.core.utils.decorators import user_permission
-from dev_cloud.core.utils.views import direct_to_template
+
+
+#commented   url(r'^$', user_permission(direct_to_template), {'template_name': 'account/base.html'}, name='acc_account'),
+from core.utils.decorators import user_permission
+from core.utils.views import direct_to_template
 
 
 account_patterns = patterns('web_service.views.user.user',

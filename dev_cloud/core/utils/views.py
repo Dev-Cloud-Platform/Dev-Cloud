@@ -19,8 +19,9 @@
 
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from dev_cloud.core.utils import check_response_errors
-from dev_cloud.core.utils.decorators import django_view
+
+from core.utils import check_response_errors
+from decorators import django_view
 
 
 @django_view

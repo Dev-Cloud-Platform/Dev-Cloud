@@ -4,7 +4,7 @@ import sys
 
 if __name__ == "__main__":
     # This will make the python interpreter see your packages as dev_cloud.whatever
-    #os.chdir('..')
+    # os.chdir('..')
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.dev")
 

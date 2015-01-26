@@ -22,8 +22,10 @@
 from datetime import timedelta
 from sys import path
 from os.path import abspath, basename, dirname, join, normpath, pardir
-from djcelery import setup_loader
 import logging
+
+from djcelery import setup_loader
+
 
 
 ########## PATH CONFIGURATION
@@ -240,10 +242,9 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     # Dev Cloud apps:
     'database',
-    'web_service.templatetags',
+    'core',
     'web_service',
-    'core.common',
-    'core.utils',
+    'web_service.templatetags',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

@@ -20,7 +20,6 @@
 from django.contrib import admin
 
 from models.applications import Applications
-
 from models.installed_applications import InstalledApplications
 from models.roles import Roles
 from models.template_instances import TemplateInstances

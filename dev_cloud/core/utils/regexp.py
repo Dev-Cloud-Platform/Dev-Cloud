@@ -17,7 +17,9 @@
 #
 # @COPYRIGHT_end
 import re
+
 from django.utils.translation import ugettext as _
+
 
 """
     Module contains dictionaries: \c regexp and \c regext_text. Both dictionaries contain fields corresponding to user informations.

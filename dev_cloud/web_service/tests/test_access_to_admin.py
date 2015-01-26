@@ -56,7 +56,7 @@ class AdminTest(LiveServerTestCase):
 
             # She sees the familiar 'Django administration' heading
             body = self.browser.find_element_by_tag_name('body')
-            self.assertIn('Django administration', body.text)
+            self.assertIn('Administracja Django', body.text)
 
             # She types in her username and passwords and hits return
             username_field = self.browser.find_element_by_name('username')
@@ -69,7 +69,7 @@ class AdminTest(LiveServerTestCase):
             # her username and password are accepted, and she is taken to
             # the Site Administration page
             body = self.browser.find_element_by_tag_name('body')
-            self.assertIn('Site administration', body.text)
+            self.assertIn('Administracja stron', body.text)
 
             # She now sees a couple of hyperlink that says "Web_Service"
             web_service_links = self.browser.find_elements_by_link_text('Models')

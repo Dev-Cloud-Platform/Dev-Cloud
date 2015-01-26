@@ -16,11 +16,12 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import unittest
+import random
+
 from teamcity import is_running_under_teamcity
 from teamcity.unittestpy import TeamcityTestRunner
 
-import unittest
-import random
 
 class TestTeamcityMessages(unittest.TestCase):
     def testPass(self):

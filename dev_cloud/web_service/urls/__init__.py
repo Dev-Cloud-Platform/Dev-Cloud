@@ -20,7 +20,8 @@ from django.conf import settings
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
-from dev_cloud.core.utils.views import direct_to_template
+
+from core.utils.views import direct_to_template
 
 
 admin.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf

@@ -17,6 +17,8 @@
 #
 # @COPYRIGHT_end
 
+import re
+
 from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.core.urlresolvers import reverse
@@ -26,11 +28,10 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-import re
-from dev_cloud.core.utils import REDIRECT_FIELD_NAME
-from dev_cloud.core.utils.decorators import django_view
 
-from dev_cloud.web_service.forms.user import AuthenticationForm
+from core.utils import REDIRECT_FIELD_NAME
+from core.utils.decorators import django_view
+from web_service.forms.user import AuthenticationForm
 
 
 @django_view

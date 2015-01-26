@@ -18,12 +18,14 @@
 # @COPYRIGHT_end
 
 import logging
+
 from django.conf import settings
 from django.contrib.messages import success
 from django.http import HttpResponseRedirect
 from django.utils.http import urlquote
-from dev_cloud.core.utils import REDIRECT_FIELD_NAME
-from dev_cloud.core.utils.messages_codes import auth_error_text
+
+from core.utils import REDIRECT_FIELD_NAME
+from messages_codes import auth_error_text
 
 
 def django_view(function):

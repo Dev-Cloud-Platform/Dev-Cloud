@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-import logging
 
 
 def add_variables(request):
