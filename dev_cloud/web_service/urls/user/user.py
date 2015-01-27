@@ -17,9 +17,6 @@
 #
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
-
-
-#commented   url(r'^$', user_permission(direct_to_template), {'template_name': 'account/base.html'}, name='acc_account'),
 from core.utils.decorators import user_permission
 from core.utils.views import direct_to_template
 
