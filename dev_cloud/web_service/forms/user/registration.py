@@ -18,65 +18,89 @@
 # @COPYRIGHT_end
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
 from core.settings import common
 from core.utils.recaptcha import ReCaptchaField
 from core.utils.regexp import regexp_text, regexp
-from core.utils.views import make_request
+from database.models import Users
 from web_service.forms.user.password import PasswordForm, attrs_dict
 
 
 class RegistrationForm(PasswordForm):
     """
-        Form for <b>registering a new user account</b>.
+    Form for <b>registering a new user account</b>.
 
-        Validates that the requested username is not already in use, and
-        requires the password to be entered twice to catch typos.
+    Validates that the requested username is not already in use, and
+    requires the password to be entered twice to catch typos.
     """
     login = forms.RegexField(regex=regexp['login'],
-                             max_length=63,
+                             max_length=45,
                              widget=forms.TextInput(attrs=attrs_dict),
                              label=_('Username'),
                              error_messages={'invalid': regexp_text['login']})
-    first = forms.CharField(max_length=63,
+
+    first = forms.CharField(max_length=45,
                             widget=forms.TextInput(attrs=attrs_dict),
                             label=_('First name'))
-    last = forms.CharField(max_length=63,
+
+    last = forms.CharField(max_length=45,
                            widget=forms.TextInput(attrs=attrs_dict),
                            label=_('Last name'))
-    organization = forms.CharField(max_length=63,
-                                   widget=forms.TextInput(attrs=attrs_dict),
-                                   label=_('Organization'))
+
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=255)),
                              label=_('Email address'))
 
+    class Meta:
+        model = Users
+        fields = ('login', 'first', 'last', 'email', 'new_password', 'password2')
+
+
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
-        print "1WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF!"
-        self.fields.keyOrder = ['login', 'first', 'last', 'organization', 'email', 'new_password', 'password2']
-        print "2WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF!"
+        self.fields.keyOrder = ['login', 'first', 'last', 'email', 'new_password', 'password2']
+
         if common.CAPTCHA:
-            print "WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF!"
             self.fields['recaptcha'] = ReCaptchaField()
 
     def clean_login(self):
         """
-            Validate that the login is alphanumeric and is not already in use.
+        Validate that the login is alphanumeric and is not already in use.
+        @return:
         """
-        response = make_request('guest/user/exists/', {'login': self.cleaned_data['login']})
+        login = self.cleaned_data['login']
 
-        if response['data'] == False:
-            return self.cleaned_data['login']
-        else:
-            raise forms.ValidationError(_("A user with that login already exists."))
+        try:
+            Users._default_manager.get(login=login)
+        except Users.DoesNotExist:
+            return login
+        raise forms.ValidationError(_("A user with that login already exists."))
 
     def clean_email(self):
         """
-            Validate that the supplied email address is unique for the site.
+        Validate that the supplied email address is unique for the site.
+        @return:
         """
-        response = make_request('guest/user/email_exists/', {'email': self.cleaned_data['email']})
+        email = self.cleaned_data["email"]
 
-        if response['data'] == False:
-            return self.cleaned_data['email']
-        else:
-            raise forms.ValidationError(
-                _("This email address is already in use. Please supply a different email address."))
+        try:
+            Users._default_manager.get(email=email)
+        except Users.DoesNotExist:
+            return email
+        raise forms.ValidationError(_("This email address is already in use. Please supply a different email address."))
+
+    def save(self, commit=True):
+        """
+        Modify save() method so that we can set user.is_active to False when we first create our user
+        @param commit:
+        @return:
+        """
+        user = super(RegistrationForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+
+        if commit:
+            user.is_active = False # not active until he opens activation link
+            user.save()
+
+        return user
+
+

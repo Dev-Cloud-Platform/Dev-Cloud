@@ -27,6 +27,7 @@ from django.forms import Widget, Field, ValidationError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from recaptcha.client import captcha
+
 from core.settings import common
 
 

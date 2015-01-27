@@ -24,13 +24,15 @@ from django.db import models
 class Users(models.Model):
     id = models.IntegerField(primary_key=True)
     login = models.CharField(unique=True, max_length=45)
-    password = models.CharField(max_length=32)
+    password = models.CharField(max_length=255)
     name = models.CharField(max_length=45, blank=True)
     lastname = models.CharField(max_length=45, blank=True)
     email = models.CharField(unique=True, max_length=255)
     create_time = models.DateTimeField(blank=True, null=True)
     language = models.CharField(max_length=45, blank=True)
     picture = models.FileField(blank=True)
+    is_active = models.IntegerField(blank=True)
+    is_superuser = models.IntegerField(blank=True)
     last_activity = models.DateTimeField(blank=True, null=True)
 
     class Meta:

@@ -28,6 +28,7 @@ from djcelery import setup_loader
 
 
 
+
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
 BASE_DIR = dirname(dirname(__file__))
@@ -60,6 +61,7 @@ ADMINS = (
     ('M4GiK', 'm4giksoftware@gmail.com'),
 )
 
+EMAIL = 'm4giksoftware@gmail.com'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 ########## END MANAGER CONFIGURATION
@@ -122,6 +124,12 @@ CAPTCHA = True
 RECAPTCHA_PUBLIC_KEY = '6Ld-FgETAAAAAAa8ZMvYNQioFokJ6thVhelX5eOL'
 RECAPTCHA_PRIVATE_KEY = '6Ld-FgETAAAAAMjN7YOihU4tuy3G_R4U4JSY9GUU'
 ########## END CAPTCHA SETTINGS
+
+
+########## REGISTRATION SETTINGS
+MAILER_ACTIVE = True
+AUTOACTIVATION = False
+########## REGISTRATION SETTINGS
 
 
 ########## MEDIA CONFIGURATION
@@ -224,6 +232,11 @@ MIDDLEWARE_CLASSES = (
 ########## URL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = 'web_service.urls'  # % SITE_NAME
+
+DEV_CLOUD_DATA = {
+    'site_domain': 'localhost', # Web interface address for activation link
+    'site_name': 'Dev Cloud' # System name in emails
+}
 ########## END URL CONFIGURATION
 
 

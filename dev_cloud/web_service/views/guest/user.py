@@ -28,11 +28,11 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from core.common.states import registration_states
 
+from core.common.states import registration_states
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.decorators import django_view
-from core.utils.registration import register, activate
+from core.utils.registration.registration import register, activate
 from core.utils.views import prep_data
 from web_service.forms.user.authenticate import AuthenticationForm
 from web_service.forms.user.registration import RegistrationForm
@@ -44,7 +44,12 @@ from web_service.forms.user.registration import RegistrationForm
 def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm):
     """
-        Login page handling.
+    Login page handling.
+    @param request:
+    @param template_name:
+    @param redirect_field_name:
+    @param authentication_form:
+    @return:
     """
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     if request.method == 'POST':
@@ -91,7 +96,12 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
 @django_view
 def logout(request, next_page=None, template_name='auth/logged_out.html', redirect_field_name=REDIRECT_FIELD_NAME):
     """
-        Logout and redirection to the right next page (\c next_page).
+    Logout and redirection to the right next page (\c next_page).
+    @param request:
+    @param next_page:
+    @param template_name:
+    @param redirect_field_name:
+    @return:
     """
     from dev_cloud.core.utils.auth import logout as auth_logout
     auth_logout(request.session)
@@ -110,7 +120,10 @@ def logout(request, next_page=None, template_name='auth/logged_out.html', redire
 @django_view
 def hlp_help(request, template_name='help/base.html'):
     """
-        Help main page.
+    Help main page.
+    @param request:
+    @param template_name:
+    @return:
     """
     rest_data = prep_data('guest/user/is_mailer_active/', request.session)
 
@@ -120,7 +133,11 @@ def hlp_help(request, template_name='help/base.html'):
 @django_view
 def change_language(request, lang, success_url='mai_main'):
     """
-        View changing page language.
+    View changing page language.
+    @param request:
+    @param lang:
+    @param success_url:
+    @return:
     """
     request.session['django_language'] = lang
     request.session['_language'] = lang
@@ -132,7 +149,11 @@ def change_language(request, lang, success_url='mai_main'):
 @django_view
 def reg_register(request, form_class=RegistrationForm, template_name='registration/registration_form.html'):
     """
-        Registration form's handling.
+    Registration form's handling.
+    @param request:
+    @param form_class:
+    @param template_name:
+    @return:
     """
     if request.method == 'POST':
         form = form_class(data=request.POST)
@@ -165,6 +186,9 @@ def reg_register(request, form_class=RegistrationForm, template_name='registrati
 def reg_activate(request, **kwargs):
     """
     User's email address's confirmation (by entering the HTTP address provided in email message).
+    @param request:
+    @param kwargs:
+    @return:
     """
     act_response = activate(**kwargs)
     if act_response:

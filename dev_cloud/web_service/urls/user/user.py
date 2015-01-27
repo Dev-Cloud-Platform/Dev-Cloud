@@ -17,6 +17,7 @@
 #
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
+
 from core.utils.decorators import user_permission
 from core.utils.views import direct_to_template
 

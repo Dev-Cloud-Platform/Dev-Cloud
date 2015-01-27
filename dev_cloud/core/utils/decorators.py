@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-
 import logging
 
 from django.conf import settings
@@ -30,12 +29,17 @@ from messages_codes import auth_error_text
 
 def django_view(function):
     """
-        Logs any exception thrown by a view.
+    Logs any exception thrown by a view.
+    @param function:
+    @return:
     """
     dev_logger = logging.getLogger('dev_logger')
     def wrapper(*args, **kwargs):
         """
-            Returned decorated function.
+        Returned decorated function.
+        @param args:
+        @param kwargs:
+        @return:
         """
         try:
             ret = function(*args, **kwargs)
@@ -55,11 +59,17 @@ login_url = settings.LOGIN_URL
 
 def user_permission(view_func):
     """
-        \b Decorator for views with logged user permissions.
+    \b Decorator for views with logged user permissions.
+    @param view_func:
+    @return:
     """
     def wrap(request, *args, **kwds):
         """
-            Returned decorated function.
+        Returned decorated function.
+        @param request:
+        @param args:
+        @param kwds:
+        @return:
         """
         if 'user' in request.session:
             return view_func(request, *args, **kwds)
@@ -69,3 +79,7 @@ def user_permission(view_func):
         tup = login_url, REDIRECT_FIELD_NAME, path
         return HttpResponseRedirect('%s?%s=%s' % tup)
     return wrap
+
+global decorated_functions
+decorated_functions = set([])
+

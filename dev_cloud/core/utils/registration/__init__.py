@@ -16,22 +16,3 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from exception import RestErrorException
-from messages_codes import get_error
-
-REDIRECT_FIELD_NAME = 'next'
-
-def check_response_errors(response, session):
-    """
-    Checks status of response response and throws appropriate error.
-    @param response:
-    @param session:
-    @return:
-    """
-    if response['status'] != 'ok':
-        from dev_cloud.core.utils.auth import logout
-        error_code = response['status']
-        error_msg = get_error(error_code)
-        raise RestErrorException(error_msg)
-
-    return response

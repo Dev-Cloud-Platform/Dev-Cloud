@@ -17,10 +17,13 @@
 #
 # @COPYRIGHT_end
 
+import hashlib
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
 from core.utils.regexp import regexp, regexp_text
-import hashlib
+
 
 attrs_dict = {'class': 'required'}
 

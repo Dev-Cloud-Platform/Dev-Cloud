@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-
+from django.core.context_processors import request
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 
@@ -37,21 +37,28 @@ def direct_to_template(request, template_name, content_type=None):
 
 def make_request(url, data, user=None):
     """
-        Adds authorization-related information to data dictionary and makes a request to CLM
-        using given url and data dictionary.
+    Adds authorization-related information to data dictionary and makes a request
+    to database module using given url and data dictionary.
+    @param url:
+    @param data:
+    @param user:
+    @return:
     """
     if not url.startswith('guest'):
-        data.update({'login': user.username, 'password': user.password, 'cm_id': user.cm_id})
-    if url.startswith('admin_cm'):
-        data.update({'cm_password': user.cm_password})
+        data.update({'login': user.username, 'password': user.password, 'id': user.id})
+    if url.startswith('admin'):
+        data.update({'admin_password': user.admin_password})
 
-    return None #CLM.send_request(url, False if url in not_to_be_logged_urls else True, **data) #WTF ??
+    return request(url, True, **data) #WTF ??
 
 
 
 def prep_data(request_urls, session):
     """
-        Returns a dictionary with results of REST request.
+    Returns a dictionary with results of REST request.
+    @param request_urls:
+    @param session:
+    @return:
     """
     data = None
     user = session.get('user')
