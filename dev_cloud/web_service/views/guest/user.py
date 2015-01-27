@@ -44,7 +44,7 @@ from web_service.forms.user.registration import RegistrationForm
 def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm):
     """
-    Login page handling.
+        Login page handling.
     """
     redirect_to = request.REQUEST.get(redirect_field_name, '')
     if request.method == 'POST':
@@ -141,9 +141,9 @@ def reg_register(request, form_class=RegistrationForm, template_name='registrati
 
             if response['status'] != 'ok':
                 import logging
-                wi_logger = logging.getLogger('wi_logger')
-                wi_logger.error('Registration error: %s' % response['status'])
-                wi_logger.error(response['data'])
+                dev_logger = logging.getLogger('dev_logger')
+                dev_logger.error('Registration error: %s' % response['status'])
+                dev_logger.error(response['data'])
 
                 return redirect('registration_error')
 

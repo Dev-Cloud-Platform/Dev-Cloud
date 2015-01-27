@@ -1,0 +1,123 @@
+# -*- coding: utf-8 -*-
+# @COPYRIGHT_begin
+#
+# Copyright [2015] Michał Szczygieł, M4GiK Software
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# @COPYRIGHT_end
+#
+# This file is distributed under the same license as the PACKAGE package.
+# Michał Szczygieł <m4giksoftware@gmail.com>, 2015.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-27 12:58+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Michał Szczygieł <m4giksoftware@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#: forms/user/authenticate.py:30 forms/user/registration.py:38
+msgid "Username"
+msgstr "Użytkownik"
+
+#: forms/user/authenticate.py:35 forms/user/password.py:35
+msgid "Password"
+msgstr "Hasło"
+
+#: forms/user/password.py:41
+msgid "Password confirmation"
+msgstr "Potwierdź hasło"
+
+#: forms/user/password.py:50
+msgid "The two password fields didn't match."
+msgstr ""
+
+#: forms/user/registration.py:42
+msgid "First name"
+msgstr "Imię"
+
+#: forms/user/registration.py:45
+msgid "Last name"
+msgstr "Nazwisko"
+
+#: forms/user/registration.py:48
+msgid "Organization"
+msgstr "Organizacja"
+
+#: forms/user/registration.py:50
+msgid "Email address"
+msgstr ""
+
+#: forms/user/registration.py:69
+msgid "A user with that login already exists."
+msgstr ""
+
+#: forms/user/registration.py:81
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr ""
+
+#: templates/auth/login.html:5
+msgid "Login"
+msgstr ""
+
+#: templates/auth/login.html:21
+msgid "Sorry, that's not a valid username or password"
+msgstr "Przepraszamy, ale wprowadziłeś nieporawnie użytkownika albo hasło"
+
+#: templates/auth/login.html:28
+msgid "Sign in"
+msgstr "Zaloguj"
+
+#: templates/main/menu.html:8
+msgid "Home page"
+msgstr "Główna strona"
+
+#: templates/registration/registration_form.html:5
+msgid "Registration"
+msgstr "Rejestracja"
+
+#: templates/registration/registration_form.html:17
+msgid "Sorry, that's not a valid"
+msgstr "Przepraszamy, ale wprowadziłeś nieporawne dane"
+
+#: templates/registration/registration_form.html:35
+msgid "Register"
+msgstr ""
+
+#: templates/tags/fieldsetForm.html:4
+msgid "Field required"
+msgstr ""
+
+#: templates/tags/fieldsetForm.html:47 templates/tags/fieldsetForm.html:54
+msgid "Show advanced options"
+msgstr ""
+
+#: templates/tags/fieldsetForm.html:54
+msgid "Hide advanced options"
+msgstr ""
+
+#: views/guest/user.py:104
+msgid "Logged out"
+msgstr ""

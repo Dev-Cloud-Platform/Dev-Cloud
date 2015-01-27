@@ -108,6 +108,22 @@ LANGUAGES = (
 ########## END GENERAL CONFIGURATION
 
 
+########## LOCALE CONFIGURATION
+LOCALE_PATHS = (
+    normpath(join(DJANGO_ROOT, 'locale')),
+)
+########## END LOCALE CONFIGURATION
+
+
+########## CAPTCHA SETTINGS
+CAPTCHA = True
+
+# priv/pub keys to reCaptcha bound to common account m4giksoftware@gmail.com
+RECAPTCHA_PUBLIC_KEY = '6Ld-FgETAAAAAAa8ZMvYNQioFokJ6thVhelX5eOL'
+RECAPTCHA_PRIVATE_KEY = '6Ld-FgETAAAAAMjN7YOihU4tuy3G_R4U4JSY9GUU'
+########## END CAPTCHA SETTINGS
+
+
 ########## MEDIA CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = normpath(join(DJANGO_ROOT, 'media'))
@@ -195,8 +211,9 @@ MIDDLEWARE_CLASSES = (
     'core.utils.recaptcha.middleware.ReCaptchaMiddleware',
 
     # Default Django middleware.
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

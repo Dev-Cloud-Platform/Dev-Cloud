@@ -23,11 +23,11 @@
     shows) module for django
 """
 
-from django.conf import settings
 from django.forms import Widget, Field, ValidationError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from recaptcha.client import captcha
+from core.settings import common
 
 
 HUMAN_ERRORS = {
@@ -50,7 +50,7 @@ class ReCaptchaWidget(Widget):
     def render(self, name, value, attrs=None):
         final_attrs = self.build_attrs(attrs)
         error = final_attrs.get('error', None)
-        html = captcha.displayhtml(settings.RECAPTCHA_PUBLIC_KEY, error=error, use_ssl=True)
+        html = captcha.displayhtml(common.RECAPTCHA_PUBLIC_KEY, error=error, use_ssl=True)
 
         return mark_safe(u"""<script type="text/javascript">
         var RecaptchaOptions = {
@@ -103,7 +103,7 @@ class ReCaptchaField(Field):
             raise ValidationError(_('Invalid request'))
         resp = captcha.submit(value.get('challenge', None),
                               value.get('response', None),
-                              settings.RECAPTCHA_PRIVATE_KEY,
+                              common.RECAPTCHA_PRIVATE_KEY,
                               value.get('ip', None))
         if not resp.is_valid:
             self.widget.attrs['error'] = resp.error_code

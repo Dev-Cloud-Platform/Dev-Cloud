@@ -17,8 +17,8 @@
 #
 # @COPYRIGHT_end
 from django import forms
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from core.settings import common
 from core.utils.recaptcha import ReCaptchaField
 from core.utils.regexp import regexp_text, regexp
 from core.utils.views import make_request
@@ -51,10 +51,11 @@ class RegistrationForm(PasswordForm):
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
-
+        print "1WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF!"
         self.fields.keyOrder = ['login', 'first', 'last', 'organization', 'email', 'new_password', 'password2']
-
-        if settings.CAPTCHA:
+        print "2WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF!"
+        if common.CAPTCHA:
+            print "WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF!"
             self.fields['recaptcha'] = ReCaptchaField()
 
     def clean_login(self):

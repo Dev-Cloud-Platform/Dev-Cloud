@@ -3,7 +3,7 @@
 <fieldset class="noBorder">
     {% for field in form %}
         {% if field.label == "Recaptcha" %}
-            <div>{{ field|safe }}</div>
+            <center><div>{{ field|safe }}</div></center>
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}
@@ -13,7 +13,6 @@
 				{{ field.label_tag }}
                     {% if required_fields %}
                         {% if field.field.required %}
-                            <strong>*</strong>
                         {% else %}
                             &nbsp;&nbsp;&nbsp;
                         {% endif %}

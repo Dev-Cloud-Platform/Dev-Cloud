@@ -4,5 +4,55 @@
 
 {% block title %}Dev Cloud - {% trans "Registration" %}{% endblock %}
 
+{% block body_class %}class="login-page"{% endblock %}
+{% block header_class %}class="login"{% endblock %}
+
+{% block header %}
+    <div class="message">
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="message-intro">
+                    <span class="message-line"></span>
+
+                    <p>{% trans "Sign up to Dev Cloud system" %}</p>
+                    <span class="message-line"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
+
+    <div class="login-container">
+        <div class="row">
+            <div class="small-12 large-7 large-centered medium-7 medium-centered columns">
+                <div class="login-form">
+                    {% if form.errors %}
+                        <p class="error">{% trans "Sorry, that's not a valid" %}</p>
+                    {% endif %}
+
+                    <script type="text/javascript">/*<![CDATA[*/
+                    $(function() {
+                        $("#id_username").focus();
+                        $("#registration-form").validate({
+                            rules: {
+                                new_password: { minlength: 5},
+                                password2: { equalTo: "#id_new_password"}
+                            }
+                        });
+                    });
+                    /*]]>*/</script>
+                    <form method="post" action="" id="registration-form">
+                        {% csrf_token %}
+                        {% show_fieldsetform form %}
+                        <div class="fieldset align_center">
+                            <input class="button" type="submit" value="{% trans "Register" %}" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}
