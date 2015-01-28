@@ -58,10 +58,18 @@ TEMPLATE_DEBUG = DEBUG
 ########## MANAGER CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
-    ('M4GiK', 'm4giksoftware@gmail.com'),
+    ('M4GiK', 'devcloudplatform@gmail.com'),
 )
 
-EMAIL = 'm4giksoftware@gmail.com'
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL = 'devcloudplatform@gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'devcloudplatform@gmail.com'
+EMAIL_HOST_PASSWORD = 'devcloudpassword'
+FROM_EMAIL = 'devcloudplatform@gmail.com'
+EMAIL_FAIL_SILENTLY = False
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 ########## END MANAGER CONFIGURATION
@@ -235,7 +243,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'web_service.urls'  # % SITE_NAME
 
 DEV_CLOUD_DATA = {
-    'site_domain': 'localhost', # Web interface address for activation link
+    'site_domain': 'localhost:8000', # Web interface address for activation link
     'site_name': 'Dev Cloud' # System name in emails
 }
 ########## END URL CONFIGURATION

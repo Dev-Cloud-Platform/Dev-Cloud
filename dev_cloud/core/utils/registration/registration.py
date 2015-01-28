@@ -53,7 +53,7 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
     user.password = new_password
     user.create_time = user.last_activity = datetime.now()
     user.is_active = user_active_states['inactive']
-    act_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(40))
+    user.activation_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(40))
 
     try:
         user.save()
@@ -64,7 +64,7 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
     if common.MAILER_ACTIVE:
         try:
             # mail the user
-            mail.send_activation_email(act_key, user, dev_cloud_data)
+            mail.send_activation_email(user.activation_key, user, dev_cloud_data)
         except SMTPRecipientsRefused:
             reg_state = registration_states['error']
         reg_state = registration_states['mail_confirmation']

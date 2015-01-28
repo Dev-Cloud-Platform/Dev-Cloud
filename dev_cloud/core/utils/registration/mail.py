@@ -18,8 +18,9 @@
 # @COPYRIGHT_end
 
 from smtplib import SMTPRecipientsRefused
+from django.core.mail import get_connection
 
-from django.core.mail.message import EmailMessage
+from django.core.mail.message import EmailMessage, EmailMultiAlternatives
 from django.template import loader, Context
 from django.utils.translation import ugettext_lazy as _
 
@@ -44,14 +45,15 @@ def email_error(f):
     function (request, *arg, **kw)
     @endcode
     """
+
     def wrap(request, *args, **kwds):
         try:
             return f(request, *args, **kwds)
         except SMTPRecipientsRefused, e:
-            print "Zjebało sie~!!!!!"
             error = "%s %s" % (f.__name__, str(e))
             log.error(0, error)
             raise
+
     return wrap
 
 
@@ -65,10 +67,22 @@ def send(to_address, msg_text, subject):
     Sends email via STMP server.
     """
     from_address = common.EMAIL
-    log.debug(0, '%s%s%s%s%s%s%s' % ("send_email(from='", from_address, "', to='", to_address, "', subject='", subject, "')"))
+    log.debug(0, '%s%s%s%s%s%s%s' % (
+        "send_email(from='", from_address, "', to='", to_address, "', subject='", subject, "')"))
 
-    msg = EmailMessage(subject, msg_text, from_address, [to_address])
-    msg.send()
+    html_content = render_from_template_to_string('registration_msg/activation_email')
+
+    connection = get_connection(use_tls=common.EMAIL_USE_TLS,
+                                host=common.EMAIL_HOST,
+                                port=common.EMAIL_PORT,
+                                username=common.EMAIL_HOST_USER,
+                                password=common.EMAIL_HOST_PASSWORD,
+                                backend=common.EMAIL_BACKEND,
+                                fail_silently=common.EMAIL_FAIL_SILENTLY)
+
+    message = EmailMultiAlternatives(subject, msg_text, from_address, [to_address], connection=connection)
+    message.attach_alternative(html_content, "text/html")
+    message.send()
 
 
 def send_activation_email(activation_key, user, dev_cloud_data):
@@ -80,8 +94,8 @@ def send_activation_email(activation_key, user, dev_cloud_data):
     Sends email with activation key to registred user.
     """
     dev_cloud_dict = {'activation_key': activation_key,
-                'site': dev_cloud_data['site_domain'],
-                'site_name': dev_cloud_data['site_name']}
+                      'site': dev_cloud_data['site_domain'],
+                      'site_name': dev_cloud_data['site_name']}
 
     subject = render_from_template_to_string('registration_msg/activation_email_subject', dev_cloud_dict)
     subject = ''.join(subject.splitlines())
@@ -100,7 +114,7 @@ def send_activation_confirmation_email(user, dev_cloud_data):
     Sends confirmation email to user as admin confirms user's activation.
     """
     dev_cloud_dict = {'site': dev_cloud_data['site_domain'],
-                'site_name': dev_cloud_data['site_name']}
+                      'site_name': dev_cloud_data['site_name']}
     subject = render_from_template_to_string('registration_msg/admin_activation_email_subject', dev_cloud_dict)
     subject = ''.join(subject.splitlines())
     message = render_from_template_to_string('registration_msg/admin_activation_email', dev_cloud_dict)
@@ -136,9 +150,9 @@ def send_reset_password_mail(user, token, dev_cloud_data):
     Sends mail for password reset.
     """
     dev_cloud_dict = {'site_name': dev_cloud_data['site_name'],
-                'domain': dev_cloud_data['site_domain'],
-                'username': user.login,
-                'token': token}
+                      'domain': dev_cloud_data['site_domain'],
+                      'username': user.login,
+                      'token': token}
     message = render_from_template_to_string('account_msg/password_reset_email', dev_cloud_dict)
 
     send(user.email, message, _("Password reset on %s") % dev_cloud_data['site_name'])

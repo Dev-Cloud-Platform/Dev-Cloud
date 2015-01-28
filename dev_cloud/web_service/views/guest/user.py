@@ -160,22 +160,21 @@ def reg_register(request, form_class=RegistrationForm, template_name='registrati
         if form.is_valid():
             response = register(**form.cleaned_data)
 
-            if response['status'] != 'ok':
+            if response['registration_state'] == registration_states['completed']:
+                return redirect('registration_completed')
+
+            elif response['registration_state'] == registration_states['mail_confirmation']:
+                return redirect('registration_mail_confirmation')
+
+            elif response['registration_state'] == registration_states['admin_confirmation']:
+                return redirect('registration_admin_confirmation')
+
+            else:
                 import logging
                 dev_logger = logging.getLogger('dev_logger')
                 dev_logger.error('Registration error: %s' % response['status'])
                 dev_logger.error(response['data'])
-
                 return redirect('registration_error')
-
-            if response['data']['registration_state'] == registration_states['completed']:
-                return redirect('registration_completed')
-
-            if response['data']['registration_state'] == registration_states['mail_confirmation']:
-                return redirect('registration_mail_confirmation')
-
-            if response['data']['registration_state'] == registration_states['admin_confirmation']:
-                return redirect('registration_admin_confirmation')
     else:
         form = form_class()
 
