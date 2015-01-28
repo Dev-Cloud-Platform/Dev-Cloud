@@ -37,12 +37,12 @@ jQuery(document).ready(function() {
 $('.calltoactioninfo').waypoint(function() {
 
 $('#discount')
-  .prop('number', 0)
+  .prop('number', 500)
   .animateNumber(
     {
-      number: 45
+      number: 0
     },
-    3000
+    9000
   );
 
 }, { offset: 800, triggerOnce: true });

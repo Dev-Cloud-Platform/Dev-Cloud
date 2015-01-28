@@ -102,12 +102,12 @@
 <section class="calltoaction">
     <div class="row">
         <div class="small-12 columns">
-            <div data-wow-delay="0.3s" class="longshadow wow fadeInDown">NEW CUSTOMER?</div>
+            <div data-wow-delay="0.3s" class="longshadow wow fadeInDown">NEW USER?</div>
             <div data-wow-delay="0.5s" class="calltoactioninfo wow fadeInUp">
-                <h2><span id="discount">0</span><span>%</span> OFF YOUR ORDER</h2>
+                <h2><span id="discount">0</span><span>$</span> FOR USE</h2>
 
-                <h3>USE PROMO CODE <strong>"CLOUDMENEW"</strong></h3>
-                <a href="#" class="small radius button">SIGN UP NOW!</a>
+                <h3>YES IT'S <strong>FREE!</strong> YOU NEED ONLY <strong>SIGN UP</strong></h3>
+                <a href="{% url 'reg_register' %}" class="small radius button">SIGN UP NOW!</a>
             </div>
         </div>
     </div>
@@ -120,7 +120,7 @@
 
     <div class="row">
         <div class="small-12 columns">
-            <h2>FIND A PLAN THAT'S RIGHT FOR YOU</h2>
+            <h2>WHAT WE OFFER TO YOU</h2>
 
             <p>Stumptown fanny pack ullamco Neutra, Banksy keytar deep v four loko cray proident chillwave. Tote bag
                 Brooklyn Bushwick pour-over. Helvetica shabby chic vegan stumptown. Occaecat yr seitan forage.
@@ -132,44 +132,35 @@
 
     <div class="row">
         <div data-wow-delay="0.2s" class="small-12 large-4 medium-4 columns wow zoomIn">
-            <div class="title">SHARED HOSTING</div>
+            <div class="title">IaaS</div>
             <ul class="pricing-table">
                 <li class="description">100% <strong>Linux</strong> friendly</li>
-                <li class="bullet-item">1GB storage</li>
+                <li class="bullet-item">10GB storage</li>
                 <li class="bullet-item">3GB bandwidth</li>
-                <li class="bullet-item">Free Email Addresses</li>
                 <li class="bullet-item">24/7 security monitoring</li>
                 <li class="bullet-item">24/7 technical support</li>
-                <li class="price"><span>$19</span>MONTHLY</li>
-                <li class="cta-button"><p><span><a href="">SIGN UP NOW</a></span></p></li>
+                <li class="cta-button"></li>
             </ul>
         </div>
 
         <div data-wow-delay="0.4s" class="small-12 large-4 medium-4 columns wow zoomIn">
-            <div class="title">CLOUD VPS</div>
+            <div class="title">aPaaS</div>
             <ul class="pricing-table">
                 <li class="description">Deploy In <strong>30 Seconds</strong></li>
-                <li class="bullet-item">1GB storage</li>
                 <li class="bullet-item">3GB bandwidth</li>
-                <li class="bullet-item">Free Email Addresses</li>
                 <li class="bullet-item">24/7 security monitoring</li>
                 <li class="bullet-item">24/7 technical support</li>
-                <li class="price"><span>$79</span>MONTHLY</li>
-                <li class="cta-button"><p><span><a href="">SIGN UP NOW</a></span></p></li>
+                <li class="bullet-item">Continuous Integration tools</li>
+                <li class="cta-button"></li>
             </ul>
         </div>
 
         <div data-wow-delay="0.6s" class="small-12 large-4 medium-4 columns wow zoomIn">
-            <div class="title">DEDICATED SERVERS</div>
+            <div class="title">Dev Cloud</div>
             <ul class="pricing-table">
-                <li class="description">Comprehensive <strong>SLAs</strong></li>
-                <li class="bullet-item">1GB storage</li>
-                <li class="bullet-item">3GB bandwidth</li>
-                <li class="bullet-item">Free Email Addresses</li>
-                <li class="bullet-item">24/7 security monitoring</li>
-                <li class="bullet-item">24/7 technical support</li>
-                <li class="price"><span>$199</span>MONTHLY</li>
-                <li class="cta-button"><p><span><a href="">SIGN UP NOW</a></span></p></li>
+                <li class="description">All in <strong>ONE</strong></li>
+                <li class="price"><span>$0</span><div style="height: 7px"></div></li>
+                <li class="cta-button"><p><span><a href="{% url 'reg_register' %}">SIGN UP NOW</a></span></p></li>
             </ul>
         </div>
 
