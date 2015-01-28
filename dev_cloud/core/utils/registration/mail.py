@@ -74,7 +74,7 @@ def send_activation_email(activation_key, user, dev_cloud_data):
     """
     @parameter{activation_key,string} activation key to be sent
     @parameter{user,string} username of the user to activate
-    @parameter{wi_data}
+    @parameter{dev_cloud_data}
 
     Sends email with activation key to registred user.
     """
@@ -92,7 +92,7 @@ def send_activation_email(activation_key, user, dev_cloud_data):
 def send_activation_confirmation_email(user, dev_cloud_data):
     """
     @parameter{user,string} username of the user to activate
-    @parameter{wi_data,dict}, \n fields:
+    @parameter{dev_cloud_data,dict}, \n fields:
     @dictkey{site_domain,string}
     @dictkey{site_name,string}
 
@@ -110,7 +110,7 @@ def send_activation_confirmation_email(user, dev_cloud_data):
 def send_admin_registration_notification(user, dev_cloud_data):
     """
     @parameter{user}
-    @parameter{wi_data,dict}, \n fields:
+    @parameter{dev_cloud_data,dict}, \n fields:
     @dictkey{site_name,string}
 
     Sends notification to admin about a newly registered user.
@@ -128,7 +128,7 @@ def send_reset_password_mail(user, token, dev_cloud_data):
     """
     @parameter{user,string} username of the user to reset password
     @parameter{token,string}
-    @parameter{wi_data,dict}, \n fields:
+    @parameter{dev_cloud_data,dict}, \n fields:
     @dictkey{site_domain,string}
     @dictkey{site_name,string}
 
@@ -147,7 +147,7 @@ def send_block_email(user, block, dev_cloud_data):
     """
     @parameter{user,string} username of the user to reset password
     @parameter{block,boolean} whether to block or unblock.
-    @parameter{wi_data,dict}, \n fields:
+    @parameter{dev_cloud_data,dict}, \n fields:
     @dictkey{site_name,string}
     """
     dev_cloud_dict = {}

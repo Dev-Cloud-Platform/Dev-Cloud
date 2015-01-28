@@ -56,7 +56,6 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
     act_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(40))
 
     try:
-        print "TUTAJ"
         user.save()
     except:
         raise DevCloudException('user_register')
