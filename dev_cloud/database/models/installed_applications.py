@@ -22,16 +22,18 @@ from __future__ import unicode_literals
 from django.db import models
 
 from applications import Applications
+from virtual_machines import VirtualMachines
+from users import Users
 
 
 class InstalledApplications(models.Model):
-    installed_app_id = models.IntegerField()
+    installed_app_id = models.IntegerField(primary_key=True)
     workspace = models.CharField(max_length=45, blank=True)
     public_port = models.IntegerField(blank=True, null=True)
     private_port = models.IntegerField(blank=True, null=True)
-    user = models.ForeignKey('Users')
+    user = models.ForeignKey(Users)
     application = models.ForeignKey(Applications)
-    virtual_machine = models.ForeignKey('VirtualMachines')
+    virtual_machine = models.ForeignKey(VirtualMachines)
 
     class Meta:
         managed = False

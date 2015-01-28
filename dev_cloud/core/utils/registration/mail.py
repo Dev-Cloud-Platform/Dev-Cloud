@@ -48,6 +48,7 @@ def email_error(f):
         try:
             return f(request, *args, **kwds)
         except SMTPRecipientsRefused, e:
+            print "Zjebało sie~!!!!!"
             error = "%s %s" % (f.__name__, str(e))
             log.error(0, error)
             raise
