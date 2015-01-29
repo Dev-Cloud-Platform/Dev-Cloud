@@ -19,7 +19,6 @@
 
 import re
 
-from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -30,6 +29,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 
 from core.common.states import registration_states
+from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.decorators import django_view
 from core.utils.registration.registration import register, activate
@@ -59,14 +59,14 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
 
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or ' ' in redirect_to:
-                redirect_to = settings.LOGIN_REDIRECT_URL
+                redirect_to = common.LOGIN_REDIRECT_URL
 
             # Heavier security check -- redirects to http://example.com should
             # not be allowed, but things like /view/?param=http://example.com
             # should be allowed. This regex checks if there is a '//' *before*
             # a question mark.
             elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
-                redirect_to = settings.LOGIN_REDIRECT_URL
+                redirect_to = common.LOGIN_REDIRECT_URL
 
             # Okay, security checks complete. Log the user in.
             user = form.get_user()
@@ -84,6 +84,7 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
 
     request.session.set_test_cookie()
     current_site = RequestSite(request)
+
     return render_to_response(template_name,
                               {'form': form,
                                redirect_field_name: redirect_to,

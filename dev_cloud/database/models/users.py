@@ -23,6 +23,16 @@ from django.db import models
 from core.utils.exception import DevCloudException
 
 
+def parse_user(user):
+    """
+    Helper function that returns \c User object based on the provided dictionary.
+    :param user:
+    :return:
+    """
+    return Users(id=user['user_id'], name=user['first'], lastname=user['last'], login=user['login'],
+                 password='', email=user['email'], is_active=user['is_active'], is_admin=user['is_superuser'])
+
+
 class Users(models.Model):
     id = models.IntegerField(primary_key=True)
     login = models.CharField(unique=True, max_length=45)

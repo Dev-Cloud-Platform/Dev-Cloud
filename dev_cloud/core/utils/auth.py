@@ -16,6 +16,10 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from datetime import datetime
+from core.common.states import user_active_states
+from core.utils.exception import DevCloudException
+from database.models.users import parse_user, Users
 
 session_key = '_auth_user_id'
 
@@ -27,7 +31,7 @@ def login(request, user):
     @return:
     """
     if session_key in request.session:
-        if request.session[session_key] != user.user_id:
+        if request.session[session_key] != user.id:
             # To avoid reusing another user's session, create a new, empty
             # session if the existing session corresponds to a different
             # authenticated user.
@@ -35,8 +39,10 @@ def login(request, user):
     else:
         request.session.cycle_key()
 
-    request.session[session_key] = user.user_id
+    request.session[session_key] = user.id
     request.session['user'] = user
+
+
 
 def logout(session):
     """
@@ -45,3 +51,31 @@ def logout(session):
     @return:
     """
     session.flush()
+
+
+
+def authenticate(username, password):
+    """
+    Method for authentication. When successful, it returns \c user object.
+    :param username:
+    :param password:
+    :return:
+    """
+    try:
+        user = Users.objects.get(login=username)
+    except Users.DoesNotExist:
+        return None
+
+    if user.is_active == user_active_states['ok']:
+        try:
+            user.last_activity = datetime.now()
+            user.save()
+        except:
+            raise DevCloudException('user_edit')
+    else:
+        return user
+
+    if user.password == password:
+        return user
+    else:
+        return None

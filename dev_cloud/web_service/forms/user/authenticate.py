@@ -16,8 +16,12 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+
+import hashlib
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from core.common.states import user_active_states
+from core.utils.auth import authenticate
 
 from core.utils.regexp import regexp, regexp_text
 
@@ -63,3 +67,30 @@ class AuthenticationForm(forms.Form):
         @return:
         """
         return self.user_cache
+
+    def clean(self):
+        """
+        Validates the password.
+        :return:
+        """
+        if not self.cleaned_data.get('password') or not self.cleaned_data.get('username'):
+            return None
+        self.cleaned_data['password'] = hashlib.sha1(self.cleaned_data['password']).hexdigest()
+
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+
+        self.user_cache = authenticate(username, password)
+
+        if self.user_cache is None:
+            raise forms.ValidationError(_("Please enter a correct username and password. Note that both fields are case-sensitive."))
+        elif self.user_cache.is_active == user_active_states['inactive']:
+            raise forms.ValidationError(_("Account has not been activated yet. Please, click on the activation link in the email sent to you after the registration step."))
+        elif self.user_cache.is_active == user_active_states['email_confirmed']:
+            raise forms.ValidationError(_("This account is inactive. Please wait for system operator to activate your account."))
+
+        if self.request:
+            if not self.request.session.test_cookie_worked():
+                raise forms.ValidationError(_("Your Web browser doesn't appear to have cookies enabled. Cookies are required for logging in."))
+
+        return self.cleaned_data
