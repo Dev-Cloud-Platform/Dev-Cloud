@@ -21,7 +21,10 @@ session_key = '_auth_user_id'
 
 def login(request, user):
     """
-        Saves \c user in session.
+    Saves \c user in session.
+    @param request:
+    @param user:
+    @return:
     """
     if session_key in request.session:
         if request.session[session_key] != user.user_id:
@@ -37,6 +40,8 @@ def login(request, user):
 
 def logout(session):
     """
-        Removes data connected with user from the session.
+    Removes data connected with user from the session.
+    @param session:
+    @return:
     """
     session.flush()

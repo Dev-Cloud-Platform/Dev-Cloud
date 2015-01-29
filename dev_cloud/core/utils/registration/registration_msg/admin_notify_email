@@ -1,7 +1,13 @@
+{% extends "theme.html" %}
 {% load i18n %}
-{% trans "New user account awaiting activation." %}
 
-{% trans "Username:" %} {{ user.login }}
-{% trans "First name:" %} {{ user.first }}
-{% trans "Last name:" %} {{ user.last }}
-{% trans "Email:" %} {{ user.email }}
+{%  block title %}
+    {% trans "New user account awaiting activation." %}
+{% endblock %}
+
+{% block content %}
+    {% trans "Username:" %} {{ login }} </br>
+    {% trans "First name:" %} {{ first }} </br>
+    {% trans "Last name:" %} {{ last }} </br>
+    {% trans "Email:" %} {{ email }} </br>
+{% endblock %}

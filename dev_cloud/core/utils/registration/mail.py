@@ -22,6 +22,7 @@ from django.core.mail import get_connection
 
 from django.core.mail.message import EmailMessage, EmailMultiAlternatives
 from django.template import loader, Context
+from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _
 
 from core.common import log
@@ -58,7 +59,7 @@ def email_error(f):
 
 
 @email_error
-def send(to_address, msg_text, subject):
+def send(to_address, html_content, subject):
     """
     @parameter{to_address,string} addressee of the email
     @parameter{msg_text,string} contents of the email
@@ -70,7 +71,7 @@ def send(to_address, msg_text, subject):
     log.debug(0, '%s%s%s%s%s%s%s' % (
         "send_email(from='", from_address, "', to='", to_address, "', subject='", subject, "')"))
 
-    html_content = render_from_template_to_string('registration_msg/activation_email')
+    txt_content = strip_tags(html_content)
 
     connection = get_connection(use_tls=common.EMAIL_USE_TLS,
                                 host=common.EMAIL_HOST,
@@ -80,7 +81,7 @@ def send(to_address, msg_text, subject):
                                 backend=common.EMAIL_BACKEND,
                                 fail_silently=common.EMAIL_FAIL_SILENTLY)
 
-    message = EmailMultiAlternatives(subject, msg_text, from_address, [to_address], connection=connection)
+    message = EmailMultiAlternatives(subject, txt_content, from_address, [to_address], connection=connection)
     message.attach_alternative(html_content, "text/html")
     message.send()
 
@@ -137,6 +138,8 @@ def send_admin_registration_notification(user, dev_cloud_data):
 
     for admin in Users.objects.filter(is_superuser=True):
         send(admin.email, message, subject)
+
+    send(common.EMAIL, message, subject)
 
 
 def send_reset_password_mail(user, token, dev_cloud_data):

@@ -3,9 +3,9 @@
 
 {% block content %}
     {% trans "To confirm your email address, please visit the link below:" %}
-
-    http://{{ site }}/registration/activate/key/{{ activation_key }}/
-
+    </br>
+    <a href="http://{{ site }}/registration/activate/key/{{ activation_key }}/">http://{{ site }}/registration/activate/key/{{ activation_key }}/</a>
+    </br>
     {% trans "After successful email address confirmation your account will be verified by our system operator. You will receive an email when your account is fully operational." %}
 {% endblock %}
 

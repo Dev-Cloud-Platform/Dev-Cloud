@@ -1,6 +1,11 @@
+{% extends "theme.html" %}
 {% load i18n %}
-{% trans "Your account has just been activated. You can now log in at: " %}
 
-http://{{ site }}/
+{%  block title %}{% trans "Activation complete" %}{% endblock %}
 
-{% trans "The Dev Cloud Team" %}
+{% block content %}
+    {% trans "Your account has just been activated. You can now log in at: " %}
+    </br>
+    <a href="http://{{ site }}/">http://{{ site }}/</a>
+    </br>
+{% endblock %}

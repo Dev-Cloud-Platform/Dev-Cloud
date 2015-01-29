@@ -22,6 +22,7 @@ import random
 import re
 from smtplib import SMTPRecipientsRefused
 import string
+from django.shortcuts import get_object_or_404
 
 from core.common.states import user_active_states, registration_states
 from core.settings import common
@@ -108,8 +109,28 @@ def activate(activation_key):
     @return:
     """
     if SHA1_RE.search(activation_key):
-        response = make_request('guest/user/activate/', {'act_key': activation_key, 'dev_cloud_data': common.DEV_CLOUD_DATA})
-        if response['status'] == 'ok':
-            return response
+        user = get_object_or_404(Users, activation_key=activation_key)
+        user.is_active = user_active_states['email_confirmed']
+        reg_state = registration_states['admin_confirmation']
+
+        if common.AUTOACTIVATION:
+            user.is_active = user_active_states['ok']
+            reg_state = registration_states['completed']
+
+        user.last_activity = datetime.now()
+        user.act_key = ''
+
+        try:
+            user.save()
+        except:
+            raise DevCloudException('user_activate')
+
+        if common.MAILER_ACTIVE and reg_state == registration_states['admin_confirmation']:
+            try:
+                mail.send_admin_registration_notification(user.dict, common.DEV_CLOUD_DATA)
+            except SMTPRecipientsRefused:
+                pass
+
+        return {'user': user.dict, 'registration_state': reg_state}
 
     return False

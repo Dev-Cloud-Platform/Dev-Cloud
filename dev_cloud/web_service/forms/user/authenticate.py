@@ -40,12 +40,16 @@ class AuthenticationForm(forms.Form):
 
     def __init__(self, request=None, *args, **kwargs):
         """
-            If request is passed in, the form will validate that cookies are
-            enabled.
-            @note
-            Note that the \c request (a HttpRequest object) must have set
-            a cookie with the key \c TEST_COOKIE_NAME and value \c TEST_COOKIE_VALUE
-            before running this validation.
+        If request is passed in, the form will validate that cookies are
+        enabled.
+        @note
+        Note that the \c request (a HttpRequest object) must have set
+        a cookie with the key \c TEST_COOKIE_NAME and value \c TEST_COOKIE_VALUE
+        before running this validation.
+        @param request:
+        @param args:
+        @param kwargs:
+        @return:
         """
         self.request = request
         self.user_cache = None
@@ -55,6 +59,7 @@ class AuthenticationForm(forms.Form):
 
     def get_user(self):
         """
-            Returns cached user object instance.
+        Returns cached user object instance.
+        @return:
         """
         return self.user_cache

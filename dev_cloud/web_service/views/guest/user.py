@@ -70,7 +70,6 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
 
             # Okay, security checks complete. Log the user in.
             user = form.get_user()
-            user.set_password(form.cleaned_data['password'])
             auth_login(request, user)
 
             if request.session.test_cookie_worked():
@@ -191,10 +190,10 @@ def reg_activate(request, **kwargs):
     """
     act_response = activate(**kwargs)
     if act_response:
-        if act_response['data']['registration_state'] == registration_states['completed']:
+        if act_response['registration_state'] == registration_states['completed']:
             return redirect('activation_completed')
 
-        if act_response['data']['registration_state'] == registration_states['admin_confirmation']:
+        if act_response['registration_state'] == registration_states['admin_confirmation']:
             return redirect('activation_admin_confirmation')
 
     return redirect('activation_error')

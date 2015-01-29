@@ -35,7 +35,7 @@ class Users(models.Model):
     picture = models.FileField(blank=True)
     activation_key = models.CharField(max_length=255, blank=True)
     is_active = models.IntegerField(blank=True)
-    is_superuser = models.IntegerField(blank=True)
+    is_superuser = models.BooleanField(blank=True)
     last_activity = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -73,6 +73,7 @@ class Users(models.Model):
         d['last_login_date'] = self.last_activity or ''
         return d
 
+
     @property
     def short_dict(self):
         """
@@ -88,6 +89,21 @@ class Users(models.Model):
         d['last'] = self.lastname
 
         return d
+
+
+    @staticmethod
+    def get(user_id):
+        """
+        @parameter{id,int} primary index of the @type{User}
+        @returns{User} instance of requested @type{User}
+        @raises{user_get,CLMException}
+        """
+        try:
+            user = Users.objects.get(pk=user_id)
+        except:
+            raise DevCloudException('user_get')
+        return user
+
 
     @staticmethod
     def superuser(user_id):
