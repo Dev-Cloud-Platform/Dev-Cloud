@@ -19,7 +19,6 @@
 from django.conf import settings
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
-from django.views.generic import RedirectView
 
 from core.utils.views import direct_to_template
 
@@ -28,7 +27,6 @@ admin.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/ad
 
 urlpatterns = patterns('',
                        url(r'^$', direct_to_template, {'template_name': 'main/home.html'}, name='mai_main'),
-                       (r'^favicon\.ico$', RedirectView.as_view(url='media/img/favicon.ico'), 'favicon.ico'),
                        (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': ('web_service',), }),
                        (r'', include('web_service.urls.guest')),
                        (r'', include('web_service.urls.user')),

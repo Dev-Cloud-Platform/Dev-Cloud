@@ -24,8 +24,11 @@ log = logging.getLogger(__name__)
 
 def response(status, data=''):
     """
-        Returns dictionary which is the response for the request.
-        The dictionary contains 2 keys: status and data.
+    Returns dictionary which is the response for the request.
+    The dictionary contains 2 keys: status and data.
+    @param status:
+    @param data:
+    @return:
     """
 
     d = {}

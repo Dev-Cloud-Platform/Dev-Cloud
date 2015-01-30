@@ -31,9 +31,10 @@ from django.views.decorators.csrf import csrf_protect
 from core.common.states import registration_states
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
+from core.utils.auth import session_key
 from core.utils.decorators import django_view
 from core.utils.registration.registration import register, activate
-from core.utils.views import prep_data
+from database.models import Users
 from web_service.forms.user.authenticate import AuthenticationForm
 from web_service.forms.user.registration import RegistrationForm
 
@@ -70,6 +71,7 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
 
             # Okay, security checks complete. Log the user in.
             user = form.get_user()
+            user.set_password(form.cleaned_data['password'])
             auth_login(request, user)
 
             if request.session.test_cookie_worked():
@@ -79,8 +81,13 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
     else:
         form = authentication_form(request)
 
-    if ('user' in request.session):
-        return HttpResponseRedirect(reverse('mai_main'))
+    try:
+        user = Users.objects.get(id=int(request.session[session_key]))
+    except:
+        user = None
+
+    if user:
+        return HttpResponseRedirect(reverse('app_main'))
 
     request.session.set_test_cookie()
     current_site = RequestSite(request)
@@ -125,7 +132,7 @@ def hlp_help(request, template_name='help/base.html'):
     @param template_name:
     @return:
     """
-    rest_data = prep_data('guest/user/is_mailer_active/', request.session)
+    rest_data = None #prep_data('guest/user/is_mailer_active/', request.session)
 
     return render_to_response(template_name, rest_data, context_instance=RequestContext(request))
 

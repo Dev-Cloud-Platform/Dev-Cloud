@@ -17,11 +17,14 @@
 #
 # @COPYRIGHT_end
 from datetime import datetime
+
 from core.common.states import user_active_states
 from core.utils.exception import DevCloudException
-from database.models.users import parse_user, Users
+from database.models.users import Users
+
 
 session_key = '_auth_user_id'
+
 
 def login(request, user):
     """
@@ -40,8 +43,7 @@ def login(request, user):
         request.session.cycle_key()
 
     request.session[session_key] = user.id
-    request.session['user'] = user
-
+    # request.session['user'] = [user.dict]
 
 
 def logout(session):
@@ -51,7 +53,6 @@ def logout(session):
     @return:
     """
     session.flush()
-
 
 
 def authenticate(username, password):

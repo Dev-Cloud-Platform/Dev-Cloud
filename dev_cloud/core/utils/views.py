@@ -16,68 +16,23 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.core.context_processors import request
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 
-from core.utils import check_response_errors
 from decorators import django_view
+
 
 
 @django_view
 def direct_to_template(request, template_name, content_type=None):
     """
-        Returns rendered template as HttpResponse.
+    Returns rendered template as HttpResponse.
+    @param request:
+    @param template_name:
+    @param content_type:
+    @return:
     """
     context = RequestContext(request)
     template = loader.get_template(template_name)
     return HttpResponse(template.render(context), content_type=content_type)
 
-
-
-def make_request(url, data, user=None):
-    """
-    Adds authorization-related information to data dictionary and makes a request
-    to database module using given url and data dictionary.
-    @param url:
-    @param data:
-    @param user:
-    @return:
-    """
-    if not url.startswith('guest'):
-        data.update({'login': user.username, 'password': user.password, 'id': user.id})
-    if url.startswith('admin'):
-        data.update({'admin_password': user.admin_password})
-
-    return request(url, True, **data) #WTF ??
-
-
-
-def prep_data(request_urls, session):
-    """
-    Returns a dictionary with results of REST request.
-    @param request_urls:
-    @param session:
-    @return:
-    """
-    data = None
-    user = session.get('user')
-    if request_urls is not None:
-        data = {}
-        # function_both is dictionary with pairs: key -> url
-        if isinstance(request_urls, dict):
-            for (key, val) in request_urls.iteritems():
-                url = val
-                args = {}
-                if isinstance(val, tuple):
-                    url = val[0]
-                args = val[1]
-            data[key] = check_response_errors(make_request(url, args, user=user), session)['data']
-        # a simple string without any params
-        elif isinstance(request_urls, str):
-            data = check_response_errors(make_request(request_urls, {}, user=user), session)['data']
-        # a simple string with params as a tuple
-        elif isinstance(request_urls, tuple):
-            data = check_response_errors(make_request(request_urls[0], request_urls[1], user=user), session)['data']
-
-    return data

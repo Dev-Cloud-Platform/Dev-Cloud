@@ -18,9 +18,9 @@
 # @COPYRIGHT_end
 
 from smtplib import SMTPRecipientsRefused
-from django.core.mail import get_connection
 
-from django.core.mail.message import EmailMessage, EmailMultiAlternatives
+from django.core.mail import get_connection
+from django.core.mail.message import EmailMultiAlternatives
 from django.template import loader, Context
 from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _

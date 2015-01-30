@@ -29,6 +29,8 @@ from djcelery import setup_loader
 
 
 
+
+
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
 BASE_DIR = dirname(dirname(__file__))
@@ -350,9 +352,10 @@ LOGGING = {
 
 ########## SESSION SETTINGS
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-# SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_COOKIE_AGE = 60
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/auth/login/'

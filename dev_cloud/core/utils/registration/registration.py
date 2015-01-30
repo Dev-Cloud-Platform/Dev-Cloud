@@ -22,13 +22,13 @@ import random
 import re
 from smtplib import SMTPRecipientsRefused
 import string
+
 from django.shortcuts import get_object_or_404
 
 from core.common.states import user_active_states, registration_states
 from core.settings import common
 from core.utils.exception import DevCloudException
 from core.utils.registration import mail
-from core.utils.views import make_request
 from database.models import Users
 
 

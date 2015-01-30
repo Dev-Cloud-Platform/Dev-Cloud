@@ -63,7 +63,7 @@ registration_patterns = patterns('web_service.views.guest.user',
 urlpatterns = patterns('',
                        url(r'^auth/', include(auth_patterns)),
                        url(r'', include(main_patterns)),
-                       # url(r'^account/', include(account_patterns)),
+                       # url(r'^account/', include(account_patterns)),  # For reset password
                        url(r'^help/', include(help_patterns)),
                        url(r'^registration/', include(registration_patterns)),
                        )

@@ -18,12 +18,14 @@
 # @COPYRIGHT_end
 import logging
 
-from django.conf import settings
 from django.contrib.messages import success
 from django.http import HttpResponseRedirect
 from django.utils.http import urlquote
 
+from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
+from core.utils.auth import session_key
+from database.models import Users
 from messages_codes import auth_error_text
 
 
@@ -53,7 +55,7 @@ def django_view(function):
     wrapper.__doc__ = function.__doc__
     return wrapper
 
-login_url = settings.LOGIN_URL
+login_url = common.LOGIN_URL
 
 
 
@@ -71,15 +73,20 @@ def user_permission(view_func):
         @param kwds:
         @return:
         """
-        if 'user' in request.session:
+        try:
+            user = Users.objects.get(id=int(request.session[session_key]))
+        except:
+            user = None
+
+        if user:
             return view_func(request, *args, **kwds)
+
         if request.is_ajax():
             return success(unicode(auth_error_text), status=8002)
+
         path = urlquote(request.get_full_path())
         tup = login_url, REDIRECT_FIELD_NAME, path
         return HttpResponseRedirect('%s?%s=%s' % tup)
     return wrap
 
-global decorated_functions
-decorated_functions = set([])
 

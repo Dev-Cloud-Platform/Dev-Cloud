@@ -17,16 +17,22 @@
 #
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
+from django.utils.translation import ugettext_lazy as _
 
 from core.utils.decorators import user_permission
 from core.utils.views import direct_to_template
+
 
 
 account_patterns = patterns('web_service.views.user.user',
                             url(r'^$', user_permission(direct_to_template), {'template_name': 'account/base.html'}, name='acc_account'),
                             )
 
+main_patterns = patterns('web_service.views.user.user',
+                         url(r'^app/$', user_permission(direct_to_template), {'template_name': 'app/main.html'}, name='app_main'),
+                         )
 
 urlpatterns = patterns('',
                        url(r'^account/', include(account_patterns)),
+                       url(r'^main/', include(main_patterns)),
                        )

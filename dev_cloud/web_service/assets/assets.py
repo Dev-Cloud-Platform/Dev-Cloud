@@ -19,13 +19,6 @@
 
 from django_assets import Bundle, register
 # ----------------------------------------------------------------------------------------------------------------------
-js = Bundle('../assets/dist/scripts/vendor.js',
-            '../assets/dist/scripts/ui.js',
-            '../assets/dist/scripts/app.js', output='gen/packed.js')
-register('template_js', js)
-
-css = Bundle('../assets/dist/bower_components/font-awesome/css/font-awesome.min.css',
-             '../assets/dist/bower_components/weather-icons/css/weather-icons.min.css',
-             '../assets/dist/styles/main.css', output='gen/packed.css')
+css = Bundle('../assets/app/css/custom.css', output='gen/packed.css')
 register('template_css', css)
 # ----------------------------------------------------------------------------------------------------------------------

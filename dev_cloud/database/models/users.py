@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+
 from core.utils.exception import DevCloudException
 
 
@@ -30,7 +31,7 @@ def parse_user(user):
     :return:
     """
     return Users(id=user['user_id'], name=user['first'], lastname=user['last'], login=user['login'],
-                 password='', email=user['email'], is_active=user['is_active'], is_admin=user['is_superuser'])
+                 password='', email=user['email'], is_active=user['is_active'], is_superuser=user['is_superuser'])
 
 
 class Users(models.Model):
@@ -68,7 +69,7 @@ class Users(models.Model):
         @dictkey{is_active,bool} true for active User
         @dictkey{is_superuser,bool} true for User with admin privilidges
         @dictkey{activation_date,datetime.datetime} activation's date
-        @dictkey{last_login_date,datetime.datetime} last login's date
+        @dictkey{last_activity,datetime.datetime} last login's date
         """
         d = {}
         d['user_id'] = self.id
@@ -80,7 +81,7 @@ class Users(models.Model):
         d['is_active'] = self.is_active or 0
         d['is_superuser'] = self.is_superuser or 0
         d['activation_date'] = self.create_time or ''
-        d['last_login_date'] = self.last_activity or ''
+        d['last_activity'] = self.last_activity or ''
         return d
 
 
@@ -129,3 +130,6 @@ class Users(models.Model):
         if not user.is_superuser:
             raise DevCloudException('user_permission')
         return True
+
+    def set_password(self, password):
+        self.password = password

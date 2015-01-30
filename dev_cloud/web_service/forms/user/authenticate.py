@@ -18,11 +18,12 @@
 # @COPYRIGHT_end
 
 import hashlib
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
 from core.common.states import user_active_states
 from core.utils.auth import authenticate
-
 from core.utils.regexp import regexp, regexp_text
 
 
