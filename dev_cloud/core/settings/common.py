@@ -246,9 +246,14 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'web_service.urls'  # % SITE_NAME
 
 DEV_CLOUD_DATA = {
-    'site_domain': 'localhost:8000', # Web interface address for activation link
-    'site_name': 'Dev Cloud' # System name in emails
+    'site_domain': '192.245.169.169',   # Web interface address for activation link
+    'site_name': 'Dev Cloud'            # System name in emails
 }
+
+# URL prefix for admin static files -- CSS, JavaScript and images.
+# Make sure to use a trailing slash.
+# Examples: "http://foo.com/static/admin/", "/static/admin/".
+ADMIN_MEDIA_PREFIX = '/static/admin/'
 ########## END URL CONFIGURATION
 
 
