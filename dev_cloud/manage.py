@@ -27,8 +27,14 @@ if __name__ == "__main__":
     # This will make the python interpreter see your packages as dev_cloud.whatever
     # os.chdir('..')
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.dev")
+    if len(sys.argv) < 2:
+        print 'Usage ./manage.py <manager> <args>'
+        sys.exit(1)
+
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.%s" % sys.argv[1])
 
     from django.core.management import execute_from_command_line
+    args = sys.argv[:]
+    args.pop(1)
 
-    execute_from_command_line(sys.argv)
+    execute_from_command_line(args)
