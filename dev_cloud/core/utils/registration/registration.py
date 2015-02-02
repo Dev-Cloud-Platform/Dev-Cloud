@@ -22,6 +22,7 @@ import random
 import re
 from smtplib import SMTPRecipientsRefused
 import string
+import config
 
 from django.shortcuts import get_object_or_404
 
@@ -97,7 +98,7 @@ def register(**kwargs):
     """
     if ('recaptcha' in kwargs):
         kwargs.pop('recaptcha')
-    kwargs['dev_cloud_data'] = common.DEV_CLOUD_DATA
+    kwargs['dev_cloud_data'] = config.DEV_CLOUD_DATA
 
     return registration(**kwargs)
 
@@ -127,7 +128,7 @@ def activate(activation_key):
 
         if common.MAILER_ACTIVE and reg_state == registration_states['admin_confirmation']:
             try:
-                mail.send_admin_registration_notification(user.dict, common.DEV_CLOUD_DATA)
+                mail.send_admin_registration_notification(user.dict, config.DEV_CLOUD_DATA)
             except SMTPRecipientsRefused:
                 pass
 

@@ -22,13 +22,15 @@
 from datetime import timedelta
 from sys import path
 from os.path import abspath, basename, dirname, join, normpath, pardir
-import logging
 
 from djcelery import setup_loader
 
 
-
-
+try:
+    from config import LOG_LEVEL, LOG_DIR, SECRET_KEY
+except Exception, ex:
+    print "Error importing WI configuration file: config.py\nReason: %s" % str(ex)
+    exit()
 
 
 ########## PATH CONFIGURATION
@@ -71,7 +73,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'devcloudplatform@gmail.com'
 EMAIL_HOST_PASSWORD = 'devcloudpassword'
 FROM_EMAIL = 'devcloudplatform@gmail.com'
-EMAIL_FAIL_SILENTLY = False
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 ########## END MANAGER CONFIGURATION
@@ -178,12 +180,6 @@ STATICFILES_FINDERS = (
 ########## END STATIC FILE CONFIGURATION
 
 
-########## SECRET CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = '54tdc1@#%r8+(#s4s03w(26u8l7x*l=us(hfcgwn^xw6^-32rh'
-########## END SECRET CONFIGURATION
-
-
 ########## FIXTURE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
 FIXTURE_DIRS = (
@@ -245,10 +241,6 @@ MIDDLEWARE_CLASSES = (
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = 'web_service.urls'  # % SITE_NAME
 
-DEV_CLOUD_DATA = {
-    'site_domain': '192.245.169.169',   # Web interface address for activation link
-    'site_name': 'Dev Cloud'            # System name in emails
-}
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -305,10 +297,6 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 ########## LOGGING CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
-LOG_LEVEL = logging.DEBUG
-
-LOG_DIR = '/var/log/DevCloud/'
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
