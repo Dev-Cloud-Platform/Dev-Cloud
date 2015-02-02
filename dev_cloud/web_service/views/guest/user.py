@@ -33,7 +33,7 @@ from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
 from core.utils.decorators import django_view
-from core.utils.registration.mail import send, send_contact_message
+from core.utils.registration.mail import send_contact_message
 from core.utils.registration.registration import register, activate
 from database.models import Users
 from web_service.forms.user.authenticate import AuthenticationForm
@@ -112,7 +112,7 @@ def logout(request, next_page=None, template_name='auth/logged_out.html', redire
     @param redirect_field_name:
     @return:
     """
-    from dev_cloud.core.utils.auth import logout as auth_logout
+    from core.utils.auth import logout as auth_logout
     auth_logout(request.session)
 
     if next_page is None:

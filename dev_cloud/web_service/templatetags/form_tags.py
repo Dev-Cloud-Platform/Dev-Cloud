@@ -41,6 +41,7 @@ def show_fieldsetform_nrf(form):
     """
     return {'form': form, 'required_fields': False}
 
+
 @register.inclusion_tag('tags/sendForm.html')
 def show_sendform(form):
     """
