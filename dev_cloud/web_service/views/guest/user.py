@@ -30,6 +30,7 @@ from django.views.decorators.csrf import csrf_protect
 
 from core.common.states import registration_states
 from core.settings import common
+from core.settings.common import LANGUAGES
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
 from core.utils.decorators import django_view
@@ -138,12 +139,12 @@ def hlp_help(request, template_name='help/base.html'):
 
 
 @django_view
-def change_language(request, lang, success_url='mai_main'):
+def change_language(request, lang, success_url='app_main'):
     """
     View changing page language.
     @param request:
     @param lang:
-    @param success_url:
+    @param success_url:mai
     @return:
     """
     request.session['django_language'] = lang

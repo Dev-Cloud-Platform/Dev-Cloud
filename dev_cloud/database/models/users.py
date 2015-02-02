@@ -24,16 +24,6 @@ from django.db import models
 from core.utils.exception import DevCloudException
 
 
-def parse_user(user):
-    """
-    Helper function that returns \c User object based on the provided dictionary.
-    :param user:
-    :return:
-    """
-    return Users(id=user['user_id'], name=user['first'], lastname=user['last'], login=user['login'],
-                 password='', email=user['email'], is_active=user['is_active'], is_superuser=user['is_superuser'])
-
-
 class Users(models.Model):
     id = models.IntegerField(primary_key=True)
     login = models.CharField(unique=True, max_length=45)
@@ -43,7 +33,7 @@ class Users(models.Model):
     email = models.CharField(unique=True, max_length=255)
     create_time = models.DateTimeField(blank=True, null=True)
     language = models.CharField(max_length=45, blank=True)
-    picture = models.FileField(blank=True)
+    picture = models.ImageField(blank=True, upload_to='pictures')
     activation_key = models.CharField(max_length=255, blank=True)
     is_active = models.IntegerField(blank=True)
     is_superuser = models.BooleanField(blank=True)
@@ -131,5 +121,25 @@ class Users(models.Model):
             raise DevCloudException('user_permission')
         return True
 
+
     def set_password(self, password):
         self.password = password
+
+
+    @staticmethod
+    def save_picture(user, request):
+        session = request.session
+        upload_picture = request.FILES['picture']
+        user.picture.save(upload_picture.name, upload_picture)
+        session['picture_id'] = user.id
+
+
+    @staticmethod
+    def parse_user(user):
+        """
+        Helper function that returns \c User object based on the provided dictionary.
+        @param user:
+        @return:
+        """
+        return Users(id=user['user_id'], name=user['first'], lastname=user['last'], login=user['login'],
+                     password='', email=user['email'], is_active=user['is_active'], is_superuser=user['is_superuser'])
