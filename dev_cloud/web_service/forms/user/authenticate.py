@@ -29,7 +29,7 @@ from core.utils.regexp import regexp, regexp_text
 
 class AuthenticationForm(forms.Form):
     """
-        Class for <b>login</b> form.
+    Class for <b>login</b> form.
     """
     username = forms.CharField(max_length=45,
                                label=_('Username'),

@@ -30,13 +30,14 @@ from django.views.decorators.csrf import csrf_protect
 
 from core.common.states import registration_states
 from core.settings import common
-from core.settings.common import LANGUAGES
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
 from core.utils.decorators import django_view
+from core.utils.registration.mail import send, send_contact_message
 from core.utils.registration.registration import register, activate
 from database.models import Users
 from web_service.forms.user.authenticate import AuthenticationForm
+from web_service.forms.user.contact import ContactForm
 from web_service.forms.user.registration import RegistrationForm
 
 
@@ -126,19 +127,6 @@ def logout(request, next_page=None, template_name='auth/logged_out.html', redire
 
 
 @django_view
-def hlp_help(request, template_name='help/base.html'):
-    """
-    Help main page.
-    @param request:
-    @param template_name:
-    @return:
-    """
-    rest_data = None #prep_data('guest/user/is_mailer_active/', request.session)
-
-    return render_to_response(template_name, rest_data, context_instance=RequestContext(request))
-
-
-@django_view
 def change_language(request, lang, success_url='app_main'):
     """
     View changing page language.
@@ -206,3 +194,28 @@ def reg_activate(request, **kwargs):
             return redirect('activation_admin_confirmation')
 
     return redirect('activation_error')
+
+@django_view
+def contact(request, form_class=ContactForm, template_name='main/contact.html'):
+    """
+    View handling help form.
+    @param request:
+    @param form_class:
+    @param template_name:
+    @return:
+    """
+    if request.method == 'POST':
+        form = form_class(data=request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            name = form.cleaned_data['name']
+            message = form.cleaned_data['message']
+            subject = _('From user:') + name + ', email: ' + email
+            send_contact_message(subject, message)
+
+            return redirect('contact')
+    else:
+        form = form_class()
+
+    return render_to_response(template_name, dict({'form': form}.items()),
+                              context_instance=RequestContext(request))

@@ -1,0 +1,72 @@
+{% extends "main/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} - {% trans "Contact" %}{% endblock %}
+
+{% block body_class %} {% endblock %}
+{% block header_class %}class="alt-1"{% endblock %}
+
+{% block header %}
+
+        <!--  MESSAGES ABOVE HEADER IMAGE -->
+        <div class="message">
+            <div class="row">
+                <div class="small-12 columns">
+                    <div class="message-intro">
+                        <span class="message-line"></span>
+                        <p>Contact</p>
+                        <span class="message-line"></span>
+                    </div>
+                    <h1>{% trans "GET IN TOUCH" %}</h1>
+                </div>
+            </div>
+        </div>
+        <!--  END OF MESSAGES ABOVE HEADER IMAGE -->
+
+{% endblock %}
+
+{% block content %}
+    <!--  CONTACT CONTENT  -->
+    <div class="contact-section">
+        <div class="row">
+            <div class="small-12 large-4 medium-4 columns">
+                <p>Organic disrupt literally yr, cornhole butcher messenger bag shabby chic readymade ennui gentrify. Photo
+                    booth Thundercats letterpress, shabby chic distillery keytar Pitchfork 90's try-hard. Ugh Tonx Pitchfork
+                    paleo bicycle rights. Craft beer PBR leggings Etsy.</p>
+
+                <div class="contact-details">
+                    <h4>Dev Cloud</h4>
+                    <ul>
+                        <li><span>Instytut Fizyki Jądrowej im. Henryka Niewodniczańskiego Polskiej Akademii Nauk</span></br></br>
+                            Radzikowskiego 152</br>
+                            31-342 Kraków</br>
+                            Poland</br>
+                        </li>
+                        <li>+48 508 936 231</li>
+                        <li><a href="mailto:devcloudplatform@gmail.com" title="Dev Cloud - {% trans "Contact" %}">devcloudplatform@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="small-12 large-8 medium-8 columns">
+                <div id="gmap">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2559.818229995225!2d19.890317999999997!3d50.089690000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47165a2a5b972bb1%3A0x70464150cfd30776!2sInstytut+Fizyki+J%C4%85drowej+im.+Henryka+Niewodnicza%C5%84skiego+Polskiej+Akademii+Nauk!5e0!3m2!1spl!2spl!4v1422907522454"></iframe>
+                </div>
+
+                <div id="sendstatus"></div>
+                <div id="contactform">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        {% show_sendform form %}
+
+                        <p><input type="submit" class="button radius medium" name="submit" id="submit" value="{% trans "Submit" %}"
+                                  tabindex="4"/></p>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--  END OF CONTACT CONTENT  -->
+{% endblock %}

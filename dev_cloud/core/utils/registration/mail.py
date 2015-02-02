@@ -179,6 +179,18 @@ def send_block_email(user, block, dev_cloud_data):
              _("User account unblocked on %s") % dev_cloud_data['site_name'])
 
 
+def send_contact_message(subject, msg):
+    """
+    Method sends message with content.
+    @param subject:
+    @param msg:
+    @return:
+    """
+    message_dict = {'subject': subject, 'content': msg}
+    message = render_from_template_to_string('contact/contact_message', message_dict)
+    send(common.EMAIL, message, subject)
+
+
 def render_from_template_to_string(template_filename, dev_cloud_dict={}):
     """
     @parameter{template_filename,string} path to template of the email

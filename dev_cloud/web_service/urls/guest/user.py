@@ -34,7 +34,7 @@ main_patterns = patterns('web_service.views.guest.user',
 
 
 help_patterns = patterns('web_service.views.guest.user',
-                         url(r'^$', 'hlp_help', name='hlp_help'),
+                         url(r'^$', 'contact', name='contact'),
                          )
 
 registration_patterns = patterns('web_service.views.guest.user',

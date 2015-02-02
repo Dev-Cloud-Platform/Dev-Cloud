@@ -1,0 +1,8 @@
+{% extends "theme.html" %}
+{% load i18n %}
+
+{%  block title %}{{ subject }}{% endblock %}
+
+{% block content %}
+   {{ content }}
+{% endblock %}

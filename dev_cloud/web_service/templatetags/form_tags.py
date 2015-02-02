@@ -25,7 +25,9 @@ register = template.Library()
 @register.inclusion_tag('tags/fieldsetForm.html')
 def show_fieldsetform(form):
     """
-        Renders given form without marking required fields.
+    Renders given form without marking required fields.
+    @param form:
+    @return:
     """
     return {'form': form, 'required_fields': True}
 
@@ -33,6 +35,17 @@ def show_fieldsetform(form):
 @register.inclusion_tag('tags/fieldsetForm.html')
 def show_fieldsetform_nrf(form):
     """
-        Renders given form with required fields marked.
+    Renders given form with required fields marked.
+    @param form:
+    @return:
     """
     return {'form': form, 'required_fields': False}
+
+@register.inclusion_tag('tags/sendForm.html')
+def show_sendform(form):
+    """
+    Renders given form without marking required fields.
+    @param form:
+    @return:
+    """
+    return {'form': form, 'required_fields': True}
