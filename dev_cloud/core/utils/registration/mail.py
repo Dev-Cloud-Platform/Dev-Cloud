@@ -18,6 +18,7 @@
 # @COPYRIGHT_end
 
 from smtplib import SMTPRecipientsRefused
+from django.conf import settings
 
 from django.core.mail import get_connection
 from django.core.mail.message import EmailMultiAlternatives
@@ -79,7 +80,7 @@ def send(to_address, html_content, subject):
                                 username=common.EMAIL_HOST_USER,
                                 password=common.EMAIL_HOST_PASSWORD,
                                 backend=common.EMAIL_BACKEND,
-                                fail_silently=common.EMAIL_FAIL_SILENTLY)
+                                fail_silently=settings.EMAIL_FAIL_SILENTLY)
 
     message = EmailMultiAlternatives(subject, txt_content, from_address, [to_address], connection=connection)
     message.attach_alternative(html_content, "text/html")

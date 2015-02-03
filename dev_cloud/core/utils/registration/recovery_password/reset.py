@@ -36,9 +36,9 @@ def reset_password_mail(email, dev_cloud_data):
     if common.MAILER_ACTIVE:
         user = Users.objects.get(email=email)
         token = token_generator.make_token(user)
-    try:
-        mail.send_reset_password_mail(user, token, dev_cloud_data)
-        return
-    except SMTPRecipientsRefused:
-        raise DevCloudException('reset_password_smtp_error')
+        try:
+            mail.send_reset_password_mail(user, token, dev_cloud_data)
+            return True
+        except SMTPRecipientsRefused:
+            raise DevCloudException('reset_password_smtp_error')
     raise DevCloudException('reset_password_error')

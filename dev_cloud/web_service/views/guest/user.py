@@ -249,13 +249,13 @@ def password_reset(request, template_name='account/password_reset_form.html', pa
     """
     if request.method == "POST":
         form = password_reset_form(request.POST)
-    if form.is_valid():
-        try:
-            reset_password_mail(form.cleaned_data['email'], config.DEV_CLOUD_DATA)
-        except Exception:
-            return redirect('acc_password_reset_error')
+        if form.is_valid():
+            try:
+                reset_password_mail(form.cleaned_data['email'], config.DEV_CLOUD_DATA)
+            except Exception:
+                return redirect('password_reset_error')
 
-        return redirect('acc_password_reset_done')
+            return redirect('password_reset_done')
     else:
         form = password_reset_form()
 

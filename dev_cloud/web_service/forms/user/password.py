@@ -64,7 +64,8 @@ class PasswordResetForm(forms.Form):
         """
         Class of the <b>password's reset</b> form.
         """
-        email = forms.EmailField(label=_("E-mail"), max_length=255)
+        email = forms.EmailField(label=_("E-mail"),
+                                 max_length=255)
 
         @staticmethod
         def email_exists(email):
@@ -84,8 +85,8 @@ class PasswordResetForm(forms.Form):
             email = self.cleaned_data['email']
 
             if self.email_exists(email):
-                raise forms.ValidationError(_('Incorrect email address.'))
-            return email
+                return email
+            raise forms.ValidationError(_('Incorrect email address.'))
 
 
 class SetPasswordForm(forms.Form):

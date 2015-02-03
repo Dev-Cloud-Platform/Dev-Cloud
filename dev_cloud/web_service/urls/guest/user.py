@@ -34,8 +34,16 @@ account_patterns = patterns('web_service.views.guest.user',
                             url(r'^password_reset_error/$', direct_to_template,
                                 {'template_name': 'account/password_reset_error_email.html'},
                                 name='password_reset_error'),
-                            url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'acc_password_reset_confirm',
-                                name='password_reset_confirm'))
+                            url(r'^password_reset/done/$', direct_to_template,
+                                {'template_name': 'account/password_reset_done.html'}, name='password_reset_done'),
+                            url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'password_reset_confirm',
+                                name='password_reset_confirm'),
+                            url(r'^password_reset_error_token/$', direct_to_template,
+                                {'template_name': 'account/password_reset_error_token.html'}, name='password_reset_error_token'),
+                            url(r'^password_reset/done/$', direct_to_template,
+                                {'template_name': 'account/password_reset_done.html'}, name='password_reset_done'),
+                            url(r'^reset/done/$', direct_to_template,
+                                {'template_name': 'account/password_reset_complete.html'}, name='password_reset_complete'))
 
 help_patterns = patterns('web_service.views.guest.user',
                          url(r'^$', 'contact', name='contact'))
