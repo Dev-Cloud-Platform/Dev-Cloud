@@ -26,22 +26,19 @@ auth_patterns = patterns('web_service.views.guest.user',
                          url(r'^login/$', 'login', name='login'),
                          url(r'^logout/$', 'logout', name='logout'))
 
-
 main_patterns = patterns('web_service.views.guest.user',
                          url(r'^change_language/(?P<lang>\w+)/$', 'change_language', name='change_language'))
 
-
 account_patterns = patterns('web_service.views.guest.user',
-                            # url(r'^password_reset/$', 'password_reset', name='password_reset'),
-                            # url(r'^password_reset_error/$', direct_to_template,
-                            #     {'template_name': 'account/password_reset_error_email.html'},
-                            #     name='password_reset_error')
-                            )
-
+                            url(r'^password_reset/$', 'password_reset', name='password_reset'),
+                            url(r'^password_reset_error/$', direct_to_template,
+                                {'template_name': 'account/password_reset_error_email.html'},
+                                name='password_reset_error'),
+                            url(r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'acc_password_reset_confirm',
+                                name='password_reset_confirm'))
 
 help_patterns = patterns('web_service.views.guest.user',
                          url(r'^$', 'contact', name='contact'))
-
 
 registration_patterns = patterns('web_service.views.guest.user',
                                  # Activation keys get matched by \w+ instead of the more specific
@@ -69,7 +66,6 @@ registration_patterns = patterns('web_service.views.guest.user',
                                      name='activation_admin_confirmation'),
                                  url(r'^activate/error/$', direct_to_template,
                                      {'template_name': 'registration/activation_error.html'}, name='activation_error'))
-
 
 urlpatterns = patterns('',
                        url(r'^auth/', include(auth_patterns)),

@@ -21,23 +21,28 @@ import re
 
 from django.contrib.sites.models import RequestSite
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.utils.http import base36_to_int
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 
 from core.common.states import registration_states
 from core.settings import common
+from core.settings import config
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
 from core.utils.decorators import django_view
 from core.utils.registration.mail import send_contact_message
+from core.utils.registration.recovery_password.reset import reset_password_mail
+from core.utils.registration.recovery_password.token_generator import set_password_token, check_token
 from core.utils.registration.registration import register, activate
 from database.models import Users
 from web_service.forms.user.authenticate import AuthenticationForm
 from web_service.forms.user.contact import ContactForm
+from web_service.forms.user.password import PasswordResetForm, SetPasswordForm
 from web_service.forms.user.registration import RegistrationForm
 
 
@@ -231,3 +236,67 @@ def contact(request, form_class=ContactForm, template_name='main/contact.html'):
     return render_to_response(template_name, dict({'form': form}.items()),
                               context_instance=RequestContext(request))
 
+
+@django_view
+@csrf_protect
+def password_reset(request, template_name='account/password_reset_form.html', password_reset_form=PasswordResetForm):
+    """
+    <b>Password reset</b> form handling (email is sent).
+    @param request:
+    @param template_name:
+    @param password_reset_form:
+    @return:
+    """
+    if request.method == "POST":
+        form = password_reset_form(request.POST)
+    if form.is_valid():
+        try:
+            reset_password_mail(form.cleaned_data['email'], config.DEV_CLOUD_DATA)
+        except Exception:
+            return redirect('acc_password_reset_error')
+
+        return redirect('acc_password_reset_done')
+    else:
+        form = password_reset_form()
+
+    return render_to_response(template_name, dict({'form': form}.items()), context_instance=RequestContext(request))
+
+
+# Doesn't need csrf_protect since no-one can guess the URL
+@django_view
+def password_reset_confirm(request, uidb36=None, token=None,
+                           template_name='account/password_reset_confirm.html',
+                           form_class=SetPasswordForm):
+    """
+    Check whether given address hash is correct. Displayes <b>password edition</b> form.
+    @param request:
+    @param uidb36: optional
+    @param token: optional
+    @param template_name: optional
+    @param form_class: optional
+    @return:
+    """
+    assert uidb36 is not None and token is not None  # checked by URLconf
+
+    try:
+        uid_int = base36_to_int(uidb36)
+    except ValueError:
+        raise Http404
+
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            try:
+                set_password_token(uid_int, token, form.cleaned_data['new_password1'])
+            except Exception:
+                return redirect('password_reset_error_token')
+
+            return redirect('password_reset_complete')
+    else:
+        try:
+            check_token(uid_int, token)
+        except Exception:
+            return redirect('password_reset_error_token')
+        form = form_class()
+
+    return render_to_response(template_name, {'form': form}, context_instance=RequestContext(request))

@@ -44,7 +44,6 @@ class Users(models.Model):
         db_table = 'Users'
         # app_label = 'database'
 
-
     @property
     def dict(self):
         """
@@ -74,7 +73,6 @@ class Users(models.Model):
         d['last_activity'] = self.last_activity or ''
         return d
 
-
     @property
     def short_dict(self):
         """
@@ -91,7 +89,6 @@ class Users(models.Model):
 
         return d
 
-
     @staticmethod
     def get(user_id):
         """
@@ -104,7 +101,6 @@ class Users(models.Model):
         except:
             raise DevCloudException('user_get')
         return user
-
 
     @staticmethod
     def superuser(user_id):
@@ -121,10 +117,8 @@ class Users(models.Model):
             raise DevCloudException('user_permission')
         return True
 
-
     def set_password(self, password):
         self.password = password
-
 
     @staticmethod
     def save_picture(user, request):
@@ -132,7 +126,6 @@ class Users(models.Model):
         upload_picture = request.FILES['picture']
         user.picture.save(upload_picture.name, upload_picture)
         session['picture_id'] = user.id
-
 
     @staticmethod
     def parse_user(user):

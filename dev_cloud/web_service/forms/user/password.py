@@ -21,6 +21,7 @@ import hashlib
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from database.models import Users
 
 from core.utils.regexp import regexp, regexp_text
 
@@ -44,7 +45,6 @@ class PasswordForm(forms.Form):
                                  label=_("Password confirmation"),
                                  error_messages={'invalid': regexp_text['password']})
 
-
     def clean(self):
         """
         Checks if given passwords match.
@@ -66,13 +66,54 @@ class PasswordResetForm(forms.Form):
         """
         email = forms.EmailField(label=_("E-mail"), max_length=255)
 
+        @staticmethod
+        def email_exists(email):
+            """
+            Method checks, whether user with specified @prm{email} already exists.
+            @parameter{email,string}
+            @response{bool) True if @prm{email} is registered
+            @response{bool) False if @prm{email} isn't registered
+            """
+            return Users.objects.filter(email__exact=email).exists()
+
         def clean_email(self):
             """
             Validates that a user exists with the given e-mail address.
             @return:
             """
             email = self.cleaned_data['email']
-            rest_data = make_request('guest/user/email_exists/', {'email': email})
-            if rest_data['status'] == 'ok' and rest_data['data'] == False:
+
+            if self.email_exists(email):
                 raise forms.ValidationError(_('Incorrect email address.'))
             return email
+
+
+class SetPasswordForm(forms.Form):
+    """
+    Class of the <b>password edition (doesnt's require giving the previous one)</b> form.
+    """
+    new_password1 = forms.RegexField(regex=regexp['password'],
+                                     max_length=255,
+                                     widget=forms.PasswordInput(attrs=dict(attrs_dict)),
+                                     label=_("New password"),
+                                     error_messages={'invalid': regexp_text['password']})
+
+    new_password2 = forms.RegexField(regex=regexp['password'],
+                                     max_length=255,
+                                     widget=forms.PasswordInput(attrs=dict(attrs_dict)),
+                                     label=_("New password confirmation"),
+                                     error_messages={'invalid': regexp_text['password']})
+
+    def clean(self):
+        """
+         Validates that a password are the same.
+        @return:
+        """
+        if 'new_password1' in self.cleaned_data and 'new_password2' in self.cleaned_data:
+            if self.cleaned_data['new_password1'] != self.cleaned_data['new_password2']:
+                raise forms.ValidationError(_("The two password fields didn't match."))
+
+            self.cleaned_data['new_password1'] = hashlib.sha1(self.cleaned_data['new_password1']).hexdigest()
+            del self.cleaned_data['new_password2']
+
+        return self.cleaned_data
