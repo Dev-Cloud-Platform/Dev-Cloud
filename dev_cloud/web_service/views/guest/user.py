@@ -58,7 +58,7 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
     if request.method == 'POST':
         form = authentication_form(data=request.POST)
         if form.is_valid():
-            from dev_cloud.core.utils.auth import login as auth_login
+            from core.utils.auth import login as auth_login
 
             # Light security check -- make sure redirect_to isn't garbage.
             if not redirect_to or ' ' in redirect_to:

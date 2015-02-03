@@ -29,7 +29,7 @@ def check_response_errors(response, session):
     @return:
     """
     if response['status'] != 'ok':
-        from dev_cloud.core.utils.auth import logout
+        from core.utils.auth import logout
         error_code = response['status']
         error_msg = get_error(error_code)
         raise RestErrorException(error_msg)
