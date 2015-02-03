@@ -30,7 +30,7 @@ attrs_dict = {'class': 'required'}
 
 class PasswordForm(forms.Form):
     """
-        Class for <b>setting password</b> form.
+     Class for <b>setting password</b> form.
     """
     new_password = forms.RegexField(regex=regexp['password'],
                                     max_length=32,
@@ -44,10 +44,13 @@ class PasswordForm(forms.Form):
                                  label=_("Password confirmation"),
                                  error_messages={'invalid': regexp_text['password']})
 
+
     def clean(self):
         """
-            Checks if given passwords match.
+        Checks if given passwords match.
+        @return:
         """
+
         if 'new_password' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['new_password'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_("The two password fields didn't match."))
@@ -55,3 +58,21 @@ class PasswordForm(forms.Form):
             self.cleaned_data['new_password'] = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
             del self.cleaned_data['password2']
         return self.cleaned_data
+
+
+class PasswordResetForm(forms.Form):
+        """
+        Class of the <b>password's reset</b> form.
+        """
+        email = forms.EmailField(label=_("E-mail"), max_length=255)
+
+        def clean_email(self):
+            """
+            Validates that a user exists with the given e-mail address.
+            @return:
+            """
+            email = self.cleaned_data['email']
+            rest_data = make_request('guest/user/email_exists/', {'email': email})
+            if rest_data['status'] == 'ok' and rest_data['data'] == False:
+                raise forms.ValidationError(_('Incorrect email address.'))
+            return email

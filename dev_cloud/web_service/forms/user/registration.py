@@ -98,7 +98,7 @@ class RegistrationForm(PasswordForm):
         user.email = self.cleaned_data['email']
 
         if commit:
-            user.is_active = False # not active until he opens activation link
+            user.is_active = False  # not active until he opens activation link
             user.save()
 
         return user

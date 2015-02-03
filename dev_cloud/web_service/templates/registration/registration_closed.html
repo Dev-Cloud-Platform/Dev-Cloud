@@ -1,0 +1,36 @@
+{% extends "registration/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Registration closed" %}{% endblock %}
+
+{% block body_class %}class="login-page"{% endblock %}
+{% block header_class %}class="login"{% endblock %}
+
+{% block header %}
+    <div class="message">
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="message-intro">
+                    <span class="message-line"></span>
+                    <p>{% trans "Registration closed" %}</p>
+                    <span class="message-line"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="login-container">
+        <div class="row">
+            <div class="small-12 large-7 large-centered medium-7 medium-centered columns">
+                <div class="login-form">
+                    <p class="success">
+                        <b>{% trans "Registration is closed now." %}</b> </br>
+                        {% trans "Subscribe us to find out when it will be open again." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

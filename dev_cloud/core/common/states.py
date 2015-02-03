@@ -46,4 +46,5 @@ registration_states = {
     'mail_confirmation': 1,
     'admin_confirmation': 2,
     'error': 3,
+    'disallowed': 4
 }

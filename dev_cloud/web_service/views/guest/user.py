@@ -99,7 +99,7 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
                                redirect_field_name: redirect_to,
                                'site': current_site,
                                'site_name': current_site.name,
-                               }, context_instance=RequestContext(request))
+                              }, context_instance=RequestContext(request))
 
 
 @django_view
@@ -113,6 +113,7 @@ def logout(request, next_page=None, template_name='auth/logged_out.html', redire
     @return:
     """
     from core.utils.auth import logout as auth_logout
+
     auth_logout(request.session)
 
     if next_page is None:
@@ -120,7 +121,8 @@ def logout(request, next_page=None, template_name='auth/logged_out.html', redire
         if redirect_to:
             return HttpResponseRedirect(redirect_to)
         else:
-            return render_to_response(template_name, {'title': _('Logged out')}, context_instance=RequestContext(request))
+            return render_to_response(template_name, {'title': _('Logged out')},
+                                      context_instance=RequestContext(request))
     else:
         # Redirect to this page until the session has been cleared.
         return HttpResponseRedirect(next_page or request.path)
@@ -165,12 +167,20 @@ def reg_register(request, form_class=RegistrationForm, template_name='registrati
             elif response['registration_state'] == registration_states['admin_confirmation']:
                 return redirect('registration_admin_confirmation')
 
+            elif response['registration_state'] == registration_states['disallowed']:
+                return redirect('reg_disallowed')
+
             else:
                 import logging
+
                 dev_logger = logging.getLogger('dev_logger')
                 dev_logger.error('Registration error: %s' % response['status'])
                 dev_logger.error(response['data'])
                 return redirect('registration_error')
+
+    elif common.REGISTRATION_CLOSED:
+        return redirect('reg_disallowed')
+
     else:
         form = form_class()
 
@@ -194,6 +204,7 @@ def reg_activate(request, **kwargs):
             return redirect('activation_admin_confirmation')
 
     return redirect('activation_error')
+
 
 @django_view
 def contact(request, form_class=ContactForm, template_name='main/contact.html'):
@@ -219,3 +230,4 @@ def contact(request, form_class=ContactForm, template_name='main/contact.html'):
 
     return render_to_response(template_name, dict({'form': form}.items()),
                               context_instance=RequestContext(request))
+

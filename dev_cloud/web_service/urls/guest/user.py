@@ -24,18 +24,24 @@ from web_service.views.guest.user import reg_activate, reg_register
 
 auth_patterns = patterns('web_service.views.guest.user',
                          url(r'^login/$', 'login', name='login'),
-                         url(r'^logout/$', 'logout', name='logout'),
-                         )
+                         url(r'^logout/$', 'logout', name='logout'))
 
 
 main_patterns = patterns('web_service.views.guest.user',
-                         url(r'^change_language/(?P<lang>\w+)/$', 'change_language', name='change_language'),
-                         )
+                         url(r'^change_language/(?P<lang>\w+)/$', 'change_language', name='change_language'))
+
+
+account_patterns = patterns('web_service.views.guest.user',
+                            # url(r'^password_reset/$', 'password_reset', name='password_reset'),
+                            # url(r'^password_reset_error/$', direct_to_template,
+                            #     {'template_name': 'account/password_reset_error_email.html'},
+                            #     name='password_reset_error')
+                            )
 
 
 help_patterns = patterns('web_service.views.guest.user',
-                         url(r'^$', 'contact', name='contact'),
-                         )
+                         url(r'^$', 'contact', name='contact'))
+
 
 registration_patterns = patterns('web_service.views.guest.user',
                                  # Activation keys get matched by \w+ instead of the more specific
@@ -47,23 +53,27 @@ registration_patterns = patterns('web_service.views.guest.user',
                                  url(r'^register/closed/$', direct_to_template,
                                      {'template_name': 'registration/registration_closed.html'}, name='reg_disallowed'),
                                  url(r'^register/completed/$', direct_to_template,
-                                     {'template_name': 'registration/registration_completed.html'}, name='registration_completed'),
+                                     {'template_name': 'registration/registration_completed.html'},
+                                     name='registration_completed'),
                                  url(r'^register/mail_confirmation/$', direct_to_template,
-                                     {'template_name': 'registration/registration_mail_confirmation.html'}, name='registration_mail_confirmation'),
+                                     {'template_name': 'registration/registration_mail_confirmation.html'},
+                                     name='registration_mail_confirmation'),
                                  url(r'^register/error/$', direct_to_template,
-                                     {'template_name': 'registration/registration_error.html'}, name='registration_error'),
+                                     {'template_name': 'registration/registration_error.html'},
+                                     name='registration_error'),
                                  url(r'^activate/completed/$', direct_to_template,
-                                     {'template_name': 'registration/activation_completed.html'}, name='activation_completed'),
+                                     {'template_name': 'registration/activation_completed.html'},
+                                     name='activation_completed'),
                                  url(r'^activate/admin_confirmation/$', direct_to_template,
-                                     {'template_name': 'registration/activation_admin_confirmation.html'}, name='activation_admin_confirmation'),
+                                     {'template_name': 'registration/activation_admin_confirmation.html'},
+                                     name='activation_admin_confirmation'),
                                  url(r'^activate/error/$', direct_to_template,
-                                     {'template_name': 'registration/activation_error.html'}, name='activation_error'),
-                                 )
+                                     {'template_name': 'registration/activation_error.html'}, name='activation_error'))
+
 
 urlpatterns = patterns('',
                        url(r'^auth/', include(auth_patterns)),
                        url(r'', include(main_patterns)),
-                       # url(r'^account/', include(account_patterns)),  # For reset password
+                       url(r'^account/', include(account_patterns)),  # For reset password
                        url(r'^help/', include(help_patterns)),
-                       url(r'^registration/', include(registration_patterns)),
-                       )
+                       url(r'^registration/', include(registration_patterns)))

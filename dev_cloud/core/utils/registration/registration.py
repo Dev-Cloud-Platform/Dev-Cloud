@@ -70,6 +70,8 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
         except SMTPRecipientsRefused:
             reg_state = registration_states['error']
         reg_state = registration_states['mail_confirmation']
+    elif common.REGISTRATION_CLOSED:
+        reg_state = registration_states['disallowed']
     else:
         if common.AUTOACTIVATION:
 
