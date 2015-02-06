@@ -28,6 +28,7 @@ from django.utils.http import base36_to_int
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django_ajax.decorators import ajax
 
 from core.common.states import registration_states
 from core.settings import common
@@ -103,8 +104,24 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
                               {'form': form,
                                redirect_field_name: redirect_to,
                                'site': current_site,
-                               'site_name': current_site.name,
-                              }, context_instance=RequestContext(request))
+                               'site_name': current_site.name},
+                              context_instance=RequestContext(request))
+
+
+@ajax
+def is_logged(request):
+    """
+    For ajax login.
+    @param request:
+    @return:
+    """
+    if request.method == 'POST':
+        if request.is_ajax():
+            return "success"
+        else:
+            return "invalid"
+
+
 
 
 @django_view

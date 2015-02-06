@@ -33,14 +33,15 @@ class AuthenticationForm(forms.Form):
     """
     username = forms.CharField(max_length=45,
                                label=_('Username'),
-                               widget=forms.TextInput(attrs={'tabindex': '1', 'class': 'required'}))
+                               widget=forms.TextInput(
+                                   attrs={'tabindex': '1', 'class': 'form-control', 'placeholder': 'Username'}))
 
     password = forms.RegexField(regex=regexp['password'],
                                 max_length=32,
                                 label=_('Password'),
-                                widget=forms.PasswordInput(attrs={'tabindex': '2', 'class': 'required'}),
+                                widget=forms.PasswordInput(
+                                    attrs={'tabindex': '2', 'class': 'form-control', 'placeholder': 'Username'}),
                                 error_messages={'invalid': regexp_text['password']})
-
 
 
     def __init__(self, request=None, *args, **kwargs):
@@ -59,7 +60,6 @@ class AuthenticationForm(forms.Form):
         self.request = request
         self.user_cache = None
         super(AuthenticationForm, self).__init__(*args, **kwargs)
-
 
 
     def get_user(self):
@@ -84,14 +84,18 @@ class AuthenticationForm(forms.Form):
         self.user_cache = authenticate(username, password)
 
         if self.user_cache is None:
-            raise forms.ValidationError(_("Please enter a correct username and password. Note that both fields are case-sensitive."))
+            raise forms.ValidationError(
+                _("Please enter a correct username and password. Note that both fields are case-sensitive."))
         elif self.user_cache.is_active == user_active_states['inactive']:
-            raise forms.ValidationError(_("Account has not been activated yet. Please, click on the activation link in the email sent to you after the registration step."))
+            raise forms.ValidationError(_(
+                "Account has not been activated yet. Please, click on the activation link in the email sent to you after the registration step."))
         elif self.user_cache.is_active == user_active_states['email_confirmed']:
-            raise forms.ValidationError(_("This account is inactive. Please wait for system operator to activate your account."))
+            raise forms.ValidationError(
+                _("This account is inactive. Please wait for system operator to activate your account."))
 
         if self.request:
             if not self.request.session.test_cookie_worked():
-                raise forms.ValidationError(_("Your Web browser doesn't appear to have cookies enabled. Cookies are required for logging in."))
+                raise forms.ValidationError(
+                    _("Your Web browser doesn't appear to have cookies enabled. Cookies are required for logging in."))
 
         return self.cleaned_data

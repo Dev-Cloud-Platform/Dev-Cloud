@@ -8,19 +8,19 @@
 {% block content %}
 
     <script type="text/javascript">
-        $(function() {
+{#        $(function() {#}
 {#            ajaxPost('{% url 'ajax_test' %}', {'foo': 'bar'}, function(content){#}
 {#                //onSuccess#}
 {#                $('body').html(content);#}
 {#            })#}
-            $.ajax({
-                type: "GET",
-                url: "{% url 'ajax_test' %}"
-            }).done(function( ret ) {
-                alert( "Returned: " + ret );
-                window.location.href = "url"
-            });
-        });
+{#            $.ajax({#}
+{#                type: "GET",#}
+{#                url: "{% url 'ajax_test' %}"#}
+{#            }).done(function( ret ) {#}
+{#                alert( "Returned: " + ret );#}
+{#                window.location.href = "url"#}
+{#            });#}
+{#        });#}
     </script>
 
     <div class="row">

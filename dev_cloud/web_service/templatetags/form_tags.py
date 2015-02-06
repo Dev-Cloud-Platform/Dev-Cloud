@@ -50,3 +50,13 @@ def show_sendform(form):
     @return:
     """
     return {'form': form, 'required_fields': True}
+
+
+@register.inclusion_tag('tags/loginForm.html')
+def show_loginform(form):
+    """
+    Renders given form without marking required fields.
+    @param form:
+    @return:
+    """
+    return {'form': form, 'required_fields': True}

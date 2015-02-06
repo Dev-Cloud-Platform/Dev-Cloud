@@ -1,0 +1,48 @@
+{% extends "auth/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}Dev Cloud - {% trans "Login" %}{% endblock %}
+
+{% block body_class %}class="login-page"{% endblock %}
+{% block header_class %}class="login"{% endblock %}
+
+{% block header %}
+    <div class="message">
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="message-intro">
+                    <span class="message-line"></span>
+
+                    <p>{% trans "Sign in to Dev Cloud system" %}</p>
+                    <span class="message-line"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="login-container">
+        <div class="row">
+            <div class="small-12 large-7 large-centered medium-7 medium-centered columns">
+                <div class="login-form">
+                    <form method="post" action="" id="login-form">
+                        {% csrf_token %}
+                        {% show_fieldsetform_nrf form %}
+                        <div class="fieldset align_center">
+                            <input type="submit" class="button" value="{% trans "Sign in" %}" tabindex="3" />
+                            <input type="hidden" name="next" value="{{ next }}" />
+                        </div>
+                        {% trans "Don't have an account?" %} <a href="{% url 'reg_register' %}">{% trans "Sign up" %}</a>
+                        </br>
+                        <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{%  endblock %}

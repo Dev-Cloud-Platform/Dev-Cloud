@@ -41,18 +41,18 @@ def app_view(request, template_name='app/main.html'):
     return render_to_response(template_name, context_instance=RequestContext(request))
 
 
-# @ajax
-def ajax_test(request):
+@ajax
+def ajax_test(request, template_name='app/main.html'):
     """
     Ajax test
     @param request:
     @return:
     """
-    if request.is_ajax():
-        print "This is ajax"
-    else:
-        print "Not ajax"
+    # if request.is_ajax():
+    #     print "This is ajax"
+    # else:
+    #     print "Not ajax"
 
-    return HttpResponse("Karol")
+    return "karol4"
     # return render_to_response(template_name, context_instance=RequestContext(request))
 

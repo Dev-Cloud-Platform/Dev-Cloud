@@ -1,7 +1,7 @@
 /**
- *	Neon Login Script
+ *	Dev Cloud Login Script
  *
- *	Developed by Arlind Nushi - www.laborator.co
+ *	Developed by Michał Szczygieł
  */
 
 var neonLogin = neonLogin || {};
@@ -24,8 +24,8 @@ var neonLogin = neonLogin || {};
 				
 				password: {
 					required: true
-				},
-				
+				}
+
 			},
 			
 			highlight: function(element){
@@ -60,25 +60,16 @@ var neonLogin = neonLogin || {};
 					neonLogin.setPercentage(40 + random_pct);
 											
 					// Send data to the server
-					$.ajax({
-						url: baseurl + 'data/sample-login-form.php',
-						method: 'POST',
-						dataType: 'json',
-						data: {
-							username: $("input#username").val(),
-							password: $("input#password").val(),
-						},
-						error: function()
-						{
-							alert("An error occoured!");
-						},
-						success: function(response)
+					ajaxPost('/auth/is_logged/', {username : $("input#username").val(), password: $("input#password").val()},
+						function(response){
+						//onSuccess
 						{
 							// Login status [success|invalid]
 							var login_status = response.login_status;
-															
+
 							// Form is fully completed, we update the percentage
 							neonLogin.setPercentage(100);
+							document.forms["form_login"].submit();
 							
 							
 							// We will give some time for the animation to finish, then execute the following procedures	
@@ -91,21 +82,22 @@ var neonLogin = neonLogin || {};
 									neonLogin.resetProgressBar(true);
 								}
 								else
-								if(login_status == 'success')
-								{
-									// Redirect to login page
-									setTimeout(function()
+									if(login_status == 'success')
 									{
-										var redirect_url = baseurl;
-										
-										if(response.redirect_url && response.redirect_url.length)
+										// Redirect to login page
+										setTimeout(function()
 										{
-											redirect_url = response.redirect_url;
-										}
-										
-										window.location.href = redirect_url;
-									}, 400);
-								}
+											var redirect_url = baseurl;
+
+											if(response.redirect_url && response.redirect_url.length)
+											{
+												redirect_url = response.redirect_url;
+											}
+
+											//window.location.href = redirect_url;
+											neonLogin.submit();
+										}, 400);
+									}
 								
 							}, 1000);
 						}
@@ -132,8 +124,8 @@ var neonLogin = neonLogin || {};
 				
 					password: {
 						required: true
-					},
-					
+					}
+
 				},
 				
 				highlight: function(element){
@@ -354,7 +346,7 @@ var neonLogin = neonLogin || {};
 			
 			// Create Progress Circle
 			var bg = neonLogin.lockscreen_progress_canvas,
-				ctx = ctx = bg.getContext('2d'),
+				ctx = bg.getContext('2d'),
 				imd = null,
 				circ = Math.PI * 2,
 				quart = Math.PI / 2,

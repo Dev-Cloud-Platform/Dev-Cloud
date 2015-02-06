@@ -24,7 +24,8 @@ from web_service.views.guest.user import reg_activate, reg_register
 
 auth_patterns = patterns('web_service.views.guest.user',
                          url(r'^login/$', 'login', name='login'),
-                         url(r'^logout/$', 'logout', name='logout'))
+                         url(r'^logout/$', 'logout', name='logout'),
+                         url(r'^is_logged/$', 'is_logged', name='is_logged'))
 
 main_patterns = patterns('web_service.views.guest.user',
                          url(r'^change_language/(?P<lang>\w+)/$', 'change_language', name='change_language'))

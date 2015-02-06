@@ -1,40 +1,60 @@
-{% extends "auth/base.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% load form_tags %}
 
 {% block title %}Dev Cloud - {% trans "Logged Out" %}{% endblock %}
+{% block body_class %}class="page-body login-page login-form-fall"{% endblock %}
 
-{% block body_class %}class="login-page"{% endblock %}
-{% block header_class %}class="login"{% endblock %}
-
-{% block header %}
-    <div class="message">
-        <div class="row">
-            <div class="small-12 columns">
-                <div class="message-intro">
-                    <span class="message-line"></span>
-                    <p>{% trans "Logged out" %}</p>
-                    <span class="message-line"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block content %}
+{{% block body %}
+    <!-- This is needed when you send requests via Ajax --><script type="text/javascript">
+        var baseurl = '';
+    </script>
 
     <div class="login-container">
-        <div class="row">
-            <div class="small-12 large-7 large-centered medium-7 medium-centered columns">
-                <div class="login-form">
-                    <p class="success">{% trans "You have been logged out!" %}</p>
-                    <script>
-                    setTimeout('location.replace("{% url 'login' %}");', 2000);
-                    </script>
+
+        <div class="login-header login-caret">
+
+            <div class="login-content">
+
+                <a href="{% url 'mai_main' %}" class="logo">
+                    <img src="{{ STATIC_URL }}app/images/logo.png" width="320" alt="" />
+                </a>
+
+                <p class="description">Dear user, log in to access the Dev Cloud dashboard!</p>
+
+                <!-- progress bar indicator -->
+                <div class="login-progressbar-indicator">
+                    <h3>43%</h3>
+                    <span>logging in...</span>
                 </div>
             </div>
+
         </div>
+
+        <div class="login-progressbar">
+            <div></div>
+        </div>
+
+        <div class="login-form">
+
+            <div class="login-content">
+
+                <h3 style="color: #f5f5f5">
+                    {% trans "You have been logged out!" %}
+                </h3>
+
+                <script>
+                    setTimeout('location.replace("{% url 'login' %}");', 2500);
+                </script>
+
+            </div>
+
+        </div>
+
     </div>
 
+    <script src="{{ STATIC_URL }}app/js/jquery.validate.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/neon-login.js"></script>
 
-{%  endblock %}
+    {% include "app/bottom_scripts.html" %}
+{% endblock %}
