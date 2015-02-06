@@ -36,3 +36,6 @@ def direct_to_template(request, template_name, content_type=None):
     template = loader.get_template(template_name)
     return HttpResponse(template.render(context), content_type=content_type)
 
+
+
+

@@ -20,9 +20,11 @@
 
 def add_variables(request):
     """
-        Context processor for attaching Dev Cloud configuration list and other data to every request.
+    Context processor for attaching Dev Cloud configuration list and other data to every request.
+    @param request:
+    @return:
     """
-    if request.session.get('user') is None:
+    if request.session.get('user') is None or len(request.session.get('user')) != 0:
         return {}
 
     #dev_logger = logging.getLogger('dev_logger')

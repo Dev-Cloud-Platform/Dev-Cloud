@@ -17,6 +17,9 @@
 #
 # @COPYRIGHT_end
 from datetime import datetime
+import cPickle
+from django.core import serializers
+import pickle
 
 from core.common.states import user_active_states
 from core.utils.exception import DevCloudException
@@ -43,7 +46,7 @@ def login(request, user):
         request.session.cycle_key()
 
     request.session[session_key] = user.id
-    # request.session['user'] = [user.dict]
+    request.session['user'] = user.dict
 
 
 def logout(session):

@@ -54,23 +54,17 @@ class Users(models.Model):
         @dictkey{last,string} last name
         @dictkey{login,string} login
         @dictkey{email,string} email
+        @dictkey{picture, path} path to image
         @dictkey{act_key,string} activation key's content
         @dictkey{is_active,bool} true for active User
         @dictkey{is_superuser,bool} true for User with admin privilidges
         @dictkey{activation_date,datetime.datetime} activation's date
         @dictkey{last_activity,datetime.datetime} last login's date
         """
-        d = {}
-        d['user_id'] = self.id
-        d['first'] = self.name
-        d['last'] = self.lastname
-        d['login'] = self.login
-        d['email'] = self.email
-        d['act_key'] = self.activation_key or ''
-        d['is_active'] = self.is_active or 0
-        d['is_superuser'] = self.is_superuser or 0
-        d['activation_date'] = self.create_time or ''
-        d['last_activity'] = self.last_activity or ''
+        d = {'user_id': self.id, 'first': self.name, 'last': self.lastname, 'login': self.login, 'email': self.email,
+             'picture': self.picture, 'act_key': self.activation_key or '', 'is_active': self.is_active or 0,
+             'is_superuser': self.is_superuser or 0, 'activation_date': self.create_time or '',
+             'last_activity': self.last_activity or ''}
         return d
 
     @property
@@ -82,10 +76,7 @@ class Users(models.Model):
         @dictkey{first,string} first name
         @dictkey{last,string} last name
         """
-        d = {}
-        d['user_id'] = self.id
-        d['first'] = self.name
-        d['last'] = self.lastname
+        d = {'user_id': self.id, 'first': self.name, 'last': self.lastname}
 
         return d
 

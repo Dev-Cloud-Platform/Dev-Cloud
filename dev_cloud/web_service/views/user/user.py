@@ -16,5 +16,43 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django_ajax.decorators import ajax
+from core.utils.decorators import django_view
+from core.utils.decorators import user_permission
 
+
+@django_view
+@user_permission
+def app_view(request, template_name='app/main.html'):
+    """
+    View handling main app.
+    @param request:
+    @param template_name:
+    @return:
+    """
+    if request.is_ajax():
+        print "This is ajax"
+    else:
+        print "Not ajax"
+
+    return render_to_response(template_name, context_instance=RequestContext(request))
+
+
+# @ajax
+def ajax_test(request):
+    """
+    Ajax test
+    @param request:
+    @return:
+    """
+    if request.is_ajax():
+        print "This is ajax"
+    else:
+        print "Not ajax"
+
+    return HttpResponse("Karol")
+    # return render_to_response(template_name, context_instance=RequestContext(request))
 

@@ -10,7 +10,7 @@
     <meta name="description" content="Dev Cloud - application Platform as a Service"/>
     <meta name="author" content="Michał Szczygieł"/>
 
-    <title>Dev Cloud | Dashboard</title>
+    <title>{% block title %}Dev Cloud{% endblock %}</title>
 
 
     <link rel="stylesheet" href="{{ STATIC_URL }}app/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css">
@@ -36,9 +36,8 @@
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
-
 </head>
-<body class="page-body  page-fade" data-url="http://neon.dev">
+<body class="page-body  page-fade" data-url="http://192.245.169.169/main/app/">
 
 <div class="page-container">
     <!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
@@ -52,6 +51,8 @@
     </div>
 
     {% include "app/menu_horizontal.html" %}
+
+    {% block content %}{% endblock %}
 
     {% include "app/footer.html" %}
 </div>
@@ -82,5 +83,8 @@
 <script src="{{ STATIC_URL }}app/js/neon-chat.js"></script>
 <script src="{{ STATIC_URL }}app/js/neon-custom.js"></script>
 <script src="{{ STATIC_URL }}app/js/neon-demo.js"></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}django_ajax/js/jquery.ajax.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}django_ajax/js/jquery.ajax-plugin.min.js"></script>
 </body>
 </html>

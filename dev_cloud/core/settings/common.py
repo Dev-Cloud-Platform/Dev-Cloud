@@ -280,6 +280,9 @@ THIRD_PARTY_APPS = (
 
     # Asynchronous task queue:
     'djcelery',
+
+    # Fast and easy AJAX libraries for django projects:
+    'django_ajax',
 )
 
 LOCAL_APPS = (

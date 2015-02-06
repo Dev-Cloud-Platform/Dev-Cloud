@@ -58,7 +58,6 @@ def django_view(function):
 login_url = common.LOGIN_URL
 
 
-
 def user_permission(view_func):
     """
     \b Decorator for views with logged user permissions.
@@ -90,3 +89,28 @@ def user_permission(view_func):
     return wrap
 
 
+
+def load_basic_data(method_to_decorate):
+    """
+    \b Decorator for views with with decorate with additional information.
+    @param function:
+    @return:
+    """
+    def wrap(request, *args, **kwds):
+        """
+        Returned decorated function.
+        @param request:
+        @param args:
+        @param kwds:
+        @return:
+        """
+        try:
+            user = Users.objects.get(id=int(request.session[session_key]))
+            request.session['name'] = user.name + ' ' + user.lastname
+        except:
+            user = None
+
+        if user:
+            return method_to_decorate(request, *args, **kwds)
+
+    return wrap
