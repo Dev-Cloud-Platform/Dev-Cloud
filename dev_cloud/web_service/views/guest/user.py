@@ -122,8 +122,6 @@ def is_logged(request):
             return "invalid"
 
 
-
-
 @django_view
 def logout(request, next_page=None, template_name='auth/logged_out.html', redirect_field_name=REDIRECT_FIELD_NAME):
     """

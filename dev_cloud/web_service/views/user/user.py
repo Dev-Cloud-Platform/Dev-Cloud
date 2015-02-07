@@ -25,6 +25,27 @@ from core.utils.decorators import django_view
 from core.utils.decorators import user_permission
 
 
+def generate_active(selected_item):
+    """
+    Returns dict for selected item.
+    @param selected_item: Selected item to display.
+    @return: Dict with selected item.
+    """
+    dict = {'dashboard': '',
+            'create_env_own': '',
+            'create_env_pre': '',
+            'manage_env': '',
+            'mail_box_inbox': '',
+            'mail_box_compose': '',
+            'mail_box_view': '',
+            'lock_screen': ''}
+
+    if selected_item is not None:
+        dict[selected_item] = 'active'
+
+    return dict
+
+
 @django_view
 @user_permission
 def app_view(request, template_name='app/main.html'):
@@ -34,12 +55,8 @@ def app_view(request, template_name='app/main.html'):
     @param template_name:
     @return:
     """
-    if request.is_ajax():
-        print "This is ajax"
-    else:
-        print "Not ajax"
 
-    return render_to_response(template_name, context_instance=RequestContext(request))
+    return render_to_response(template_name, generate_active('dashboard'), context_instance=RequestContext(request))
 
 
 @ajax
@@ -68,4 +85,4 @@ def lock_screen(request, template_name='app/lock_screen.html'):
     @return:
     """
 
-    return render_to_response(template_name, context_instance=RequestContext(request))
+    return render_to_response(template_name, generate_active('lock_screen'), context_instance=RequestContext(request))
