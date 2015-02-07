@@ -16,9 +16,10 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.http import HttpResponse
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
 from core.utils.decorators import django_view
 from core.utils.decorators import user_permission
@@ -56,3 +57,15 @@ def ajax_test(request, template_name='app/main.html'):
     return "karol4"
     # return render_to_response(template_name, context_instance=RequestContext(request))
 
+
+@user_permission
+@csrf_protect
+def lock_screen(request, template_name='app/lock_screen.html'):
+    """
+
+    @param request:
+    @param template_name:
+    @return:
+    """
+
+    return render_to_response(template_name, context_instance=RequestContext(request))
