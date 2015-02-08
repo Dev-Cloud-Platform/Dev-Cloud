@@ -357,6 +357,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_REDIRECT_URL = '/main/app/'
 LOGIN_URL = '/auth/login/'
 LOGOUT_URL = '/auth/logout/'
+LOCK_SCREEN = '/main/lock_screen/'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 ########## END SESSION SETTINGS

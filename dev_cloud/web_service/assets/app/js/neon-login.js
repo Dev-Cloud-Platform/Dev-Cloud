@@ -167,7 +167,7 @@ var neonLogin = neonLogin || {};
 									// Do some other stuff...
 									
 									// Redirect to the page
-									setTimeout("window.location.href = '../../'", 600);
+									setTimeout("document.forms['form_lockscreen'].submit();", 600);
 								}, 2);
 								
 							}, 820);

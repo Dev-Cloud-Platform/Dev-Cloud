@@ -61,32 +61,32 @@ class PasswordForm(forms.Form):
 
 
 class PasswordResetForm(forms.Form):
-        """
+    """
         Class of the <b>password's reset</b> form.
         """
-        email = forms.EmailField(label=_("E-mail"),
-                                 max_length=255)
+    email = forms.EmailField(label=_("E-mail"),
+                             max_length=255)
 
-        @staticmethod
-        def email_exists(email):
-            """
+    @staticmethod
+    def email_exists(email):
+        """
             Method checks, whether user with specified @prm{email} already exists.
             @parameter{email,string}
             @response{bool) True if @prm{email} is registered
             @response{bool) False if @prm{email} isn't registered
             """
-            return Users.objects.filter(email__exact=email).exists()
+        return Users.objects.filter(email__exact=email).exists()
 
-        def clean_email(self):
-            """
+    def clean_email(self):
+        """
             Validates that a user exists with the given e-mail address.
             @return:
             """
-            email = self.cleaned_data['email']
+        email = self.cleaned_data['email']
 
-            if self.email_exists(email):
-                return email
-            raise forms.ValidationError(_('Incorrect email address.'))
+        if self.email_exists(email):
+            return email
+        raise forms.ValidationError(_('Incorrect email address.'))
 
 
 class SetPasswordForm(forms.Form):
@@ -117,4 +117,35 @@ class SetPasswordForm(forms.Form):
             self.cleaned_data['new_password1'] = hashlib.sha1(self.cleaned_data['new_password1']).hexdigest()
             del self.cleaned_data['new_password2']
 
+        return self.cleaned_data
+
+
+class EditPasswordForm(forms.Form):
+    """
+     Class for <b>setting password</b> form.
+    """
+    new_password = forms.RegexField(regex=regexp['password'],
+                                    max_length=32,
+                                    required=False,
+                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                                    label=_("Password"))
+
+    password2 = forms.RegexField(regex=regexp['password'],
+                                 max_length=32,
+                                 required=False,
+                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                                 label=_("Password confirmation"))
+
+    def clean(self):
+        """
+        Checks if given passwords match.
+        @return:
+        """
+
+        if 'new_password' in self.cleaned_data and 'password2' in self.cleaned_data:
+            if self.cleaned_data['new_password'] != self.cleaned_data['password2']:
+                raise forms.ValidationError(_("The two password fields didn't match."))
+
+            self.cleaned_data['new_password'] = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
+            del self.cleaned_data['password2']
         return self.cleaned_data

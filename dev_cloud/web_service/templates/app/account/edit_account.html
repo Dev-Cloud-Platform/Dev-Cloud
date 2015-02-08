@@ -1,0 +1,118 @@
+{% extends "app/account/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Account details" %}{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb 2">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'account' %}">{% trans "Account" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Edit" %}</strong>
+        </li>
+    </ol>
+
+    <br />
+
+    <div class="profile-env">
+
+        <header class="row">
+
+            <div class="col-sm-2">
+
+                <a class="profile-picture">
+                    <img src="{% if request.session.user.picture != '' %}{{ MEDIA_URL }}{{ request.session.user.picture }}{% else %}{{ STATIC_URL }}app/images/no-photo.png{% endif %}" class="img-responsive img-circle" />
+                </a>
+
+            </div>
+
+            <div class="col-sm-7">
+
+                <ul class="profile-info-sections">
+                    <li>
+                        <div class="profile-name">
+                            <strong>
+                                <a>{{ request.session.user.first }} {{ request.session.user.last }}</a>
+                                <a href="#" class="user-status is-online tooltip-primary" data-toggle="tooltip" data-placement="top" data-original-title="Online"></a>
+                                <!-- User statuses available classes "is-online", "is-offline", "is-idle", "is-busy" -->						</strong>
+                            <span><a>{{ request.session.user.login }} {% trans "as" %} {% ifequal request.session.user.is_superuser True %}{% trans "administarator" %}{% else %}{% trans "user" %} {% endifequal %}</a></span>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="profile-stat">
+                            <h3>{{ request.session.user.last_activity|date:"SHORT_DATETIME_FORMAT" }}</h3>
+                            <span><a><i class="entypo-eye"></i> {% trans "last log in" %}</a></span>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="col-sm-3">
+
+                <div class="profile-buttons">
+                    <a href="#" class="btn btn-default">
+                        <i class="entypo-mail"></i>
+                    </a>
+                </div>
+            </div>
+
+        </header>
+
+        <section class="profile-info-tabs">
+
+            <form role="form" method="post" class="form-horizontal form-groups-bordered validate" action="">
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="panel panel-primary" data-collapsed="0">
+
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    {% trans "Account Settings" %}
+                                </div>
+
+                                <div class="panel-options">
+                                    <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                                    <a href="#" data-rel="reload"><i class="entypo-arrows-ccw"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+
+                                {% csrf_token %}
+                                {% show_accountform form %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group default-padding">
+                    <button type="submit" class="btn btn-success ">Save Changes</button>
+                    <button type="reset" class="btn">Reset Previous</button>
+                </div>
+
+            </form>
+
+            <!-- tabs for the profile links -->
+            <ul class="nav nav-tabs">
+                <li><a href="{% url 'account' %}">{% trans "Profile" %}</a></li>
+                <li class="active"><a href="{% url 'edit_account' %}">{% trans "Edit Profile" %}</a></li>
+            </ul>
+        </section>
+
+    </div>
+
+
+{% endblock %}

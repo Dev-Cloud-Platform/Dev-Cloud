@@ -60,3 +60,13 @@ def show_loginform(form):
     @return:
     """
     return {'form': form, 'required_fields': True}
+
+
+@register.inclusion_tag('tags/accountForm.html')
+def show_accountform(form):
+    """
+    Renders given form without marking required fields.
+    @param form:
+    @return:
+    """
+    return {'form': form, 'required_fields': False}

@@ -89,7 +89,6 @@ def user_permission(view_func):
     return wrap
 
 
-
 def load_basic_data(method_to_decorate):
     """
     \b Decorator for views with with decorate with additional information.
@@ -112,5 +111,32 @@ def load_basic_data(method_to_decorate):
 
         if user:
             return method_to_decorate(request, *args, **kwds)
+
+    return wrap
+
+
+def lock_screen(view_func):
+    """
+    \b Decorator for views with logged user permissions.
+    @param view_func:
+    @return:
+    """
+    def wrap(request, *args, **kwds):
+        """
+        Returned decorated function.
+        @param request:
+        @param args:
+        @param kwds:
+        @return:
+        """
+        try:
+            if request.session['user'] is not None:
+                return view_func(request, *args, **kwds)
+        except:
+            pass
+
+        path = urlquote(request.get_full_path())
+        tup = login_url, REDIRECT_FIELD_NAME, path
+        return HttpResponseRedirect('%s?%s=%s' % tup)
 
     return wrap

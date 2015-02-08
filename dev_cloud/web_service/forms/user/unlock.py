@@ -27,22 +27,17 @@ from core.utils.auth import authenticate
 from core.utils.regexp import regexp, regexp_text
 
 
-class AuthenticationForm(forms.Form):
+class UnlockForm(forms.Form):
     """
-    Class for <b>login</b> form.
+    Class for <b>unlock</b> form.
     """
-    username = forms.CharField(max_length=45,
-                               label=_('Username'),
-                               widget=forms.TextInput(
-                                   attrs={'tabindex': '1', 'class': 'form-control', 'placeholder': 'Username'}))
 
     password = forms.RegexField(regex=regexp['password'],
                                 max_length=32,
                                 label=_('Password'),
                                 widget=forms.PasswordInput(
-                                    attrs={'tabindex': '2', 'class': 'form-control', 'placeholder': 'Password'}),
+                                    attrs={'tabindex': '1', 'class': 'form-control', 'placeholder': 'Password'}),
                                 error_messages={'invalid': regexp_text['password']})
-
 
     def __init__(self, request=None, *args, **kwargs):
         """
@@ -59,8 +54,7 @@ class AuthenticationForm(forms.Form):
         """
         self.request = request
         self.user_cache = None
-        super(AuthenticationForm, self).__init__(*args, **kwargs)
-
+        super(UnlockForm, self).__init__(*args, **kwargs)
 
     def get_user(self):
         """
@@ -74,18 +68,18 @@ class AuthenticationForm(forms.Form):
         Validates the password.
         :return:
         """
-        if not self.cleaned_data.get('password') or not self.cleaned_data.get('username'):
+        if not self.cleaned_data.get('password'):
             return None
         self.cleaned_data['password'] = hashlib.sha1(self.cleaned_data['password']).hexdigest()
 
-        username = self.cleaned_data['username']
+        username = self.request.session['user']['login']
         password = self.cleaned_data['password']
 
         self.user_cache = authenticate(username, password)
 
         if self.user_cache is None:
             raise forms.ValidationError(
-                _("Please enter a correct username and password. Note that both fields are case-sensitive."))
+                _("Please enter a correct password. Note that field is case-sensitive."))
         elif self.user_cache.is_active == user_active_states['inactive']:
             raise forms.ValidationError(_(
                 "Account has not been activated yet. Please, click on the activation link in the email sent to you after the registration step."))

@@ -97,6 +97,12 @@ def login(request, template_name='auth/login.html', redirect_field_name=REDIRECT
     if user:
         return HttpResponseRedirect(reverse('app_main'))
 
+    try:
+        if request.session[session_key] == session_key and request.session['user'] is not None:
+            return HttpResponseRedirect(reverse('lock_screen'))
+    except:
+        pass
+
     request.session.set_test_cookie()
     current_site = RequestSite(request)
 

@@ -16,13 +16,24 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from django.contrib.sites.models import RequestSite
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, Http404
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
-from core.utils.decorators import django_view
+import re
+from core.settings import common
+from core.utils import REDIRECT_FIELD_NAME
+from core.utils.auth import session_key
+from core.utils.decorators import django_view, lock_screen
 from core.utils.decorators import user_permission
+from database.models import Users
+from web_service.forms.user.edit_user import EditUserForm
+from web_service.forms.user.unlock import UnlockForm
 
 
 def generate_active(selected_item):
@@ -67,22 +78,102 @@ def ajax_test(request, template_name='app/main.html'):
     @return:
     """
     # if request.is_ajax():
-    #     print "This is ajax"
+    # print "This is ajax"
     # else:
-    #     print "Not ajax"
+    # print "Not ajax"
 
     return "karol4"
     # return render_to_response(template_name, context_instance=RequestContext(request))
 
 
-@user_permission
+@django_view
 @csrf_protect
-def lock_screen(request, template_name='app/lock_screen.html'):
+@never_cache
+@lock_screen
+def lock_screen(request, template_name='app/lock_screen.html', redirect_field_name=REDIRECT_FIELD_NAME,
+                authentication_form=UnlockForm):
     """
-
+    Log out removes auth id but left name and other stuff.
     @param request:
     @param template_name:
     @return:
     """
+    redirect_to = request.REQUEST.get(redirect_field_name, '')
+    if request.method == 'POST':
+        form = authentication_form(request, data=request.POST)
+        if form.is_valid():
+            from core.utils.auth import login as auth_login
+            # Light security check -- make sure redirect_to isn't garbage.
+            if not redirect_to or ' ' in redirect_to:
+                redirect_to = common.LOGIN_REDIRECT_URL
 
-    return render_to_response(template_name, generate_active('lock_screen'), context_instance=RequestContext(request))
+            # Heavier security check -- redirects to http://example.com should
+            # not be allowed, but things like /view/?param=http://example.com
+            # should be allowed. This regex checks if there is a '//' *before*
+            # a question mark.
+            elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
+                redirect_to = common.LOGIN_REDIRECT_URL
+
+            # Okay, security checks complete. Log the user in.
+            user = form.get_user()
+            user.set_password(form.cleaned_data['password'])
+            auth_login(request, user)
+
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+
+            return HttpResponseRedirect(redirect_to)
+    else:
+        request.session[session_key] = session_key
+        form = authentication_form(request)
+
+    try:
+        user = Users.objects.get(id=int(request.session[session_key]))
+    except:
+        user = None
+
+    if user:
+        return HttpResponseRedirect(reverse('app_main'))
+
+    request.session.set_test_cookie()
+    current_site = RequestSite(request)
+
+    return render_to_response(template_name,
+                              dict(
+                                  {'form': form,
+                                   redirect_field_name: redirect_to,
+                                   'site': current_site,
+                                   'site_name': current_site.name}.items()
+                                  + generate_active('lock_screen').items()),
+                              context_instance=RequestContext(request))
+
+
+@django_view
+@csrf_protect
+@never_cache
+@user_permission
+def edit_account(request, template_name='app/account/edit_account.html', edit_form=EditUserForm):
+    """
+    Edits the user data such as name, e-mail or password.
+    @param request:
+    @param template_name:
+    @param edit_form:
+    @return:
+    """
+    instance = request.session.get('user',  None)
+
+    if instance is None:
+        raise Http404('a was not found')
+
+    if request.method == 'POST':
+        form = edit_form(request, data=request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = edit_form(request)
+
+    current_site = RequestSite(request)
+
+    return render_to_response(template_name, dict({'form': form, 'site': current_site,
+                                                   'site_name': current_site.name}.items()),
+                              context_instance=RequestContext(request))

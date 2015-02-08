@@ -21,17 +21,19 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.utils.decorators import user_permission
 from core.utils.views import direct_to_template
-from web_service.views.user.user import app_view, ajax_test, lock_screen
+from web_service.views.user.user import app_view, ajax_test, lock_screen, edit_account
 
 
 account_patterns = patterns('web_service.views.user.user',
-                            url(r'^$', user_permission(direct_to_template), {'template_name': 'app/account/info.html'},
-                                name='account'))
+                            url(r'^$', user_permission(direct_to_template),
+                                {'template_name': 'app/account/info_account.html'},
+                                name='account'),
+                            url(r'^edit/$', user_permission(edit_account), name='edit_account'))
 
 main_patterns = patterns('web_service.views.user.user',
                          url(r'^app/$', user_permission(app_view), name='app_main'),
                          url(r'^app/ajax_test/$', user_permission(ajax_test), name='ajax_test'),
-                         url(r'^lock_screen/$', user_permission(lock_screen), name='lock_screen'))
+                         url(r'^lock_screen/$', lock_screen, name='lock_screen'))
 
 urlpatterns = patterns('',
                        url(r'^account/', include(account_patterns)),

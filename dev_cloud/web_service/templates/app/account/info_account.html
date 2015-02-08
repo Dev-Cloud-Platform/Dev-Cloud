@@ -1,0 +1,103 @@
+{% extends "app/account/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Account details" %}{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb 2">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Account" %}</strong>
+        </li>
+    </ol>
+
+    <br />
+
+    <div class="profile-env">
+
+        <header class="row">
+
+            <div class="col-sm-2">
+
+                <a class="profile-picture">
+                    <img src="{% if request.session.user.picture != '' %}{{ MEDIA_URL }}{{ request.session.user.picture }}{% else %}{{ STATIC_URL }}app/images/no-photo.png{% endif %}" class="img-responsive img-circle" />
+                </a>
+
+            </div>
+
+            <div class="col-sm-7">
+
+                <ul class="profile-info-sections">
+                    <li>
+                        <div class="profile-name">
+                            <strong>
+                                <a>{{ request.session.user.first }} {{ request.session.user.last }}</a>
+                                <a href="#" class="user-status is-online tooltip-primary" data-toggle="tooltip" data-placement="top" data-original-title="Online"></a>
+                                <!-- User statuses available classes "is-online", "is-offline", "is-idle", "is-busy" -->						</strong>
+                            <span><a>{{ request.session.user.login }} {% trans "as" %} {% ifequal request.session.user.is_superuser True %}{% trans "administarator" %}{% else %}{% trans "user" %} {% endifequal %}</a></span>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="profile-stat">
+                            <h3>{{ request.session.user.last_activity|date:"SHORT_DATETIME_FORMAT" }}</h3>
+                            <span><a><i class="entypo-eye"></i> {% trans "last log in" %}</a></span>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="col-sm-3">
+
+                <div class="profile-buttons">
+                    <a href="#" class="btn btn-default">
+                        <i class="entypo-mail"></i>
+                    </a>
+                </div>
+            </div>
+
+        </header>
+
+        <section class="profile-info-tabs">
+
+            <div class="row">
+
+                <div class="col-sm-offset-2 col-sm-10">
+
+                    <ul class="user-details">
+                        <li>
+                            <a title="{% trans "Registered" %}">
+                                <i class="entypo-location"></i>
+                                {{ request.session.user.activation_date}}
+                            </a>
+                        </li>
+
+                        <li>
+                            <a title="{% trans "e-mail" %}">
+                                <i class="entypo-mail"></i>
+                                {{ request.session.user.email }}
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- tabs for the profile links -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="{% url 'account' %}">{% trans "Profile" %}</a></li>
+                        <li><a href="{% url 'edit_account' %}">{% trans "Edit Profile" %}</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+{% endblock %}
