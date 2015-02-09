@@ -21,28 +21,36 @@
 	</Directory>
 
 	Alias /assets "/var/www/Dev-Cloud/dev_cloud/web_service/assets"
-    	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/assets">
-        	Order allow,deny
-        	Options Indexes
-        	Allow from all
-        	IndexOptions FancyIndexing
-    	</Directory>
+	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/assets">
+		Order allow,deny
+		Options Indexes
+		Allow from all
+		IndexOptions FancyIndexing
+	</Directory>
 
-        Alias /static "/var/www/Dev-Cloud/dev_cloud/web_service/static"
-        <Directory "/var/www/Dev-Cloud/dev_cloud/web_service/assets">
-                Order allow,deny
-                Options Indexes
-                Allow from all
-                IndexOptions FancyIndexing
-        </Directory>
+	Alias /media/ "/var/www/Dev-Cloud/dev_cloud/web_service/media/"
+	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/media/">
+			Order allow,deny
+			Options Indexes
+			Allow from all
+			IndexOptions FancyIndexing
+	</Directory>
 
-        Alias /static/admin/ "/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media"
-        <Directory "/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media">
-                Order allow,deny
-                Options Indexes
-                Allow from all
-                IndexOptions FancyIndexing
-        </Directory>
+	Alias /static "/var/www/Dev-Cloud/dev_cloud/web_service/static"
+	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/assets">
+			Order allow,deny
+			Options Indexes
+			Allow from all
+			IndexOptions FancyIndexing
+	</Directory>
+
+	Alias /static/admin/ "/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media"
+	<Directory "/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media">
+			Order allow,deny
+			Options Indexes
+			Allow from all
+			IndexOptions FancyIndexing
+	</Directory>
 
 	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
 	# error, crit, alert, emerg.
