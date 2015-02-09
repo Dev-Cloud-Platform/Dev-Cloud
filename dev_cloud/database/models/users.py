@@ -19,9 +19,15 @@
 
 from __future__ import unicode_literals
 
+from os.path import join
+
 from django.db import models
 
 from core.utils.exception import DevCloudException
+
+
+def get_upload_path(instance, filename):
+    return join('pictures', str(instance.id), filename)
 
 
 class Users(models.Model):
@@ -33,7 +39,7 @@ class Users(models.Model):
     email = models.CharField(unique=True, max_length=255)
     create_time = models.DateTimeField(blank=True, null=True)
     language = models.CharField(max_length=45, blank=True)
-    picture = models.ImageField(blank=True, upload_to='pictures')
+    picture = models.ImageField(blank=True, upload_to=get_upload_path)
     activation_key = models.CharField(max_length=255, blank=True)
     is_active = models.IntegerField(blank=True)
     is_superuser = models.BooleanField(blank=True)
@@ -117,12 +123,12 @@ class Users(models.Model):
 
     @staticmethod
     def save_picture(user, request):
-        session = request.session
         upload_picture = request.FILES['image']
+
         if user.picture is not None:
             user.picture.delete()
+
         user.picture.save(upload_picture.name, upload_picture)
-        session['picture_id'] = user.id
 
     @staticmethod
     def parse_user(user):
