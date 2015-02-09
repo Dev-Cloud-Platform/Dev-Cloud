@@ -17,6 +17,8 @@
 #
 # @COPYRIGHT_end
 import hashlib
+from core.settings import common
+
 from core.utils.auth import update_session
 from core.utils.exception import DevCloudException
 from database.models import Users
@@ -24,7 +26,6 @@ from database.models import Users
 from registration import forms
 from django.utils.translation import ugettext_lazy as _
 from web_service.forms.user.password import EditPasswordForm
-
 
 class EditUserForm(EditPasswordForm):
     """
@@ -42,12 +43,15 @@ class EditUserForm(EditPasswordForm):
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control', 'maxlength': 255}),
                              label=_('Email address'))
 
+    image = forms.ImageField(label=_('Select image'),
+                             required=False)
+
     class Meta:
-        fields = ('first', 'last', 'email', 'new_password', 'password2')
+        fields = ('first', 'last', 'email', 'image', 'new_password', 'password2')
 
     def __init__(self, request=None, *args, **kwargs):
         super(EditUserForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['first', 'last', 'email', 'new_password', 'password2']
+        self.fields.keyOrder = ['first', 'last', 'email', 'image', 'new_password', 'password2']
         self.request = request
         self.instance = request.session['user']
 
@@ -71,19 +75,22 @@ class EditUserForm(EditPasswordForm):
         except Users.DoesNotExist:
             return None
 
-        try:
-            user.name = self.cleaned_data['first']
-            user.lastname = self.cleaned_data['last']
-            user.email = self.cleaned_data['email']
+        # try:
+        user.name = self.cleaned_data['first']
+        user.lastname = self.cleaned_data['last']
+        user.email = self.cleaned_data['email']
 
-            if self.cleaned_data['new_password'] != '' or self.cleaned_data['new_password'] is not None:
-                user.password = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
-                del self.cleaned_data['new_password']
-                del self.cleaned_data['password2']
+        if self.request.FILES.get('image', None) is not None:
+            user.save_picture(user, self.request)
 
-            user.save()
-            update_session(self.request, user)
-        except:
-            raise DevCloudException('user_edit')
+        if len(self.cleaned_data['new_password']):
+            user.password = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
+            del self.cleaned_data['new_password']
+            del self.cleaned_data['password2']
+
+        user.save()
+        update_session(self.request, user)
+        # except:
+        #     raise DevCloudException('user_edit')
 
         return self.cleaned_data

@@ -92,13 +92,4 @@ def update_session(request, user):
     @param user:
     @return:
     """
-    if session_key in request.session:
-        if request.session[session_key] != user.id:
-            # To avoid reusing another user's session, create a new, empty
-            # session if the existing session corresponds to a different
-            # authenticated user.
-            request.session.flush()
-    else:
-        request.session.cycle_key()
-
     request.session['user'] = user.dict

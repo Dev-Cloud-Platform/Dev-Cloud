@@ -111,10 +111,16 @@ class Users(models.Model):
     def set_password(self, password):
         self.password = password
 
+    def delete(self, *args, **kwargs):
+        self.picture.delete()
+        super(Users, self).delete(*args, **kwargs)
+
     @staticmethod
     def save_picture(user, request):
         session = request.session
-        upload_picture = request.FILES['picture']
+        upload_picture = request.FILES['image']
+        if user.picture is not None:
+            user.picture.delete()
         user.picture.save(upload_picture.name, upload_picture)
         session['picture_id'] = user.id
 

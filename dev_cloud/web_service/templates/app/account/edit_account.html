@@ -68,7 +68,7 @@
 
         <section class="profile-info-tabs">
 
-            <form role="form" method="post" class="form-horizontal form-groups-bordered validate" action="">
+            <form role="form" method="post" class="form-horizontal form-groups-bordered validate" enctype="multipart/form-data" action="">
 
                 <div class="row">
                     <div class="col-md-12">
@@ -114,5 +114,6 @@
 
     </div>
 
+    <script src="{{ STATIC_URL }}app/js/fileinput.js"></script>
 
 {% endblock %}

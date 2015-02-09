@@ -107,7 +107,7 @@ class SetPasswordForm(forms.Form):
 
     def clean(self):
         """
-         Validates that a password are the same.
+        Validates that a password are the same.
         @return:
         """
         if 'new_password1' in self.cleaned_data and 'new_password2' in self.cleaned_data:
@@ -141,11 +141,11 @@ class EditPasswordForm(forms.Form):
         Checks if given passwords match.
         @return:
         """
-
         if 'new_password' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['new_password'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_("The two password fields didn't match."))
 
             self.cleaned_data['new_password'] = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
             del self.cleaned_data['password2']
+
         return self.cleaned_data
