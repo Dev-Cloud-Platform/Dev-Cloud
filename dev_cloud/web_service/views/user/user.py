@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from itertools import count
 from django.contrib.sites.models import RequestSite
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -31,7 +32,7 @@ from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key, update_session
 from core.utils.decorators import django_view, lock_screen
 from core.utils.decorators import user_permission
-from database.models import Users
+from database.models import Users, VirtualMachines
 from web_service.forms.user.edit_user import EditUserForm
 from web_service.forms.user.unlock import UnlockForm
 
@@ -68,8 +69,14 @@ def app_view(request, template_name='app/main.html'):
     @param template_name:
     @return:
     """
+    users_amount = Users.objects.count()
+    virtual_machines = VirtualMachines.objects.count()
 
-    return render_to_response(template_name, generate_active('dashboard'), context_instance=RequestContext(request))
+    return render_to_response(template_name,
+                              dict({'users_amount': users_amount,
+                                    'virtual_machines': virtual_machines}.items()
+                                   + generate_active('dashboard').items()),
+                              context_instance=RequestContext(request))
 
 
 @django_view
@@ -167,7 +174,7 @@ def edit_account(request, template_name='app/account/edit_account.html', edit_fo
     @param edit_form:
     @return:
     """
-    instance = request.session.get('user',  None)
+    instance = request.session.get('user', None)
 
     if instance is None:
         raise Http404('a was not found')
