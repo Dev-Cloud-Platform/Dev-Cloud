@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Members" %}{% endblock %}
+
+
+{% block content %}
+
+
+    <ol class="breadcrumb 2">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Members" %}</strong>
+        </li>
+    </ol>
+
+    <div class="row">
+        <div class="col-md-9 col-sm-7">
+            <h2>{% trans "Members" %}</h2>
+        </div>
+    </div>
+
+    <br/>
+
+    <table class="table table-bordered datatable" id="table-3">
+        <thead>
+
+        <tr>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="dynamic">
+        {% for user in users %}
+            <tr>
+                <td>
+                    <!-- Single Member -->
+                    <div class="member-entry">
+
+                        <a class="member-img">
+                            <img src="{% if user.picture != '' %}{{ MEDIA_URL }}{{ user.picture }}{% else %}{{ STATIC_URL }}app/images/no-photo.png{% endif %}" class="img-rounded" />
+                            <i class="entypo-forward"></i>
+                        </a>
+
+                        <div class="member-details">
+                            <h4>
+                                <a href="extra-timeline.html">{{ user.name }} {{ user.lastname }}</a>
+                            </h4>
+
+                            <!-- Details with Icons -->
+                            <div class="row info-list">
+
+                                <div class="col-sm-4">
+                                    <i class="entypo-user"></i>
+                                    <a>{{ user.login }} {% trans "as" %} {% ifequal user.is_superuser True %}{% trans "administarator" %}{% else %}{% trans "user" %} {% endifequal %}</a>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <a href="mailto:{{ user.email }}" title="{% trans "e-mail" %}">
+                                        <i class="entypo-mail"></i>
+                                        {{ user.email }}
+                                    </a>
+                                </div>
+
+
+                                <div class="col-sm-4">
+                                    <a title="{% trans "Registered" %}">
+                                        <i class="entypo-location"></i>
+                                        {{ user.create_time}}
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            var table = $("#table-3").dataTable({
+                "sPaginationType": "bootstrap",
+                "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "bStateSave": true
+            });
+
+        });
+    </script>
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/datatables/responsive/css/datatables.responsive.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/select2/select2-bootstrap.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/select2/select2.css">
+
+    <script src="{{ STATIC_URL }}app/js/jquery.dataTables.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/TableTools.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/dataTables.bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/jquery.dataTables.columnFilter.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/lodash.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/responsive/js/datatables.responsive.js"></script>
+    <script src="{{ STATIC_URL }}app/js/select2/select2.min.js"></script>
+
+{% endblock %}

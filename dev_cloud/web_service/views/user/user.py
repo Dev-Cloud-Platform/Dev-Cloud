@@ -50,6 +50,7 @@ def generate_active(selected_item):
             'mail_box_compose': '',
             'mail_box_view': '',
             'user_activation': '',
+            'members': '',
             'lock_screen': ''}
 
     if selected_item is not None:
@@ -71,20 +72,25 @@ def app_view(request, template_name='app/main.html'):
     return render_to_response(template_name, generate_active('dashboard'), context_instance=RequestContext(request))
 
 
-@ajax
-def ajax_test(request, template_name='app/main.html'):
+@django_view
+@user_permission
+def members(request, template_name='app/members.html'):
     """
-    Ajax test
+    Shows all members.
     @param request:
+    @param template_name:
     @return:
     """
-    # if request.is_ajax():
-    # print "This is ajax"
-    # else:
-    # print "Not ajax"
+    current_site = RequestSite(request)
+    users = Users.objects.all()
 
-    return "karol4"
-    # return render_to_response(template_name, context_instance=RequestContext(request))
+    return render_to_response(template_name,
+                              dict(
+                                  {'users': users,
+                                   'site': current_site,
+                                   'site_name': current_site.name}.items()
+                                  + generate_active('members').items()),
+                              context_instance=RequestContext(request))
 
 
 @django_view

@@ -139,6 +139,12 @@
                 </a>
             </li>
         {% endifequal %}
+            <li class="{{ members }}">
+                <a href="{% url 'members' %}">
+                    <i class="entypo-users"></i>
+                    <span>{% trans "Members" %}</span>
+                </a>
+            </li>
             <li class="{{ lock_screen }}">
                 <a href="{% url 'lock_screen' %}">
                     <i class="entypo-lock"></i>
