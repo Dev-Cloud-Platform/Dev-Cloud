@@ -20,6 +20,7 @@ import logging
 
 from django.contrib.messages import success
 from django.http import HttpResponseRedirect
+from django.http.response import HttpResponseNotAllowed, Http404
 from django.utils.http import urlquote
 
 from core.settings import common
@@ -86,6 +87,29 @@ def user_permission(view_func):
         path = urlquote(request.get_full_path())
         tup = login_url, REDIRECT_FIELD_NAME, path
         return HttpResponseRedirect('%s?%s=%s' % tup)
+    return wrap
+
+
+def admin_permission(view_func):
+    """
+    \b Decorator for views with logged admin permissions.
+    @param view_func:
+    @return:
+    """
+    @user_permission
+    def wrap(request, *args, **kwds):
+        """
+        Returned decorated function.
+        @param request:
+        @param args:
+        @param kwds:
+        @return:
+        """
+
+        if request.session['user']['is_superuser']:
+            return view_func(request, *args, **kwds)
+
+        raise Http404('Access denied')
     return wrap
 
 

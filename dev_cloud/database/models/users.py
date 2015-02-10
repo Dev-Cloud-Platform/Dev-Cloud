@@ -86,6 +86,26 @@ class Users(models.Model):
 
         return d
 
+    @property
+    def ajax_dict(self):
+        """
+        @returns{dict} this User's data for ajax response
+        \n fields:
+        @dictkey{user_id,int} id of this User
+        @dictkey{first,string} first name
+        @dictkey{last,string} last name
+        @dictkey{login,string} login
+        @dictkey{email,string} email
+        @dictkey{act_key,string} activation key's content
+        @dictkey{is_active,bool} true for active User
+        @dictkey{is_superuser,bool} true for User with admin privilidges
+        """
+        d = {'user_id': self.id, 'first': self.name, 'last': self.lastname, 'login': self.login, 'email': self.email,
+             'act_key': self.activation_key or '', 'is_active': self.is_active or 0,
+             'is_superuser': self.is_superuser or 0}
+
+        return d
+
     @staticmethod
     def get(user_id):
         """

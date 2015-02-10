@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load form_tags %}
+
+{% for user in users %}
+    <tr>
+        <td>{{ user.login }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.lastname }}</td>
+        <td>{{ user.email }}</td>
+        <td class="center">
+            {% if user.is_active == 0 %}
+                <span class="badge badge-secondary badge-roundless"><i class="entypo-cancel"></i></span>
+            {% elif user.is_active == 1 %}
+                <span class="badge badge-warning badge-roundless"><i class="entypo-clock"></i></span>
+            {% elif user.is_active == 2 %}
+                <span class="badge badge-success badge-roundless"><i class="entypo-check"></i></span>
+            {% elif user.is_active == 3 %}
+                <span class="badge badge-danger badge-roundless"><i class="entypo-block"></i></span>
+            {% endif %}
+        </td>
+        <td>
+            <a href="javascript:;" onclick="showAjaxModal({{ user.id }});"  class="btn btn-default btn-sm btn-icon icon-left">
+                <i class="entypo-pencil"></i>
+                {% trans "Edit" %}
+            </a>
+
+            <a href="#" class="btn btn-danger btn-sm btn-icon icon-left">
+                <i class="entypo-cancel"></i>
+                {% trans "Delete" %}
+            </a>
+        </td>
+    </tr>
+{% endfor %}

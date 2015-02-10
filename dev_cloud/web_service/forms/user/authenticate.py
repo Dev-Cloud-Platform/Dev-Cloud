@@ -92,6 +92,9 @@ class AuthenticationForm(forms.Form):
         elif self.user_cache.is_active == user_active_states['email_confirmed']:
             raise forms.ValidationError(
                 _("This account is inactive. Please wait for system operator to activate your account."))
+        elif self.user_cache.is_active == user_active_states['blocked']:
+            raise forms.ValidationError(
+                _("This account is blocked. Please contact to system operator to unblock your account."))
 
         if self.request:
             if not self.request.session.test_cookie_worked():

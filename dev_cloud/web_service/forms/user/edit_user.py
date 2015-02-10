@@ -17,9 +17,7 @@
 #
 # @COPYRIGHT_end
 import hashlib
-from core.settings import common
 
-from core.utils.auth import update_session
 from core.utils.exception import DevCloudException
 from database.models import Users
 
@@ -27,10 +25,17 @@ from registration import forms
 from django.utils.translation import ugettext_lazy as _
 from web_service.forms.user.password import EditPasswordForm
 
+
 class EditUserForm(EditPasswordForm):
     """
     Class for <b>edit account</b> form.
     """
+    CHOICES = [
+        ('0', _('Inactive')),
+        ('1', _('Email confirmed')),
+        ('2', _('Ok')),
+        ('3', _('Blocked'))
+        ]
 
     first = forms.CharField(max_length=45,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -46,20 +51,25 @@ class EditUserForm(EditPasswordForm):
     image = forms.ImageField(label=_('Select image'),
                              required=False)
 
-    class Meta:
-        fields = ('first', 'last', 'email', 'image', 'new_password', 'password2')
+    active = forms.ChoiceField(label=_('Activation status'), choices=CHOICES,
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
 
-    def __init__(self, request=None, *args, **kwargs):
+
+
+    class Meta:
+        fields = ('first', 'last', 'email', 'image', 'active', 'new_password', 'password2')
+
+    def __init__(self, request, instance, *args, **kwargs):
         super(EditUserForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['first', 'last', 'email', 'image', 'new_password', 'password2']
+        self.fields.keyOrder = ['first', 'last', 'email', 'image', 'active', 'new_password', 'password2']
+        self.instance = instance
         self.request = request
-        self.instance = request.session['user']
 
         try:
-            pass
             self.fields['first'].initial = self.instance['first']
             self.fields['last'].initial = self.instance['last']
             self.fields['email'].initial = self.instance['email']
+            self.fields['active'].initial = self.instance['is_active']
         except Exception:
             pass
 
@@ -75,22 +85,22 @@ class EditUserForm(EditPasswordForm):
         except Users.DoesNotExist:
             return None
 
-        # try:
-        user.name = self.cleaned_data['first']
-        user.lastname = self.cleaned_data['last']
-        user.email = self.cleaned_data['email']
+        try:
+            user.name = self.cleaned_data['first']
+            user.lastname = self.cleaned_data['last']
+            user.email = self.cleaned_data['email']
+            user.is_active = self.cleaned_data['active']
 
-        if self.request.FILES.get('image', None) is not None:
-            user.save_picture(user, self.request)
+            if self.request.FILES.get('image', None) is not None:
+                user.save_picture(user, self.request)
 
-        if len(self.cleaned_data['new_password']):
-            user.password = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
-            del self.cleaned_data['new_password']
-            del self.cleaned_data['password2']
+            if len(self.cleaned_data['new_password']):
+                user.password = hashlib.sha1(self.cleaned_data['new_password']).hexdigest()
+                del self.cleaned_data['new_password']
+                del self.cleaned_data['password2']
 
-        user.save()
-        update_session(self.request, user)
-        # except:
-        #     raise DevCloudException('user_edit')
+            user.save()
+        except:
+            raise DevCloudException('user_edit')
 
         return self.cleaned_data

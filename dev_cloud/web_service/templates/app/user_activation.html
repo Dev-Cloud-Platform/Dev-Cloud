@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Activation users" %}{% endblock %}
+
+{% block content %}
+
+    <ol class="breadcrumb 2">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Activation" %}</strong>
+        </li>
+    </ol>
+
+    <br />
+
+    <table class="table table-bordered datatable" id="table-3">
+        <thead>
+        <tr class="replace-inputs">
+            <th>{% trans "Login" %}</th>
+            <th>{% trans "Firstname" %}</th>
+            <th>{% trans "Lastname" %}</th>
+            <th>{% trans "E-mail" %}</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr>
+            <th>{% trans "Login" %}</th>
+            <th>{% trans "Firstname" %}</th>
+            <th>{% trans "Lastname" %}</th>
+            <th>{% trans "E-mail" %}</th>
+            <th>{% trans "Active" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </thead>
+        <tbody id="dynamic">
+        {% for user in users %}
+        <tr>
+            <td>{{ user.login }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.lastname }}</td>
+            <td>{{ user.email }}</td>
+            <td class="center">
+                {% if user.is_active == 0 %}
+                <span class="badge badge-secondary badge-roundless"><i class="entypo-cancel"></i></span>
+                {% elif user.is_active == 1 %}
+                    <span class="badge badge-warning badge-roundless"><i class="entypo-clock"></i></span>
+                {% elif user.is_active == 2 %}
+                    <span class="badge badge-success badge-roundless"><i class="entypo-check"></i></span>
+                {% elif user.is_active == 3 %}
+                    <span class="badge badge-danger badge-roundless"><i class="entypo-block"></i></span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="javascript:;" onclick="showAjaxModal({{ user.id }});"  class="btn btn-default btn-sm btn-icon icon-left">
+                    <i class="entypo-pencil"></i>
+                    {% trans "Edit" %}
+                </a>
+
+                <a href="#" class="btn btn-danger btn-sm btn-icon icon-left">
+                    <i class="entypo-cancel"></i>
+                    {% trans "Delete" %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>{% trans "Login" %}</th>
+            <th>{% trans "Firstname" %}</th>
+            <th>{% trans "Lastname" %}</th>
+            <th>{% trans "E-mail" %}</th>
+            <th>{% trans "Active" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function($)
+        {
+            var table = $("#table-3").dataTable({
+                "sPaginationType": "bootstrap",
+                "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "bStateSave": true
+            });
+
+            table.columnFilter({
+                "sPlaceHolder" : "head:after"
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        function showAjaxModal(user_id)
+        {
+            jQuery('#modal-7').modal('show', {backdrop: 'static'});
+            ajaxGet('/main/app/user_activation/' + user_id, function(content){
+                //onSuccess
+                jQuery('#modal-7 .modal-body').html(content);
+            })
+        }
+    </script>
+
+    <br />
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/datatables/responsive/css/datatables.responsive.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/select2/select2-bootstrap.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/select2/select2.css">
+
+    <script src="{{ STATIC_URL }}app/js/jquery.dataTables.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/TableTools.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/dataTables.bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/jquery.dataTables.columnFilter.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/lodash.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/datatables/responsive/js/datatables.responsive.js"></script>
+    <script src="{{ STATIC_URL }}app/js/select2/select2.min.js"></script>
+
+{% endblock %}
+
+{% block modal %}
+
+    <!-- Modal 7 (Ajax Modal)-->
+    <div class="modal fade" id="modal-7">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{% trans "User Edit" %}</h4>
+                </div>
+
+                <div class="modal-body">
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

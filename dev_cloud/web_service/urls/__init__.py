@@ -18,19 +18,19 @@
 # @COPYRIGHT_end
 from django.conf import settings
 from django.conf.urls import patterns, url, include
-from django.contrib import admin
+from django.contrib import admin as admin_page
 
 from core.utils.views import direct_to_template
 
 
-admin.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
+admin_page.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
 
 urlpatterns = patterns('',
                        url(r'^$', direct_to_template, {'template_name': 'main/home.html'}, name='mai_main'),
                        (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': ('web_service',), }),
                        (r'', include('web_service.urls.guest')),
                        (r'', include('web_service.urls.user')),
-                       )
+                       (r'', include('web_service.urls.admin')),)
 
 
 # if settings.DEBUG:
@@ -40,5 +40,5 @@ urlpatterns += patterns('',
                         # to INSTALLED_APPS to enable admin documentation:
                         (r'^admin/doc/', include('django.contrib.admindocs.urls')),
                         # Uncomment the next line to enable the admin:
-                        (r'^admin/', include(admin.site.urls)),
+                        (r'^admin/', include(admin_page.site.urls)),
                         )

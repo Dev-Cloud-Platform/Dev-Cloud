@@ -28,7 +28,7 @@ from django_ajax.decorators import ajax
 import re
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
-from core.utils.auth import session_key
+from core.utils.auth import session_key, update_session
 from core.utils.decorators import django_view, lock_screen
 from core.utils.decorators import user_permission
 from database.models import Users
@@ -49,6 +49,7 @@ def generate_active(selected_item):
             'mail_box_inbox': '',
             'mail_box_compose': '',
             'mail_box_view': '',
+            'user_activation': '',
             'lock_screen': ''}
 
     if selected_item is not None:
@@ -166,11 +167,12 @@ def edit_account(request, template_name='app/account/edit_account.html', edit_fo
         raise Http404('a was not found')
 
     if request.method == 'POST':
-        form = edit_form(request, data=request.POST)
+        form = edit_form(request, request.session['user'], data=request.POST)
         if form.is_valid():
-            pass
+            user = Users.objects.get(login=request.session['user']['login'])
+            update_session(request, user)
     else:
-        form = edit_form(request)
+        form = edit_form(request, request.session['user'])
 
     current_site = RequestSite(request)
 

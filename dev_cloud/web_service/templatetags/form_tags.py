@@ -63,10 +63,10 @@ def show_loginform(form):
 
 
 @register.inclusion_tag('tags/accountForm.html')
-def show_accountform(form):
+def show_accountform(form, is_superuser):
     """
     Renders given form without marking required fields.
     @param form:
     @return:
     """
-    return {'form': form, 'required_fields': False}
+    return {'form': form, 'required_fields': False, 'is_superuser': is_superuser}

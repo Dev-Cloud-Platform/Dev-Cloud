@@ -131,6 +131,14 @@
                     </li>
                 </ul>
             </li>
+        {% ifequal request.session.user.is_superuser True %}
+            <li class="{{ user_activation }}">
+                <a href="{% url 'user_activation' %}">
+                    <i class="entypo-user-add"></i>
+                    <span>{% trans "User activation" %}</span>
+                </a>
+            </li>
+        {% endifequal %}
             <li class="{{ lock_screen }}">
                 <a href="{% url 'lock_screen' %}">
                     <i class="entypo-lock"></i>
@@ -576,6 +584,9 @@
     </div>
 
     {% include "app/chat.html" %}
+
+    {% block modal %}
+    {% endblock %}
 
     {% include "app/bottom_scripts.html" %}
 

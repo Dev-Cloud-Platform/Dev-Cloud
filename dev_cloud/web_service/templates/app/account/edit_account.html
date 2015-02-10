@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load form_tags %}
 
-{% block title %}{{ block.super }} | {% trans "Account details" %}{% endblock %}
+{% block title %}{{ block.super }} | {% trans "Edit details" %}{% endblock %}
 
 {% block content %}
     <ol class="breadcrumb 2">
@@ -89,7 +89,7 @@
                             <div class="panel-body">
 
                                 {% csrf_token %}
-                                {% show_accountform form %}
+                                {% show_accountform form False %}
 
                             </div>
 

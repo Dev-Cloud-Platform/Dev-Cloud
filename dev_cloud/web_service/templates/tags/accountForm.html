@@ -4,9 +4,11 @@
 
     <div class="form-group">
 
-        <label for="field-1" class="col-sm-3 control-label">{{ field.label_tag }}</label>
 
         {% if field.label == "Select image" %}
+
+            <label for="field-1" class="col-sm-3 control-label">{{ field.label_tag }}</label>
+
             <div class="col-sm-5">
                 <div class="fileinput fileinput-new" data-provides="fileinput">
                     <div class="fileinput-new thumbnail" style="width: 140px; height: 140px;" data-trigger="fileinput">
@@ -25,10 +27,22 @@
             </div>
 
         {% else %}
+            {% if field.label == "Activation status" %}
+                {% if is_superuser == True %}
+                    <label for="field-1" class="col-sm-3 control-label">{{ field.label_tag }}</label>
 
-            <div class="col-sm-5">
-                {{ field|safe }}
-            </div>
+                    <div class="col-sm-5">
+                        {{ field|safe }}
+                    </div>
+                {% endif %}
+            {% else %}
+                <label for="field-1" class="col-sm-3 control-label">{{ field.label_tag }}</label>
+
+                <div class="col-sm-5">
+                    {{ field|safe }}
+                </div>
+            {% endif %}
+
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}

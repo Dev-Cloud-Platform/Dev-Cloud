@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load form_tags %}
+
+<form id="form" role="form" method="post" class="form-horizontal form-groups-bordered validate" enctype="multipart/form-data" action="">
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="panel panel-primary" data-collapsed="0">
+
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        {% trans "Account Settings" %}
+                    </div>
+
+                    <div class="panel-options">
+                        <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                        <a href="#" data-rel="reload"><i class="entypo-arrows-ccw"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+
+                    {% csrf_token %}
+                    {% show_accountform form is_superuser %}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="reset" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+        <button type="submit" class="btn btn-info">{% trans "Save changes" %}</button>
+    </div>
+
+</form>
+
+<script src="{{ STATIC_URL }}app/js/fileinput.js"></script>
+
+<script type="text/javascript">
+    $(function() {
+        $('form#form').on('submit', function(e) {
+            ajaxPost('/main/app/user_activation/' + {{ id }} +'/', $('form#form').serialize(), function(content){
+                //onSuccess
+                show_loading_bar({
+                    pct: 78,
+                    finish: function(pct)
+                    {
+                        jQuery('#modal-7').modal('toggle');
+                        jQuery('tbody#dynamic').html(content);
+                        toastr.success('{{ login }} {% trans "successfully updated" %}')
+                        hide_loading_bar();
+                    }
+                });
+
+            });
+            e.preventDefault();
+        });
+    });
+</script>
