@@ -58,7 +58,9 @@ def ajax_activation_edit(request, id, template_name='app/user_activation_modal.h
     """
     Ajax edits user details by administrator.
     @param request:
-    @param user_id:
+    @param id:
+    @param template_name:
+    @param edit_form:
     @return:
     """
     user = Users.objects.get(id=id)
@@ -82,3 +84,33 @@ def ajax_activation_edit(request, id, template_name='app/user_activation_modal.h
             return render_to_response(template_name, dict(
                 {'form': form, 'site': current_site, 'id': id, 'is_superuser': request.session['user']['is_superuser'],
                  'site_name': current_site.name}.items()), context_instance=RequestContext(request))
+
+
+@ajax
+@admin_permission
+def ajax_activation_delete(request, id, template_name='app/user_activation_table.html'):
+    """
+    Ajax deletes user by administrator.
+    @param request:
+    @param id:
+    @param template_name:
+    @return:
+    """
+    try:
+        user = Users.objects.get(id=id)
+        user.delete()
+        status = 'ok'
+    except Exception:
+        status = 'fail'
+
+    current_site = RequestSite(request)
+    users = Users.objects.all()
+
+    return render_to_response(template_name,
+                              dict(
+                                  {'users': users,
+                                   'delete': status,
+                                   'site': current_site,
+                                   'site_name': current_site.name}.items()
+                                  + generate_active('user_activation').items()),
+                              context_instance=RequestContext(request))

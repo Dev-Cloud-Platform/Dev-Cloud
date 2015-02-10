@@ -55,12 +55,12 @@
                 {% endif %}
             </td>
             <td>
-                <a href="javascript:;" onclick="showAjaxModal({{ user.id }});"  class="btn btn-default btn-sm btn-icon icon-left">
+                <a href="javascript:;" onclick="showAjaxModal({{ user.id }});" class="btn btn-default btn-sm btn-icon icon-left">
                     <i class="entypo-pencil"></i>
                     {% trans "Edit" %}
                 </a>
 
-                <a href="#" class="btn btn-danger btn-sm btn-icon icon-left">
+                <a href="javascript:;" onclick="deleteUser({{ user.id }}, '{{ user.login }}');" class="btn btn-danger btn-sm btn-icon icon-left">
                     <i class="entypo-cancel"></i>
                     {% trans "Delete" %}
                 </a>
@@ -102,6 +102,24 @@
             ajaxGet('/main/app/user_activation/' + user_id, function(content){
                 //onSuccess
                 jQuery('#modal-7 .modal-body').html(content);
+            })
+        }
+    </script>
+
+    <script type="text/javascript">
+        function deleteUser(user_id, user_login)
+        {
+            ajaxGet('/main/app/user_activation/delete/' + user_id, function(content){
+                //onSuccess
+                show_loading_bar({
+                    pct: 78,
+                    finish: function(pct)
+                    {
+                        jQuery('tbody#dynamic').html(content);
+                        toastr.success(user_login + ' {% trans "successfully deleted" %}')
+                        hide_loading_bar();
+                    }
+                });
             })
         }
     </script>

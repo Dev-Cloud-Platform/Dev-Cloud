@@ -24,7 +24,9 @@ from web_service.views.admin.user import user_activation, ajax_activation_edit, 
 main_patterns = patterns('web_service.views.user.user',
                          url(r'^app/user_activation/$', admin_permission(user_activation), name='user_activation'),
                          url(r'^app/user_activation/(?P<id>[0-9]+)/$', admin_permission(ajax_activation_edit),
-                             name='ajax_activation_edit'))
+                             name='ajax_activation_edit'),
+                         url(r'^app/user_activation/delete/(?P<id>[0-9]+)/$', admin_permission(ajax_activation_delete),
+                             name='ajax_activation_delete'))
 
 urlpatterns = patterns('',
                        url(r'^main/', include(main_patterns)))
