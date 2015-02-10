@@ -1,0 +1,80 @@
+{% load i18n %}
+
+{% if request.session.user.is_superuser == True %}
+
+    {% extends "base.html" %}
+
+    {% block title %}Dev Cloud - 404 Error{% endblock %}
+
+    {% block content %}
+    <div class="main-content">
+        <div class="page-error-404">
+
+
+            <div class="error-symbol">
+                <i class="entypo-attention"></i>
+            </div>
+
+            <div class="error-text">
+                <h2>404</h2>
+                <p>{% trans "Page not found!" %}</p>
+            </div>
+
+            <hr />
+
+            <div class="error-text">
+
+                {% trans "Search Pages:" %}
+
+                <br />
+                <br />
+
+                <div class="input-group minimal">
+                    <div class="input-group-addon">
+                        <i class="entypo-search"></i>
+                    </div>
+
+                    <input type="text" class="form-control" placeholder="{% trans "Search anything..." %}" />
+                </div>
+
+            </div>
+
+        </div>	</div>
+    {% endblock %}
+{% else %}
+    {% extends "main/base.html" %}
+
+    {% block title %}Dev Cloud - 404 Error{% endblock %}
+    {% block body_class %}class="login-page"{% endblock %}
+    {% block header_class %}class="login"{% endblock %}
+
+    {% block header %}
+        <div class="message">
+            <div class="row">
+                <div class="small-12 columns">
+                    <div class="message-intro">
+                        <span class="message-line"></span>
+                        <p>Error 404</p>
+                        <span class="message-line"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block content %}
+
+        <div class="login-container">
+            <div class="row">
+                <div class="small-12 large-7 large-centered medium-7 medium-centered columns">
+                    <div class="login-form">
+                        <h1>404</h1>
+                        <p>{% trans "Page not found!" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {%  endblock %}
+{% endif %}
+
