@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import django
 from django.conf import settings
 from django.conf.urls import patterns, url, include
 from django.contrib import admin as admin_page
@@ -32,7 +33,7 @@ urlpatterns = patterns('',
                        (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': ('web_service',), }),
                        (r'', include('web_service.urls.guest')),
                        (r'', include('web_service.urls.user')),
-                       (r'', include('web_service.urls.admin')),)
+                       (r'', include('web_service.urls.admin')))
 
 
 # if settings.DEBUG:
@@ -42,8 +43,8 @@ urlpatterns += patterns('',
                         # to INSTALLED_APPS to enable admin documentation:
                         (r'^admin/doc/', include('django.contrib.admindocs.urls')),
                         # Uncomment the next line to enable the admin:
-                        (r'^admin/', include(admin_page.site.urls)),
-                        )
+                        (r'^admin/', include(admin_page.site.urls)))
 
-handler404 = bad_request
-handler500 = server_error
+
+django.conf.urls.handler404 = bad_request
+django.conf.urls.handler500 = server_error

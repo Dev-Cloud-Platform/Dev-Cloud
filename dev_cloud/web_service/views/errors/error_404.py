@@ -18,6 +18,8 @@
 # @COPYRIGHT_end
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from core.utils.auth import session_key
+from database.models import Users
 
 
 def bad_request(request, template_name='404.html'):
@@ -27,4 +29,12 @@ def bad_request(request, template_name='404.html'):
     @param template_name: 404.html
     @return:
     """
+    try:
+        user = Users.objects.get(id=int(request.session[session_key]))
+    except Exception:
+        user = None
+
+    if user:
+        template_name = '404_logged.html'
+
     return render_to_response(template_name, context_instance=RequestContext(request))
