@@ -18,6 +18,8 @@
 # @COPYRIGHT_end
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from core.utils.auth import session_key
+from database.models import Users
 
 
 def server_error(request, template_name='500.html'):
@@ -27,4 +29,12 @@ def server_error(request, template_name='500.html'):
     @param template_name: 505.html
     @return:
     """
+    try:
+        user = Users.objects.get(id=int(request.session[session_key]))
+    except Exception:
+        user = None
+
+    if user:
+        template_name = '505_logged.html'
+
     return render_to_response(template_name, context_instance=RequestContext(request))

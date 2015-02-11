@@ -1,0 +1,39 @@
+{% extends "main/base.html" %}
+{% load i18n %}
+
+{% block title %}Dev Cloud - 500 Error{% endblock %}
+{% block body_class %}class="login-page"{% endblock %}
+{% block header_class %}class="login"{% endblock %}
+
+{% block header %}
+    <div class="message">
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="message-intro">
+                    <span class="message-line"></span>
+
+                    <p>Server error</p>
+                    <span class="message-line"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="login-container">
+        <div class="row">
+            <div class="small-12 large-7 large-centered medium-7 medium-centered columns">
+                <div class="login-form">
+                    <h1>500</h1>
+
+                    <p>{% trans "Server error!" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
