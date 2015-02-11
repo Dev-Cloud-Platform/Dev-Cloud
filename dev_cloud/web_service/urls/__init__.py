@@ -21,6 +21,8 @@ from django.conf.urls import patterns, url, include
 from django.contrib import admin as admin_page
 
 from core.utils.views import direct_to_template
+from web_service.views.errors.error_404 import bad_request
+from web_service.views.errors.error_500 import server_error
 
 
 admin_page.autodiscover() # See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#hooking-adminsite-instances-into-your-urlconf
@@ -42,3 +44,6 @@ urlpatterns += patterns('',
                         # Uncomment the next line to enable the admin:
                         (r'^admin/', include(admin_page.site.urls)),
                         )
+
+handler404 = bad_request
+handler500 = server_error
