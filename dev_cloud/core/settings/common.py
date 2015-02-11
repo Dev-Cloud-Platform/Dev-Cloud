@@ -283,6 +283,9 @@ THIRD_PARTY_APPS = (
 
     # Fast and easy AJAX libraries for django projects:
     'django_ajax',
+
+    # Django REST framework to build Web APIs:
+    'rest_framework',
 )
 
 LOCAL_APPS = (

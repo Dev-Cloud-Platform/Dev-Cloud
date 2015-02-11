@@ -13,5 +13,8 @@ mock>=1.0.1
 selenium>=2.44.0
 unittest2>=0.8.0
 djangoajax>=2.2.13
+djangorestframework>=3.0.5
+markdown>=2.5.2
+django_filter>=0.9.2
 PIL>=1.1.7
 
