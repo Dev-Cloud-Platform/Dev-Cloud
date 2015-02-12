@@ -17,28 +17,24 @@
 #
 # @COPYRIGHT_end
 
-import logging
+import json
+from newrelic.packages import requests
+from core.settings import config
 
-LOG_LEVEL = logging.DEBUG
+username = config.CLM_LOGIN
+password = config.CLM_PASSWORD
+adres_clm = config.CLM_ADDRESS
 
-LOG_DIR = '/var/log/DevCloud/'
+payload = {}
 
-DEV_CLOUD_DATA = {
-    'site_domain': '192.245.169.169',   # Web interface address for activation link
-    'site_name': 'Dev Cloud'            # System name in emails
-}
+r = requests.post(adres_clm + '/guest/cluster/list_names/', data=json.dumps(payload))
+print r.status_code
+print r.text
 
-AWS_ACCESS_KEY_ID = ''
+for cluster in json.loads(r.text)['data']:
+    print 'id:', cluster['cluster_id'], 'name:', cluster['name']
 
-AWS_SECRET_ACCESS_KEY = ''
-
-CLM_LOGIN = ''
-
-CLM_PASSWORD = ''
-
-CLM_ADDRESS = 'http://www.cloud.ifj.edu.pl:8000/'
-
-########## SECRET CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = '54tdc1@#%r8+(#s4s03w(26u8l7x*l=us(hfcgwn^xw6^-32rh'
-########## END SECRET CONFIGURATION
+payload = {'login': username, 'password': password, 'cm_id': 1}
+r = requests.post(adres_clm + '/user/key/get_list/', data=json.dumps(payload))
+print r.status_code
+print r.text

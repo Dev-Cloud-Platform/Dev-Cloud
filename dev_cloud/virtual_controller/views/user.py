@@ -16,29 +16,14 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from rest_framework import viewsets
+from database.models import Users
+from virtual_controller.serializers.users_serializer import UserSerializer
 
-import logging
 
-LOG_LEVEL = logging.DEBUG
-
-LOG_DIR = '/var/log/DevCloud/'
-
-DEV_CLOUD_DATA = {
-    'site_domain': '192.245.169.169',   # Web interface address for activation link
-    'site_name': 'Dev Cloud'            # System name in emails
-}
-
-AWS_ACCESS_KEY_ID = ''
-
-AWS_SECRET_ACCESS_KEY = ''
-
-CLM_LOGIN = ''
-
-CLM_PASSWORD = ''
-
-CLM_ADDRESS = 'http://www.cloud.ifj.edu.pl:8000/'
-
-########## SECRET CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = '54tdc1@#%r8+(#s4s03w(26u8l7x*l=us(hfcgwn^xw6^-32rh'
-########## END SECRET CONFIGURATION
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Users.objects.all()
+    serializer_class = UserSerializer

@@ -1,12 +1,12 @@
 {% load i18n %}
 
-<fieldset class="noBorder">
     {% for field in form %}
         {% if field.label == "Recaptcha" %}
-            <center><div>{{ field|safe }}</div></center>
+            <div class="fieldset align_center"><center>{{ field|safe }}</center></div>
             {% if field.errors %}
                 {{ field.errors }}
             {% endif %}
+            </br>
         {% else %}
             <div>
 				<span class="labels">
@@ -34,4 +34,3 @@
     {% endfor %}
     {{ form.non_field_errors }}
     <div class="clear"></div>
-</fieldset>
