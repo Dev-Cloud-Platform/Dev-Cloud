@@ -26,4 +26,6 @@ from roles import Roles
 from template_instances import TemplateInstances
 from users import Users
 from users_roles import UsersInRoles
+from tasks import Tasks
+from notifications import Notifications
 from virtual_machines import VirtualMachines

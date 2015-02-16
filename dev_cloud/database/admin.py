@@ -25,12 +25,16 @@ from models.roles import Roles
 from models.template_instances import TemplateInstances
 from models.users import Users
 from models.users_roles import UsersInRoles
+from models.tasks import Tasks
+from models.notifications import Notifications
 from models.virtual_machines import VirtualMachines
+
 
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ('application_name', 'description', 'update_time')
     search_fields = ('application_name', 'description')
     list_filter = ('update_time',)
+
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('login', 'email', 'create_time', 'last_activity')
@@ -44,4 +48,6 @@ admin.site.register(Roles)
 admin.site.register(TemplateInstances)
 admin.site.register(Users, UserAdmin)
 admin.site.register(UsersInRoles)
+admin.site.register(Tasks)
+admin.site.register(Notifications)
 admin.site.register(VirtualMachines)

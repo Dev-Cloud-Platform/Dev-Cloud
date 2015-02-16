@@ -285,7 +285,7 @@ THIRD_PARTY_APPS = (
     'django_ajax',
 
     # Django REST framework to build Web APIs:
-    # 'rest_framework',
+    'rest_framework',
 )
 
 LOCAL_APPS = (

@@ -23,11 +23,11 @@ from core.settings import config
 
 username = config.CLM_LOGIN
 password = config.CLM_PASSWORD
-adres_clm = config.CLM_ADDRESS
+address_clm = config.CLM_ADDRESS
 
 payload = {}
 
-r = requests.post(adres_clm + '/guest/cluster/list_names/', data=json.dumps(payload))
+r = requests.post(address_clm + '/guest/cluster/list_names/', data=json.dumps(payload))
 print r.status_code
 print r.text
 
@@ -35,6 +35,6 @@ for cluster in json.loads(r.text)['data']:
     print 'id:', cluster['cluster_id'], 'name:', cluster['name']
 
 payload = {'login': username, 'password': password, 'cm_id': 1}
-r = requests.post(adres_clm + '/user/key/get_list/', data=json.dumps(payload))
+r = requests.post(address_clm + '/user/key/get_list/', data=json.dumps(payload))
 print r.status_code
 print r.text

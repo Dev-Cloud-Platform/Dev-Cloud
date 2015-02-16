@@ -35,6 +35,6 @@ def server_error(request, template_name='500.html'):
         user = None
 
     if user:
-        template_name = '505_logged.html'
+        template_name = '500_logged.html'
 
     return render_to_response(template_name, context_instance=RequestContext(request))

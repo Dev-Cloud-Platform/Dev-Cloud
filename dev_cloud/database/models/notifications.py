@@ -16,28 +16,22 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-
 from __future__ import unicode_literals
 
 from django.db import models
-# from djcelery import models
-
-from applications import Applications
-from virtual_machines import VirtualMachines
-from users import Users
+from database.models import Users
 
 
-class InstalledApplications(models.Model):
-    installed_app_id = models.IntegerField(primary_key=True)
-    workspace = models.CharField(max_length=45, blank=True)
-    clx_ip = models.CharField(max_length=45, blank=True)
-    public_port = models.IntegerField(blank=True, null=True)
-    private_port = models.IntegerField(blank=True, null=True)
+class Notifications(models.Model):
+    id = models.IntegerField(primary_key=True)
+    notification_name = models.CharField(max_length=255)
+    notification_information = models.CharField(max_length=255)
+    category = models.IntegerField(blank=True)
+    is_read = models.IntegerField(blank=True)
+    create_time = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(Users)
-    application = models.ForeignKey(Applications)
-    virtual_machine = models.ForeignKey(VirtualMachines)
 
     class Meta:
         managed = False
-        db_table = 'Installed_applications'
+        db_table = 'Notifications'
         # app_label = 'database'

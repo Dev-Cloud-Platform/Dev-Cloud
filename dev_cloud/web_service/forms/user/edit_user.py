@@ -35,7 +35,7 @@ class EditUserForm(EditPasswordForm):
         ('1', _('Email confirmed')),
         ('2', _('Ok')),
         ('3', _('Blocked'))
-        ]
+    ]
 
     first = forms.CharField(max_length=45,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -51,10 +51,8 @@ class EditUserForm(EditPasswordForm):
     image = forms.ImageField(label=_('Select image'),
                              required=False)
 
-    active = forms.ChoiceField(label=_('Activation status'), choices=CHOICES,
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-
-
+    active = forms.ChoiceField(label=_('Activation status'), choices=CHOICES, required=False,
+                               widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         fields = ('first', 'last', 'email', 'image', 'active', 'new_password', 'password2')
@@ -89,7 +87,12 @@ class EditUserForm(EditPasswordForm):
             user.name = self.cleaned_data['first']
             user.lastname = self.cleaned_data['last']
             user.email = self.cleaned_data['email']
-            user.is_active = self.cleaned_data['active']
+
+            if len(self.cleaned_data['active']):
+                user.is_active = self.cleaned_data['active']
+
+            print str(self.request)
+            print str(self.request.FILES)
 
             if self.request.FILES.get('image', None) is not None:
                 user.save_picture(user, self.request)
