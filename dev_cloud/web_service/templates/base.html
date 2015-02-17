@@ -80,12 +80,14 @@
                 </a>
                 <ul>
                     <li class="{{ create_env_own }}">
-                        <a href="{% url 'app_main' %}">
+                        <a href="{% url 'personalized_environment' %}">
+                            <i class="entypo-flow-tree"></i>
                             <span>{% trans "Personalized" %}</span>
                         </a>
                     </li>
                     <li class="{{ create_env_pre }}">
                         <a href="{% url 'app_main' %}">
+                            <i class="entypo-install"></i>
                             <span>{% trans "Predefined" %}</span>
                         </a>
                     </li>

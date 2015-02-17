@@ -16,9 +16,4 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.conf.urls import patterns, include
 
-
-urlpatterns = patterns('',
-                       (r'', include('web_service.urls.user.user')),
-                       (r'', include('web_service.urls.user.environment')))

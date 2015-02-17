@@ -16,9 +16,15 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.conf.urls import patterns, include
+from django.conf.urls import patterns, url, include
+from core.utils.decorators import user_permission
+from web_service.views.user.enviroment import wizard_setup, generate_dependencies
 
+main_patterns = patterns('web_service.views.user.enviroment',
+                         url(r'^app/create/environment/$', user_permission(wizard_setup), name='personalized_environment'),
+                         url(r'^app/create/environment/technology/(?P<technology>\w+)/$',
+                             user_permission(generate_dependencies),
+                             name='generate_dependencies'))
 
 urlpatterns = patterns('',
-                       (r'', include('web_service.urls.user.user')),
-                       (r'', include('web_service.urls.user.environment')))
+                       url(r'^main/', include(main_patterns)))

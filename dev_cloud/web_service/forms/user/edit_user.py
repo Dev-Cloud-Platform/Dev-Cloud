@@ -91,9 +91,6 @@ class EditUserForm(EditPasswordForm):
             if len(self.cleaned_data['active']):
                 user.is_active = self.cleaned_data['active']
 
-            print str(self.request)
-            print str(self.request.FILES)
-
             if self.request.FILES.get('image', None) is not None:
                 user.save_picture(user, self.request)
 

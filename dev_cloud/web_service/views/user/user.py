@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from itertools import count
+
 from django.contrib.sites.models import RequestSite
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -25,7 +25,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django_ajax.decorators import ajax
+
 import re
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME

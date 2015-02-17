@@ -70,3 +70,4 @@ def show_accountform(form, is_superuser):
     @return:
     """
     return {'form': form, 'required_fields': False, 'is_superuser': is_superuser}
+

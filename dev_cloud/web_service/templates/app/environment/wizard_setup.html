@@ -1,0 +1,252 @@
+{% extends "app/environment/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Personalized environment" %}{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb 2">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Wizard setup" %}</strong>
+        </li>
+    </ol>
+
+    <h2>{% trans "Wizard setup" %}</h2>
+
+    <br/>
+
+    <div class="well well-sm">
+        <h4>{% trans "Please fill the details to create new environment." %}</h4>
+    </div>
+
+    <form id="rootwizard-2" method="post" action="" class="form-wizard validate">
+
+        <div class="steps-progress">
+            <div class="progress-indicator"></div>
+        </div>
+
+        <ul>
+            <li class="active">
+                <a data-toggle="tab"><span>1</span>{% trans "Select technology" %}</a>
+            </li>
+            <li>
+                <a data-toggle="tab"><span>2</span>{% trans "Customize" %}</a>
+            </li>
+            <li>
+                <a data-toggle="tab"><span>3</span>{% trans "Define environment" %}</a>
+            </li>
+            <li>
+                <a data-toggle="tab"><span>4</span>{% trans "Deploy" %}</a>
+            </li>
+        </ul>
+
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab2-1">
+                <div class="row panel panel-primary">
+
+                    <div class="col-sm-1"></div>
+
+                    <div class="col-sm-2">
+                        <div class="pager">
+                            <a class="member-img">
+                                <img src="{{ STATIC_URL }}app/images/technology/java.png"
+                                     class="img-responsive img-rounded"/>
+                            </a>
+
+                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="java"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="pager">
+                            <a class="member-img">
+                                <img src="{{ STATIC_URL }}app/images/technology/php.png"
+                                     class="img-responsive img-rounded"/>
+                            </a>
+
+                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="php"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="pager">
+                            <a class="member-img">
+                                <img src="{{ STATIC_URL }}app/images/technology/ruby.png"
+                                     class="img-responsive img-rounded"/>
+                            </a>
+
+                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="ruby"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-2">
+                        <div class="pager">
+                            <a class="member-img">
+                                <img src="{{ STATIC_URL }}app/images/technology/node.png"
+                                     class="img-responsive  img-rounded"/>
+                            </a>
+
+                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="node"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="pager">
+                            <a class="member-img">
+                                <img src="{{ STATIC_URL }}app/images/technology/python.png"
+                                     class="img-responsive  img-rounded"/>
+                            </a>
+
+                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="python"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1"></div>
+
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab2-2">
+
+                <div class="row">
+
+
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab2-3">
+
+                <strong>{% trans "Define environment" %}</strong>
+                <br/>
+                <br/>
+
+
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="full_name">{% trans "Environment Name" %}</label>
+                            <input class="form-control" name="full_name" id="full_name" data-validate="required"
+                                   placeholder="Your full name"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="birthdate">Date of Birth</label>
+                            <input class="form-control" name="birthdate" id="birthdate" data-validate="required"
+                                   data-mask="date" placeholder="Pre-formatted birth date"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab2-4">
+
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Include Services</label>
+
+
+                            <select multiple="multiple" name="my-select[]" class="form-control multi-select">
+                                <option value="1">Web Builder</option>
+                                <option value="2" selected>Server Side Scripting</option>
+                                <option value="3">Secure Connection</option>
+                                <option value="4" selected>Database Access</option>
+                                <option value="5" selected>Email</option>
+                                <option value="6">eCommerce</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-group">
+                    <div class="checkbox checkbox-replace">
+                        <input type="checkbox" name="chk-rules" id="chk-rules" data-validate="required"
+                               data-message-message="You must accept rules in order to complete this registration.">
+                        <label for="chk-rules">By registering I accept terms and conditions.</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Finish Registration</button>
+                </div>
+
+            </div>
+
+            <ul class="pager wizard">
+                <li class="previous">
+                    <a href="javascript:;" onclick="buildAll()"><i class="entypo-left-open"></i> {% trans "Previous" %}</a>
+                </li>
+
+                <li class="next">
+                    <a href="javascript:;" onclick="buildAll()">{% trans "Next" %} <i class="entypo-right-open"></i></a>
+                </li>
+            </ul>
+        </div>
+
+    </form>
+
+    <script type="text/javascript">
+        function generateDependencies() {
+            var technology = $(".switch-on :input").val()
+            ajaxGet('/main/app/create/environment/technology/' + technology, function (content) {
+                //onSuccess
+                console.log(content)
+            })
+        }
+    </script>
+
+    <script type="text/javascript">
+        function buildAll() {
+            generateDependencies();
+
+{#            ajaxGet('/main/app/environment/technology/' + technology, function (content) {#}
+{#                //onSuccess#}
+{#                alert("works")#}
+{#            })#}
+        }
+    </script>
+
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/selectboxit/jquery.selectBoxIt.css">
+
+    <script src="{{ STATIC_URL }}app/js/jquery.bootstrap.wizard.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.validate.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.inputmask.bundle.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/selectboxit/jquery.selectBoxIt.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/bootstrap-datepicker.js"></script>
+    <script src="{{ STATIC_URL }}app/js/bootstrap-switch.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.multi-select.js"></script>
+
+{% endblock %}
