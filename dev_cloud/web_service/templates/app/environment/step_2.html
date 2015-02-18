@@ -1,0 +1,132 @@
+{% load i18n %}
+{% load form_tags %}
+
+<div class="row">
+
+    <div class="row draggable-portlets">
+
+
+        <div class="col-md-6">
+
+            <h2>{% trans "Available apps" %}</h2>
+
+            <div class="sorted">
+
+                <h2><small>{% trans "Applications Server" %}</small></h2>
+                {% for application_server in applications_server %}
+
+                    <!-- panel head -->
+                    <a class="member-img">
+                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_server }}/file/icon.svg"
+                             class="img-rounded panel-heading"/>
+                        <h4>{{ application_server }}</h4>
+                    </a>
+
+                {% endfor %}
+
+                <h2><small>{% trans "Applications Cache" %}</small></h2>
+                {% for application_cache in applications_cache %}
+
+                    <!-- panel head -->
+                    <a class="member-img">
+                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_cache }}/file/icon.svg"
+                             class="img-rounded panel-heading"/>
+                        <h4>{{ application_cache }}</h4>
+                    </a>
+
+                {% endfor %}
+
+                <h2><small>{% trans "Applications SQL" %}</small></h2>
+                {% for application_SQL in applications_SQL %}
+
+                    <!-- panel head -->
+                    <a class="member-img">
+                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_SQL }}/file/icon.svg"
+                             class="img-rounded panel-heading"/>
+                        <h4>{{ application_SQL }}</h4>
+                    </a>
+
+                {% endfor %}
+
+                <h2><small>{% trans "Applications NoSQL" %}</small></h2>
+                {% for application_NoSQL in applications_NoSQL %}
+
+                    <!-- panel head -->
+                    <a class="member-img">
+                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_NoSQL }}/file/icon.svg"
+                             class="img-rounded panel-heading"/>
+                        <h4>{{ application_NoSQL }}</h4>
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <h2>{% trans "Selected apps" %}</h2>
+
+            <div id="selected_apps" class="sorted">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+{#    <div class="col-sm-3">#}
+{##}
+{##}
+{#        <div class="member-entry">#}
+{#            {% for application_server in applications_server %}#}
+{##}
+                {#            <a class="member-img">#}
+{#                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_server }}/file/icon.svg"#}
+{#                     class="img-rounded"/>#}
+                {#            </a>#}
+{##}
+{#                <div class="row info-list">#}
+{##}
+{#                    <div class="col-sm-2">#}
+{#                        <input tabindex="5" type="checkbox" class="icheck-15" id="minimal-checkbox-1-15">#}
+{#                        <label for="minimal-checkbox-1-15">{{ application_server }}</label>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#            {% endfor %}#}
+{##}
+{#        </div>#}
+{##}
+{##}
+{#        <ul class="icheck-list">#}
+{#            <li>#}
+{#                <input tabindex="5" type="checkbox" class="icheck-15" id="minimal-checkbox-1-15">#}
+{#                <label for="minimal-checkbox-1-15">{{ applications_server }}</label>#}
+{#            </li>#}
+{#            <li>#}
+{#                <input tabindex="6" type="checkbox" class="icheck-15" id="minimal-checkbox-2-15" checked>#}
+{#                <label for="minimal-checkbox-2-15">Checkbox 2</label>#}
+{#            </li>#}
+{#            <li>#}
+{#                <input type="checkbox" class="icheck-15" id="minimal-checkbox-disabled-15" disabled>#}
+{#                <label for="minimal-checkbox-disabled-15">Disabled</label>#}
+{#            </li>#}
+{#            <li>#}
+{#                <input type="checkbox" class="icheck-15" id="minimal-checkbox-disabled-checked-15" checked disabled>#}
+{#                <label for="minimal-checkbox-disabled-checked-15">Disabled &amp; checked</label>#}
+{#            </li>#}
+{#        </ul>#}
+{##}
+{#    </div>#}
+
+</div>
+
+
+{#<link rel="stylesheet" href="{{ STATIC_URL }}app/js/icheck/skins/minimal/_all.css">#}
+{#<link rel="stylesheet" href="{{ STATIC_URL }}app/js/icheck/skins/line/_all.css">#}
+{##}
+{#<script src="{{ STATIC_URL }}app/js/icheck/icheck.min.js"></script>#}
+
+

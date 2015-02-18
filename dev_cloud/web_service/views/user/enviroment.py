@@ -43,7 +43,7 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
 
 @ajax
 @user_permission
-def generate_dependencies(request, technology, template_name=''):
+def generate_dependencies(request, technology, template_name='app/environment/step_2.html'):
     """
 
     @param request:
@@ -53,7 +53,8 @@ def generate_dependencies(request, technology, template_name=''):
     """
     technology_builder = TechnologyBuilder()
     available_technology = technology_builder.extracts(technology)
+    print dict(available_technology.items() + generate_active('create_env_own').items())
 
-    print available_technology
-
-    return available_technology
+    return render_to_response(template_name,
+                              dict(available_technology.items() + generate_active('create_env_own').items()),
+                              context_instance=RequestContext(request))

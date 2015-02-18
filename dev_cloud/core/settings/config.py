@@ -28,13 +28,13 @@ DEV_CLOUD_DATA = {
     'site_name': 'Dev Cloud'            # System name in emails
 }
 
-AWS_ACCESS_KEY_ID = ''
+AWS_ACCESS_KEY_ID = 'm4gik'
 
-AWS_SECRET_ACCESS_KEY = ''
+AWS_SECRET_ACCESS_KEY = 'a4b53201134d95f4b817da90dd6bfc2e0b544470'
 
-CLM_LOGIN = ''
+CLM_LOGIN = 'm4gik'
 
-CLM_PASSWORD = ''
+CLM_PASSWORD = 'a4b53201134d95f4b817da90dd6bfc2e0b544470'
 
 CLM_ADDRESS = 'http://www.cloud.ifj.edu.pl:8000/'
 

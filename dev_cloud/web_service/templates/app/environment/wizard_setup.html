@@ -30,16 +30,16 @@
 
         <ul>
             <li class="active">
-                <a data-toggle="tab"><span>1</span>{% trans "Select technology" %}</a>
+                <a href="#tab2-1" onclick="buildAll()" data-toggle="tab"><span>1</span>{% trans "Select technology" %}</a>
             </li>
             <li>
-                <a data-toggle="tab"><span>2</span>{% trans "Customize" %}</a>
+                <a href="#tab2-2" onclick="buildAll()" data-toggle="tab"><span>2</span>{% trans "Customize" %}</a>
             </li>
             <li>
-                <a data-toggle="tab"><span>3</span>{% trans "Define environment" %}</a>
+                <a href="#tab2-3" onclick="buildAll()" data-toggle="tab"><span>3</span>{% trans "Define environment" %}</a>
             </li>
             <li>
-                <a data-toggle="tab"><span>4</span>{% trans "Deploy" %}</a>
+                <a href="#tab2-4" onclick="buildAll()" data-toggle="tab"><span>4</span>{% trans "Deploy" %}</a>
             </li>
         </ul>
 
@@ -129,10 +129,7 @@
 
             <div class="tab-pane" id="tab2-2">
 
-                <div class="row">
-
-
-                </div>
+                {# Auto generate content #}
 
             </div>
 
@@ -210,7 +207,7 @@
                 </li>
 
                 <li class="next">
-                    <a href="javascript:;" onclick="buildAll()">{% trans "Next" %} <i class="entypo-right-open"></i></a>
+                        <a href="javascript:;" onclick="buildAll()">{% trans "Next" %} <i class="entypo-right-open"></i></a>
                 </li>
             </ul>
         </div>
@@ -223,13 +220,72 @@
             ajaxGet('/main/app/create/environment/technology/' + technology, function (content) {
                 //onSuccess
                 console.log(content)
+                jQuery('#tab2-2').html(content);
+                styleLoad()
             })
         }
     </script>
 
     <script type="text/javascript">
+        function styleLoad()
+        {
+{#            $('input.icheck-15').each(function(i, el)#}
+{#            {#}
+{#                var self = $(el),#}
+{#                        label = self.next(),#}
+{#                        label_text = label.text();#}
+{##}
+{#                label.remove();#}
+{##}
+{#                self.iCheck({#}
+{#                    checkboxClass: 'icheckbox_line-aero',#}
+{#                    radioClass: 'iradio_line-red',#}
+{#                    insert: '<div class="icheck_line-icon"></div>' + label_text#}
+{#                });#}
+{#            });#}
+
+            $(function() {
+
+                var $draggable_portlets = $(".draggable-portlets");
+
+                $(".draggable-portlets .sorted" ).sortable({
+                    connectWith: ".draggable-portlets .sorted",
+                    handle: '.panel-heading',
+                    start: function()
+                    {
+                        $draggable_portlets.addClass('dragging');
+                    },
+                    stop: function()
+                    {
+                        $draggable_portlets.removeClass('dragging');
+                    },
+                    receive: function(event, ui) {
+                        if(this.id == 'selected_apps') {
+{#                            alert(ui.sender.attr("id") + "New position: " + ui.item.find('h4').text());#}
+{#                            var test = $( "#selected_apps" ).sortable('serialize')#}
+{#                            alert(test)#}
+                        }
+
+                    }
+                });
+
+                $( ".draggable-portlets .sorted .panel-heading" ).disableSelection();
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
         function buildAll() {
-            generateDependencies();
+            show_loading_bar({
+                pct: 78,
+                finish: function(pct)
+                {
+                    generateDependencies();
+                    hide_loading_bar();
+{#                    var test = $(".draggable-portlets .sorted").map(function(i) { return i.item.html(); }).get();#}
+{#                    alert(test)#}
+                }
+            });
 
 {#            ajaxGet('/main/app/environment/technology/' + technology, function (content) {#}
 {#                //onSuccess#}
@@ -248,5 +304,6 @@
     <script src="{{ STATIC_URL }}app/js/bootstrap-datepicker.js"></script>
     <script src="{{ STATIC_URL }}app/js/bootstrap-switch.min.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.multi-select.js"></script>
+
 
 {% endblock %}

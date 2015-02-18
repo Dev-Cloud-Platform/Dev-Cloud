@@ -49,7 +49,7 @@ class TechnologyBuilder(ListView):
         Generates configuration for php.
         @return: php configuration.
         """
-        application_servers = self.getListApplicationServers("Apache 2")
+        application_servers = self.getListApplicationServers("apache2")
         cache = self.getListApplicationCache("memcached")
         sql = self.getListApplicationSQL("mysql")
         nosql = self.getListApplicationNoSQL("mongodb")
