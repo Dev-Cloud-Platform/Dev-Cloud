@@ -309,7 +309,7 @@
 
     <script type="text/javascript">
         function buildAll() {
-            var current_technology = $(".switch-on :input").val()
+            var current_technology = $(".switch-on :input").val();
             if (current_technology != getTechnology() && getTechnology() != null) {
                 show_loading_bar({
                     pct: 78,
@@ -323,6 +323,15 @@
                 {#                //onSuccess#}
                 {#                alert("works")#}
                 {#            })#}
+            } else if (getTechnology() == null) {
+                setTechnology(current_technology);
+                show_loading_bar({
+                    pct: 78,
+                    finish: function (pct) {
+                        generateDependencies();
+                        hide_loading_bar();
+                    }
+                });
             }
         }
     </script>
