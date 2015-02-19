@@ -30,13 +30,15 @@
 
         <ul>
             <li class="active">
-                <a href="#tab2-1" onclick="buildAll()" data-toggle="tab"><span>1</span>{% trans "Select technology" %}</a>
+                <a href="#tab2-1" onclick="buildAll()" data-toggle="tab"><span>1</span>{% trans "Select technology" %}
+                </a>
             </li>
             <li>
                 <a href="#tab2-2" onclick="buildAll()" data-toggle="tab"><span>2</span>{% trans "Customize" %}</a>
             </li>
             <li>
-                <a href="#tab2-3" onclick="buildAll()" data-toggle="tab"><span>3</span>{% trans "Define environment" %}</a>
+                <a href="#tab2-3" onclick="buildAll()" data-toggle="tab"><span>3</span>{% trans "Define environment" %}
+                </a>
             </li>
             <li>
                 <a href="#tab2-4" onclick="buildAll()" data-toggle="tab"><span>4</span>{% trans "Deploy" %}</a>
@@ -57,9 +59,11 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                <input type="radio" name="radio1" data-validate="required"
-                                       value="java"/>
+                            <div id="switch" onclick="generateDependencies()">
+                                <div class="make-switch is-radio switch-small">
+                                    <input type="radio" name="radio1" data-validate="required"
+                                           value="java"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,9 +75,11 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                <input type="radio" name="radio1" data-validate="required"
-                                       value="php"/>
+                            <div id="switch" onclick="generateDependencies()">
+                                <div class="make-switch is-radio switch-small">
+                                    <input type="radio" name="radio1" data-validate="required"
+                                           value="php"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -85,9 +91,11 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                <input type="radio" name="radio1" data-validate="required"
-                                       value="ruby"/>
+                            <div id="switch" onclick="generateDependencies()">
+                                <div class="make-switch is-radio switch-small">
+                                    <input type="radio" name="radio1" data-validate="required"
+                                           value="ruby"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,9 +108,11 @@
                                      class="img-responsive  img-rounded"/>
                             </a>
 
-                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                <input type="radio" name="radio1" data-validate="required"
-                                       value="node"/>
+                            <div id="switch" onclick="generateDependencies()">
+                                <div class="make-switch is-radio switch-small">
+                                    <input type="radio" name="radio1" data-validate="required"
+                                           value="node"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -114,9 +124,11 @@
                                      class="img-responsive  img-rounded"/>
                             </a>
 
-                            <div class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                <input type="radio" name="radio1" data-validate="required"
-                                       value="python"/>
+                            <div id="switch" onclick="generateDependencies()">
+                                <div class="make-switch is-radio switch-small">
+                                    <input type="radio" name="radio1" data-validate="required"
+                                           value="python"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -138,7 +150,6 @@
                 <strong>{% trans "Define environment" %}</strong>
                 <br/>
                 <br/>
-
 
 
                 <div class="row">
@@ -203,11 +214,12 @@
 
             <ul class="pager wizard">
                 <li class="previous">
-                    <a href="javascript:;" onclick="buildAll()"><i class="entypo-left-open"></i> {% trans "Previous" %}</a>
+                    <a href="javascript:;" onclick="buildAll()"><i class="entypo-left-open"></i> {% trans "Previous" %}
+                    </a>
                 </li>
 
                 <li class="next">
-                        <a href="javascript:;" onclick="buildAll()">{% trans "Next" %} <i class="entypo-right-open"></i></a>
+                    <a href="javascript:;" onclick="buildAll()">{% trans "Next" %} <i class="entypo-right-open"></i></a>
                 </li>
             </ul>
         </div>
@@ -215,82 +227,103 @@
     </form>
 
     <script type="text/javascript">
+
         function generateDependencies() {
-            var technology = $(".switch-on :input").val()
-            ajaxGet('/main/app/create/environment/technology/' + technology, function (content) {
+                var technology = $(".switch-on :input").val()
+                setTechnology(technology)
+                ajaxGet('/main/app/create/environment/technology/' + getTechnology(), function (content) {
+                    //onSuccess
+                    console.log(content)
+                    jQuery('#tab2-2').html(content);
+                    styleLoad()
+                })
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function customize(application, operation) {
+            ajaxGet('/main/app/create/environment/customize/' + getTechnology()
+                + '/' + application + '/' + operation, function (content) {
                 //onSuccess
-                console.log(content)
-                jQuery('#tab2-2').html(content);
-                styleLoad()
             })
         }
     </script>
 
     <script type="text/javascript">
-        function styleLoad()
-        {
-{#            $('input.icheck-15').each(function(i, el)#}
-{#            {#}
-{#                var self = $(el),#}
-{#                        label = self.next(),#}
-{#                        label_text = label.text();#}
-{##}
-{#                label.remove();#}
-{##}
-{#                self.iCheck({#}
-{#                    checkboxClass: 'icheckbox_line-aero',#}
-{#                    radioClass: 'iradio_line-red',#}
-{#                    insert: '<div class="icheck_line-icon"></div>' + label_text#}
-{#                });#}
-{#            });#}
+        function styleLoad() {
+            {#            $('input.icheck-15').each(function(i, el)#}
+            {#            {#}
+            {#                var self = $(el),#}
+            {#                        label = self.next(),#}
+            {#                        label_text = label.text();#}
+            {##}
+            {#                label.remove();#}
+            {##}
+            {#                self.iCheck({#}
+            {#                    checkboxClass: 'icheckbox_line-aero',#}
+            {#                    radioClass: 'iradio_line-red',#}
+            {#                    insert: '<div class="icheck_line-icon"></div>' + label_text#}
+            {#                });#}
+            {#            });#}
 
-            $(function() {
+            $(function () {
 
                 var $draggable_portlets = $(".draggable-portlets");
 
-                $(".draggable-portlets .sorted" ).sortable({
+                $(".draggable-portlets .sorted").sortable({
                     connectWith: ".draggable-portlets .sorted",
                     handle: '.panel-heading',
-                    start: function()
-                    {
+                    start: function (event, ui) {
                         $draggable_portlets.addClass('dragging');
                     },
-                    stop: function()
-                    {
+                    stop: function () {
                         $draggable_portlets.removeClass('dragging');
                     },
-                    receive: function(event, ui) {
-                        if(this.id == 'selected_apps') {
-{#                            alert(ui.sender.attr("id") + "New position: " + ui.item.find('h4').text());#}
-{#                            var test = $( "#selected_apps" ).sortable('serialize')#}
-{#                            alert(test)#}
+                    receive: function (event, ui) {
+                        if (this.id == 'selected_apps') {
+                            customize(ui.item.find('h4').text(), 'add')
+                        } else {
+                            customize(ui.item.find('h4').text(), 'remove')
                         }
-
                     }
                 });
 
-                $( ".draggable-portlets .sorted .panel-heading" ).disableSelection();
+                $(".draggable-portlets .sorted .panel-heading").disableSelection();
             });
         }
     </script>
 
     <script type="text/javascript">
-        function buildAll() {
-            show_loading_bar({
-                pct: 78,
-                finish: function(pct)
-                {
-                    generateDependencies();
-                    hide_loading_bar();
-{#                    var test = $(".draggable-portlets .sorted").map(function(i) { return i.item.html(); }).get();#}
-{#                    alert(test)#}
-                }
-            });
+        window.technology = null
 
-{#            ajaxGet('/main/app/environment/technology/' + technology, function (content) {#}
-{#                //onSuccess#}
-{#                alert("works")#}
-{#            })#}
+        function setTechnology(technology) {
+            window.technology = technology
+        }
+
+        function getTechnology() {
+            return window.technology
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        function buildAll() {
+            var current_technology = $(".switch-on :input").val()
+            if (current_technology != getTechnology() && getTechnology() != null) {
+                show_loading_bar({
+                    pct: 78,
+                    finish: function (pct) {
+                        generateDependencies();
+                        hide_loading_bar();
+                    }
+                });
+
+                {#            ajaxGet('/main/app/environment/technology/' + technology, function (content) {#}
+                {#                //onSuccess#}
+                {#                alert("works")#}
+                {#            })#}
+            }
         }
     </script>
 

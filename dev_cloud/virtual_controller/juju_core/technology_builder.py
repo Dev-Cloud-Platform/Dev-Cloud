@@ -35,7 +35,9 @@ class TechnologyBuilder(ListView):
         Generates configuration for java.
         @return: java configuration.
         """
-        return None
+        application_servers = self.getListApplicationServers("tomcat")
+
+        return dict(application_servers.items())
 
     def __nodejs_configuration(self):
         """

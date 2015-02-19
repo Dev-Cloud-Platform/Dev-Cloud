@@ -18,13 +18,16 @@
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
 from core.utils.decorators import user_permission
-from web_service.views.user.enviroment import wizard_setup, generate_dependencies
+from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment
 
 main_patterns = patterns('web_service.views.user.enviroment',
-                         url(r'^app/create/environment/$', user_permission(wizard_setup), name='personalized_environment'),
+                         url(r'^app/create/environment/$', user_permission(wizard_setup),
+                             name='personalized_environment'),
                          url(r'^app/create/environment/technology/(?P<technology>\w+)/$',
                              user_permission(generate_dependencies),
-                             name='generate_dependencies'))
+                             name='generate_dependencies'),
+                         url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>\w+)/(?P<operation>\w+)/$',
+                             user_permission(customize_environment), name='customize_environment'))
 
 urlpatterns = patterns('',
                        url(r'^main/', include(main_patterns)))

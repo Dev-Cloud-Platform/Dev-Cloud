@@ -8,73 +8,127 @@
 
         <div class="col-md-6">
 
-            <h2>{% trans "Available apps" %}</h2>
+            <h2 class="text-center">{% trans "Available apps" %}</h2>
 
-            <div class="sorted">
+            <div class="sorted col-md-8">
 
-                <h2><small>{% trans "Applications Server" %}</small></h2>
+                <h2>
+                    <small>{% trans "Applications Server" %}</small>
+                </h2>
                 {% for application_server in applications_server %}
 
-                    <!-- panel head -->
-                    <a class="member-img">
-                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_server }}/file/icon.svg"
-                             class="img-rounded panel-heading"/>
-                        <h4>{{ application_server }}</h4>
-                    </a>
+                    {% if application_server not in selected_applications %}
+                        <!-- panel head -->
+                        <div class="portlet">
+                            <a class="member-img">
+                                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_server }}/file/icon.svg"
+                                     class="img-rounded panel-heading"/>
+                                <h4>{{ application_server }}</h4>
+                            </a>
+                        </div>
+                    {% endif %}
 
                 {% endfor %}
 
-                <h2><small>{% trans "Applications Cache" %}</small></h2>
+                <h2>
+                    <small>{% trans "Applications Cache" %}</small>
+                </h2>
                 {% for application_cache in applications_cache %}
 
-                    <!-- panel head -->
-                    <a class="member-img">
-                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_cache }}/file/icon.svg"
-                             class="img-rounded panel-heading"/>
-                        <h4>{{ application_cache }}</h4>
-                    </a>
+                    {% if application_cache not in selected_applications %}
+                        <!-- panel head -->
+                        <div class="portlet">
+                            <a class="member-img">
+                                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_cache }}/file/icon.svg"
+                                     class="img-rounded panel-heading"/>
+                                <h4>{{ application_cache }}</h4>
+                            </a>
+                        </div>
+                    {% endif %}
 
                 {% endfor %}
 
-                <h2><small>{% trans "Applications SQL" %}</small></h2>
+                <h2>
+                    <small>{% trans "Applications SQL" %}</small>
+                </h2>
                 {% for application_SQL in applications_SQL %}
 
-                    <!-- panel head -->
-                    <a class="member-img">
-                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_SQL }}/file/icon.svg"
-                             class="img-rounded panel-heading"/>
-                        <h4>{{ application_SQL }}</h4>
-                    </a>
+                    {% if application_SQL not in selected_applications %}
+                        <!-- panel head -->
+                        <div class="portlet">
+                            <a class="member-img">
+                                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_SQL }}/file/icon.svg"
+                                     class="img-rounded panel-heading"/>
+                                <h4>{{ application_SQL }}</h4>
+                            </a>
+                        </div>
+                    {% endif %}
 
                 {% endfor %}
 
-                <h2><small>{% trans "Applications NoSQL" %}</small></h2>
+                <h2>
+                    <small>{% trans "Applications NoSQL" %}</small>
+                </h2>
                 {% for application_NoSQL in applications_NoSQL %}
 
-                    <!-- panel head -->
-                    <a class="member-img">
-                        <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_NoSQL }}/file/icon.svg"
-                             class="img-rounded panel-heading"/>
-                        <h4>{{ application_NoSQL }}</h4>
-                    </a>
+                    {% if application_NoSQL not in selected_applications %}
+                        <div class="portlet">
+                            <!-- panel head -->
+                            <a class="member-img">
+                                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_NoSQL }}/file/icon.svg"
+                                     class="img-rounded panel-heading"/>
+                                <h4>{{ application_NoSQL }}</h4>
+                            </a>
+                        </div>
+                    {% endif %}
 
                 {% endfor %}
 
+            </div>
+
+            <div class="col-sm-4">
+                </br>
+                <a class="member-img">
+                    <img src="{{ STATIC_URL }}app/images/drag-icon.png" class="img-rounded"/>
+                    <h4 class="text-center">{% trans "Drag the icon of app to install" %}</h4>
+                </a>
             </div>
 
         </div>
 
         <div class="col-md-6">
-            <h2>{% trans "Selected apps" %}</h2>
+            <h2 class="text-center">{% trans "Selected apps" %}</h2>
 
-            <div id="selected_apps" class="sorted">
+            <div class="col-md-4">
+                <div id="selected_apps" class="sorted">
+                    {% for selected_application in selected_applications %}
 
+                        <!-- panel head -->
+                        <div class="portlet">
+                            <a class="member-img">
+                                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ selected_application }}/file/icon.svg"
+                                     class="img-rounded panel-heading"/>
+                                <h4>{{ selected_application }}</h4>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+                </div>
             </div>
+            <div class="col-md-4">
+                <div id="selected_apps" class="sorted">
 
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div id="selected_apps" class="sorted">
+
+                </div>
+            </div>
         </div>
 
     </div>
-
+</div>
 
 {#    <div class="col-sm-3">#}
 {##}
@@ -82,10 +136,10 @@
 {#        <div class="member-entry">#}
 {#            {% for application_server in applications_server %}#}
 {##}
-                {#            <a class="member-img">#}
+{#            <a class="member-img">#}
 {#                <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ application_server }}/file/icon.svg"#}
 {#                     class="img-rounded"/>#}
-                {#            </a>#}
+{#            </a>#}
 {##}
 {#                <div class="row info-list">#}
 {##}
@@ -121,7 +175,7 @@
 {##}
 {#    </div>#}
 
-</div>
+{#</div>#}
 
 
 {#<link rel="stylesheet" href="{{ STATIC_URL }}app/js/icheck/skins/minimal/_all.css">#}
