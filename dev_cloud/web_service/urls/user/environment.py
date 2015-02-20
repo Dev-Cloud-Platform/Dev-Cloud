@@ -26,7 +26,7 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/technology/(?P<technology>\w+)/$',
                              user_permission(generate_dependencies),
                              name='generate_dependencies'),
-                         url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>\w+)/(?P<operation>\w+)/$',
+                         url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
                              user_permission(customize_environment), name='customize_environment'))
 
 urlpatterns = patterns('',

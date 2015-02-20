@@ -35,42 +35,56 @@ class TechnologyBuilder(ListView):
         Generates configuration for java.
         @return: java configuration.
         """
-        application_servers = self.getListApplicationServers("tomcat")
+        application_servers = self.get_list_application_servers("tomcat")
+        cache = self.get_list_application_cache("memcached")
+        sql = self.get_list_application_SQL("mysql", "mariadb", "postgresql")
+        nosql = self.get_list_application_NoSQL("mongodb", "cassandra")
 
-        return dict(application_servers.items())
+        return dict(application_servers.items() + cache.items() + sql.items() + nosql.items())
 
     def __nodejs_configuration(self):
         """
         Generates configuration for Node.JS.
         @return: Node.JS configuration.
         """
-        return None
+        application_servers = self.get_list_application_servers("node-app")
+        cache = self.get_list_application_cache("memcached")
+        sql = self.get_list_application_SQL("mysql", "mariadb", "postgresql")
+        nosql = self.get_list_application_NoSQL("mongodb", "cassandra")
+
+        return dict(application_servers.items() + cache.items() + sql.items() + nosql.items())
 
     def __php_configuration(self):
         """
         Generates configuration for php.
         @return: php configuration.
         """
-        application_servers = self.getListApplicationServers("apache2")
-        cache = self.getListApplicationCache("memcached")
-        sql = self.getListApplicationSQL("mysql")
-        nosql = self.getListApplicationNoSQL("mongodb")
+        application_servers = self.get_list_application_servers("apache2", "nginx", "zend-server")
+        cache = self.get_list_application_cache("memcached")
+        sql = self.get_list_application_SQL("mysql", "mariadb", "postgresql")
+        nosql = self.get_list_application_NoSQL("mongodb", "cassandra")
 
         return dict(application_servers.items() + cache.items() + sql.items() + nosql.items())
 
     def __python_configuration(self):
-        """
-        Generates configuration for python.
-        @return: python configuration.
-        """
-        return None
+        application_servers = self.get_list_application_servers("apache2", "python-django")
+        cache = self.get_list_application_cache("memcached")
+        sql = self.get_list_application_SQL("mysql", "mariadb", "postgresql")
+        nosql = self.get_list_application_NoSQL("mongodb", "cassandra")
+
+        return dict(application_servers.items() + cache.items() + sql.items() + nosql.items())
 
     def __ruby_configuration(self):
         """
         Generates configuration for ruby.
         @return: ruby configuration.
         """
-        return None
+        application_servers = self.get_list_application_servers("apache2", "nginx", "rails")
+        cache = self.get_list_application_cache("memcached")
+        sql = self.get_list_application_SQL("mysql", "mariadb", "postgresql")
+        nosql = self.get_list_application_NoSQL("mongodb", "cassandra")
+
+        return dict(application_servers.items() + cache.items() + sql.items() + nosql.items())
 
     def extracts(self, technology):
         """
@@ -78,8 +92,6 @@ class TechnologyBuilder(ListView):
         @param technology: Given technology to extract.
         @return: Filtered applications for given technology.
         """
-        response = {}
-
         if technology == JAVA:
             response = self.__java_configuration()
         elif technology == NODEJS:
@@ -96,7 +108,7 @@ class TechnologyBuilder(ListView):
         return response
 
     @staticmethod
-    def getListApplicationServers(*args):
+    def get_list_application_servers(*args):
         """
         Gets list for application servers.
         @param args:
@@ -110,7 +122,7 @@ class TechnologyBuilder(ListView):
         return {'applications_server': application_server_list}
 
     @staticmethod
-    def getListApplicationCache(*args):
+    def get_list_application_cache(*args):
         """
         Gets list for application caches.
         @param args:
@@ -124,7 +136,7 @@ class TechnologyBuilder(ListView):
         return {'applications_cache': application_cache_list}
 
     @staticmethod
-    def getListApplicationSQL(*args):
+    def get_list_application_SQL(*args):
         """
         Gets list for database SQL application.
         @param args:
@@ -138,7 +150,7 @@ class TechnologyBuilder(ListView):
         return {'applications_SQL': application_SQL_list}
 
     @staticmethod
-    def getListApplicationNoSQL(*args):
+    def get_list_application_NoSQL(*args):
         """
         Gets list for database NoSQL application.
         @param args:
