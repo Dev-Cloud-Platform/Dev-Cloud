@@ -24,15 +24,16 @@ from core.utils.decorators import django_view, user_permission
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.views.user.user import generate_active
 
+
 @django_view
 @csrf_protect
 @user_permission
 def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
     """
-
+    Prepares properties for create new environment.
     @param request:
-    @param template_name:
-    @return:
+    @param template_name: template to render.
+    @return: view to render.
     """
     request.session[JAVA] = []
     request.session[PHP] = []
@@ -49,36 +50,19 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
 @user_permission
 def generate_dependencies(request, technology, template_name='app/environment/step_2.html'):
     """
-
+    Generates dependencies for chosen technology.
     @param request:
-    @param technology:
-    @param template_name:
-    @return:
+    @param technology: selected technology.
+    @param template_name: template to render.
+    @return: view to render.
     """
-    selected_applications = []
+    selected_applications = get_selected_applications(request, technology)
     technology_builder = TechnologyBuilder()
     available_technology = technology_builder.extracts(technology)
 
-    if technology == JAVA:
-        selected_applications = request.session.get(JAVA, [])
-
-    if technology == PHP:
-        selected_applications = request.session.get(PHP, [])
-
-    if technology == RUBY:
-        selected_applications = request.session.get(RUBY, [])
-
-    if technology == NODEJS:
-        selected_applications = request.session.get(NODEJS, [])
-
-    if technology == PYTHON:
-        selected_applications = request.session.get(PYTHON, [])
-
-    print {'selected_applications': selected_applications}
-
     return render_to_response(template_name,
-                              dict(available_technology.items() + generate_active('create_env_own').items() + {
-                                  'selected_applications': selected_applications}.items()),
+                              dict(available_technology.items() + generate_active('create_env_own').items()
+                                   + {'selected_applications': selected_applications}.items()),
                               context_instance=RequestContext(request))
 
 
@@ -95,6 +79,32 @@ def update_application(array, application, operation):
 
     if operation == 'remove':
         array.remove(application)
+
+
+def get_selected_applications(request, technology):
+    """
+    Gets selected applications from session for given technology.
+    @param technology: selected technology.
+    @return: selected applications for chosen technology.
+    """
+    selected_applications = []
+
+    if technology == JAVA:
+        selected_applications = request.session.get(JAVA, [])
+
+    if technology == PHP:
+        selected_applications = request.session.get(PHP, [])
+
+    if technology == RUBY:
+        selected_applications = request.session.get(RUBY, [])
+
+    if technology == NODEJS:
+        selected_applications = request.session.get(NODEJS, [])
+
+    if technology == PYTHON:
+        selected_applications = request.session.get(PYTHON, [])
+
+    return selected_applications
 
 
 @ajax
@@ -122,4 +132,21 @@ def customize_environment(request, technology, application, operation):
 
     if technology == PYTHON:
         update_application(request.session.get(PYTHON, []), application, operation)
+
+
+@ajax
+@user_permission
+def define_environment(request, technology, template_name='app/environment/step_3.html'):
+    """
+
+    @param request:
+    @param technology: selected technology.
+    @param template_name: template to render.
+    @return:
+    """
+    selected_applications = get_selected_applications(request, technology)
+
+    return render_to_response(template_name,
+                              dict({'selected_applications': selected_applications}.items()),
+                              context_instance=RequestContext(request))
 

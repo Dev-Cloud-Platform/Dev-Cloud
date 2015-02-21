@@ -59,12 +59,10 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                            <div id="switch" onclick="generateDependencies()">
-                                <div class="make-switch is-radio switch-small">
+                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
                                     <input type="radio" name="radio1" data-validate="required"
                                            value="java"/>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
@@ -75,12 +73,10 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                            <div id="switch" onclick="generateDependencies()">
-                                <div class="make-switch is-radio switch-small">
+                                <div id="switch"  class="make-switch is-radio switch-small"  onclick="generateDependencies()">
                                     <input type="radio" name="radio1" data-validate="required"
                                            value="php"/>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
@@ -91,12 +87,10 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                            <div id="switch" onclick="generateDependencies()">
-                                <div class="make-switch is-radio switch-small">
+                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
                                     <input type="radio" name="radio1" data-validate="required"
                                            value="ruby"/>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
@@ -108,12 +102,10 @@
                                      class="img-responsive  img-rounded"/>
                             </a>
 
-                            <div id="switch" onclick="generateDependencies()">
-                                <div class="make-switch is-radio switch-small">
+                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
                                     <input type="radio" name="radio1" data-validate="required"
                                            value="node"/>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
@@ -124,12 +116,10 @@
                                      class="img-responsive  img-rounded"/>
                             </a>
 
-                            <div id="switch" onclick="generateDependencies()">
-                                <div class="make-switch is-radio switch-small">
-                                    <input type="radio" name="radio1" data-validate="required"
+                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                    <input  type="radio" name="radio1" data-validate="required"
                                            value="python"/>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
@@ -147,29 +137,7 @@
 
             <div class="tab-pane" id="tab2-3">
 
-                <strong>{% trans "Define environment" %}</strong>
-                <br/>
-                <br/>
-
-
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label" for="full_name">{% trans "Environment Name" %}</label>
-                            <input class="form-control" name="full_name" id="full_name" data-validate="required"
-                                   placeholder="Your full name"/>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label" for="birthdate">Date of Birth</label>
-                            <input class="form-control" name="birthdate" id="birthdate" data-validate="required"
-                                   data-mask="date" placeholder="Pre-formatted birth date"/>
-                        </div>
-                    </div>
-                </div>
+                {# Auto generate content #}
 
             </div>
 
@@ -226,119 +194,10 @@
 
     </form>
 
-    <script type="text/javascript">
-
-        function generateDependencies() {
-                var technology = $(".switch-on :input").val()
-                setTechnology(technology)
-                ajaxGet('/main/app/create/environment/technology/' + getTechnology(), function (content) {
-                    //onSuccess
-                    console.log(content)
-                    jQuery('#tab2-2').html(content);
-                    styleLoad()
-                })
-        }
-
-    </script>
-
-    <script type="text/javascript">
-        function customize(application, operation) {
-            ajaxGet('/main/app/create/environment/customize/' + getTechnology()
-                + '/' + application + '/' + operation, function (content) {
-                //onSuccess
-            })
-        }
-    </script>
-
-    <script type="text/javascript">
-        function styleLoad() {
-            {#            $('input.icheck-15').each(function(i, el)#}
-            {#            {#}
-            {#                var self = $(el),#}
-            {#                        label = self.next(),#}
-            {#                        label_text = label.text();#}
-            {##}
-            {#                label.remove();#}
-            {##}
-            {#                self.iCheck({#}
-            {#                    checkboxClass: 'icheckbox_line-aero',#}
-            {#                    radioClass: 'iradio_line-red',#}
-            {#                    insert: '<div class="icheck_line-icon"></div>' + label_text#}
-            {#                });#}
-            {#            });#}
-
-            $(function () {
-
-                var $draggable_portlets = $(".draggable-portlets");
-
-                $(".draggable-portlets .sorted").sortable({
-                    connectWith: ".draggable-portlets .sorted",
-                    handle: '.panel-heading',
-                    start: function (event, ui) {
-                        $draggable_portlets.addClass('dragging');
-                    },
-                    stop: function () {
-                        $draggable_portlets.removeClass('dragging');
-                    },
-                    receive: function (event, ui) {
-                        if (this.id == 'selected_apps') {
-                            customize(ui.item.find('h4').text(), 'add')
-                        } else {
-                            customize(ui.item.find('h4').text(), 'remove')
-                        }
-                    }
-                });
-
-                $(".draggable-portlets .sorted .panel-heading").disableSelection();
-            });
-        }
-    </script>
-
-    <script type="text/javascript">
-        window.technology = null
-
-        function setTechnology(technology) {
-            window.technology = technology
-        }
-
-        function getTechnology() {
-            return window.technology
-        }
-    </script>
-
-
-    <script type="text/javascript">
-        function buildAll() {
-            var current_technology = $(".switch-on :input").val();
-            if (current_technology != getTechnology() && getTechnology() != null) {
-                show_loading_bar({
-                    pct: 78,
-                    finish: function (pct) {
-                        generateDependencies();
-                        hide_loading_bar();
-                    }
-                });
-
-                {#            ajaxGet('/main/app/environment/technology/' + technology, function (content) {#}
-                {#                //onSuccess#}
-                {#                alert("works")#}
-                {#            })#}
-            } else if (getTechnology() == null) {
-                setTechnology(current_technology);
-                show_loading_bar({
-                    pct: 78,
-                    finish: function (pct) {
-                        generateDependencies();
-                        hide_loading_bar();
-                    }
-                });
-            }
-        }
-    </script>
-
 
     <link rel="stylesheet" href="{{ STATIC_URL }}app/js/selectboxit/jquery.selectBoxIt.css">
 
+    <script src="{{ STATIC_URL }}app/js/dev-cloud-wizard.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.bootstrap.wizard.min.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.validate.min.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.inputmask.bundle.min.js"></script>
@@ -346,6 +205,6 @@
     <script src="{{ STATIC_URL }}app/js/bootstrap-datepicker.js"></script>
     <script src="{{ STATIC_URL }}app/js/bootstrap-switch.min.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.multi-select.js"></script>
-
+    <script src="{{ STATIC_URL }}app/js/jquery.peity.min.js"></script>
 
 {% endblock %}

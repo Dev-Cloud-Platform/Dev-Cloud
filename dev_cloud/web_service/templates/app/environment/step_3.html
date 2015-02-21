@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load form_tags %}
+
+<strong>{% trans "Define environment" %}</strong>
+<br/>
+<br/>
+
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label" for="full_name">{% trans "Environment Name" %}</label>
+            <input class="form-control" name="full_name" id="full_name" data-validate="required"
+                   placeholder="Your full name"/>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label" for="birthdate">Date of Birth</label>
+            <input class="form-control" name="birthdate" id="birthdate" data-validate="required"
+                   data-mask="date" placeholder="Pre-formatted birth date"/>
+        </div>
+    </div>
+
+    <table class="table table-responsive">
+        <tbody>
+        <tr>
+            <td width="33%">
+                <strong>{% trans "CPU" %}</strong>
+                <br />
+                <div id="chart-CPU" style="height: 250px"></div>
+            </td>
+            <td width="33%">
+                <strong>{% trans "RAM" %}</strong>
+                <br />
+                <div id="chart-RAM" style="height: 250px"></div>
+            </td>
+            <td width="33%">
+                <strong>{% trans "Disk space" %}</strong>
+                <br />
+                <div id="chart-HDD" style="height: 250px"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
