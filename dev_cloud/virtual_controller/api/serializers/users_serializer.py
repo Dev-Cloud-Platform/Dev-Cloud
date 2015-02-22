@@ -17,16 +17,12 @@
 #
 # @COPYRIGHT_end
 from rest_framework import serializers
+from database.models import Users
 
-from database.models import InstalledApplications
 
-
-class InstalledApplicationsSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = InstalledApplications
-        fields = (
-            'installed_app_id', 'workspace', 'clx_ip', 'public_port', 'private_port', 'user', 'application',
-            'virtual_machine')
-
-
+        model = Users
+        fields = ('id', 'login', 'password', 'email', 'name', 'lastname', 'create_time', 'activation_key', 'is_active',
+                  'is_superuser', 'last_activity')

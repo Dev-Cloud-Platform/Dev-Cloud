@@ -16,19 +16,12 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-
-from __future__ import unicode_literals
-
-from django.db import models
+from rest_framework import serializers
+from database.models.template_instances import TemplateInstances
 
 
-class TemplateInstances(models.Model):
-    template_id = models.IntegerField(primary_key=True)
-    template_name = models.CharField(max_length=45)
-    cpu = models.IntegerField()
-    memory = models.FloatField()
+class TemplateInstancesSerializer(serializers.ModelSerializer):
 
     class Meta:
-        managed = False
-        db_table = 'Template_instances'
-        # app_label = 'database'
+        model = TemplateInstances
+        fields = ('template_id', 'template_name', 'cpu', 'memory')

@@ -18,20 +18,19 @@
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
 from rest_framework.routers import DefaultRouter
-from virtual_controller.views import application
-from virtual_controller.views.user import UserViewSet
+from virtual_controller.api.views.application import ApplicationViewSet
+from virtual_controller.api.views.template_instances import TemplateInstancesViewSet
+from virtual_controller.api.views.user import UserViewSet
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
+router.register(r'applications', ApplicationViewSet)
+router.register(r'template-instances', TemplateInstancesViewSet)
 router.register(r'users', UserViewSet)
 
-application_patterns = patterns('virtual_controller.views.application',
-                                url(r'^applications/$', application.ApplicationList.as_view()))
-                                # Example how to call:
-                                # curl -i -H "Accept: application/json" -H "Content-Tyon/json"
-                                # -X GET http://127.0.0.1:8000/rest_api/applications/
-
+# Example how to call:
+# curl -i -H "Accept: application/json" -H "Content-Tyon/json"
+# -X GET --data "username=<username>&password=<password>" http://127.0.0.1:8000/rest_api/users/admin-users/
 # The API URLs are now determined automatically by the router.
-urlpatterns = patterns('',
-                       url(r'^rest_api/', include(router.urls)),
-                       url(r'^rest_api/', include(application_patterns)))
+urlpatterns = patterns('', url(r'^rest_api/', include(router.urls)),
+                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')))

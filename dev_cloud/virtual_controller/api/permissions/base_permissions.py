@@ -16,19 +16,21 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-
-from __future__ import unicode_literals
-
-from django.db import models
+from rest_framework import permissions
+from core.utils.auth import authenticate
 
 
-class TemplateInstances(models.Model):
-    template_id = models.IntegerField(primary_key=True)
-    template_name = models.CharField(max_length=45)
-    cpu = models.IntegerField()
-    memory = models.FloatField()
+class UsersPermission(permissions.BasePermission):
+    """
+    Permissions for UsersViewSet
+    """
+    def has_permission(self, request, view):
+        username = request.DATA.get('username', None)
+        password = request.DATA.get('password', None)
 
-    class Meta:
-        managed = False
-        db_table = 'Template_instances'
-        # app_label = 'database'
+        user = authenticate(username, password)
+
+        if user:
+            return True
+
+        return False

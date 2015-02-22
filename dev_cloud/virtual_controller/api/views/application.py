@@ -16,19 +16,20 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from rest_framework import viewsets
 
-from __future__ import unicode_literals
+from database.models import Applications
+from virtual_controller.api.serializers.applications_serializer import ApplicationsSerializer
 
-from django.db import models
+
+class ApplicationViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows display list of all available applications.
+    """
+    queryset = Applications.objects.all()
+    serializer_class = ApplicationsSerializer
 
 
-class TemplateInstances(models.Model):
-    template_id = models.IntegerField(primary_key=True)
-    template_name = models.CharField(max_length=45)
-    cpu = models.IntegerField()
-    memory = models.FloatField()
 
-    class Meta:
-        managed = False
-        db_table = 'Template_instances'
-        # app_label = 'database'
+
+

@@ -17,13 +17,13 @@
 #
 # @COPYRIGHT_end
 from rest_framework import viewsets
-from database.models import Users
-from virtual_controller.serializers.users_serializer import UserSerializer
+from database.models.template_instances import TemplateInstances
+from virtual_controller.api.serializers.template_instances_serializer import TemplateInstancesSerializer
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class TemplateInstancesViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows display list of all available templates.
     """
-    queryset = Users.objects.all()
-    serializer_class = UserSerializer
+    queryset = TemplateInstances.objects.all()
+    serializer_class = TemplateInstancesSerializer

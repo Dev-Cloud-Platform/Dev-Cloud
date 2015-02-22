@@ -16,20 +16,3 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import generics
-
-from database.models import Applications
-from virtual_controller.serializers.applications_serializer import ApplicationsSerializer
-
-
-class ApplicationList(generics.ListAPIView):
-    """
-    List of all available applications.
-    """
-    queryset = Applications.objects.all()
-    serializer_class = ApplicationsSerializer
-
-
-
-
-

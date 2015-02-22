@@ -16,19 +16,18 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from rest_framework import serializers
 
-from __future__ import unicode_literals
-
-from django.db import models
+from database.models import InstalledApplications, Applications
 
 
-class TemplateInstances(models.Model):
-    template_id = models.IntegerField(primary_key=True)
-    template_name = models.CharField(max_length=45)
-    cpu = models.IntegerField()
-    memory = models.FloatField()
+class InstalledApplicationsSerializer(serializers.ModelSerializer):
+    applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
 
     class Meta:
-        managed = False
-        db_table = 'Template_instances'
-        # app_label = 'database'
+        model = InstalledApplications
+        fields = (
+            'installed_app_id', 'workspace', 'clx_ip', 'public_port', 'private_port', 'user', 'application',
+            'virtual_machine')
+
+
