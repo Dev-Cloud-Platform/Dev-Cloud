@@ -17,13 +17,12 @@
 #
 # @COPYRIGHT_end
 from rest_framework import serializers
-from database.models import Users
+from database.models import Users, Applications
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    """
+class UserSerializer(serializers.ModelSerializer):
+    # applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
 
-    """
     class Meta:
         model = Users
-        fields = ('url', 'login', 'email')
+        fields = ('id', 'login', 'email')

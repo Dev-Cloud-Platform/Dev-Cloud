@@ -33,7 +33,8 @@ urlpatterns = patterns('',
                        (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', {'packages': ('web_service',), }),
                        (r'', include('web_service.urls.guest')),
                        (r'', include('web_service.urls.user')),
-                       (r'', include('web_service.urls.admin')))
+                       (r'', include('web_service.urls.admin')),
+                       (r'', include('web_service.urls.rest_webapi')))
 
 
 # if settings.DEBUG:

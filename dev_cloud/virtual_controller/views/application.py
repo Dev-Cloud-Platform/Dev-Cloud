@@ -16,14 +16,20 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
-from database.models import Users
-from virtual_controller.serializers.users_serializer import UserSerializer
+from rest_framework import generics
+
+from database.models import Applications
+from virtual_controller.serializers.applications_serializer import ApplicationsSerializer
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class ApplicationList(generics.ListAPIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    List of all available applications.
     """
-    queryset = Users.objects.all()
-    serializer_class = UserSerializer
+    queryset = Applications.objects.all()
+    serializer_class = ApplicationsSerializer
+
+
+
+
+

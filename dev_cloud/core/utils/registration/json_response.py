@@ -16,14 +16,15 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
-from database.models import Users
-from virtual_controller.serializers.users_serializer import UserSerializer
+from django.http import HttpResponse
+from rest_framework.renderers import JSONRenderer
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class JSONResponse(HttpResponse):
     """
-    API endpoint that allows users to be viewed or edited.
+    An HttpResponse that renders its content into JSON.
     """
-    queryset = Users.objects.all()
-    serializer_class = UserSerializer
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)

@@ -16,14 +16,17 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
-from database.models import Users
-from virtual_controller.serializers.users_serializer import UserSerializer
+from rest_framework import serializers
+
+from database.models import InstalledApplications
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Users.objects.all()
-    serializer_class = UserSerializer
+class InstalledApplicationsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = InstalledApplications
+        fields = (
+            'installed_app_id', 'workspace', 'clx_ip', 'public_port', 'private_port', 'user', 'application',
+            'virtual_machine')
+
+

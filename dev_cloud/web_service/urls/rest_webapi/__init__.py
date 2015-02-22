@@ -16,14 +16,9 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
-from database.models import Users
-from virtual_controller.serializers.users_serializer import UserSerializer
+
+from django.conf.urls import patterns, include
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Users.objects.all()
-    serializer_class = UserSerializer
+urlpatterns = patterns('',
+                       (r'', include('web_service.urls.rest_webapi.rest')))

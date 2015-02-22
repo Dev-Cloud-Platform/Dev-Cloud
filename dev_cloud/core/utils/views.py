@@ -22,7 +22,6 @@ from django.template import RequestContext, loader
 from decorators import django_view
 
 
-
 @django_view
 def direct_to_template(request, template_name, content_type=None):
     """
