@@ -16,5 +16,6 @@ djangoajax>=2.2.13
 djangorestframework>=3.0.5
 markdown>=2.5.2
 django_filter>=0.9.2
+requests>=2.5.1
 PIL>=1.1.7
 

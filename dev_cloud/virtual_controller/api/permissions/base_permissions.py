@@ -25,8 +25,8 @@ class UsersPermission(permissions.BasePermission):
     Permissions for UsersViewSet
     """
     def has_permission(self, request, view):
-        username = request.DATA.get('username', None)
-        password = request.DATA.get('password', None)
+        username = request.DATA.get('username', None) or request.query_params.get('username', None)
+        password = request.DATA.get('password', None) or request.query_params.get('password', None)
 
         user = authenticate(username, password)
 

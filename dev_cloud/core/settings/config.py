@@ -23,6 +23,9 @@ LOG_LEVEL = logging.DEBUG
 
 LOG_DIR = '/var/log/DevCloud/'
 
+# Log format for each entry
+LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
+
 DEV_CLOUD_DATA = {
     'site_domain': '192.245.169.169',   # Web interface address for activation link
     'site_name': 'Dev Cloud'            # System name in emails

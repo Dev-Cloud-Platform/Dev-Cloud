@@ -16,7 +16,9 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
 
 from database.models import Applications
 from virtual_controller.api.serializers.applications_serializer import ApplicationsSerializer
@@ -28,6 +30,22 @@ class ApplicationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Applications.objects.all()
     serializer_class = ApplicationsSerializer
+
+    @list_route(methods=['get'], url_path='get-application')
+    def get_application(self, request):
+        """
+        You need add payload with key application and your application name as value.
+        Example: GET /rest_api/applications/get-application/?application=mysql
+        @param request:
+        @return:
+        """
+        application = request.DATA.get('application', None) or request.query_params.get('application', None)
+        if application:
+            get_application = Applications.objects.get(application_name=application)
+            serializer = self.get_serializer(get_application)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 

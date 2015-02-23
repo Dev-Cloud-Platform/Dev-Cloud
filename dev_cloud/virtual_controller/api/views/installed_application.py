@@ -21,7 +21,7 @@ from database.models.installed_applications import InstalledApplications
 from virtual_controller.serializers.installed_applications_serializer import InstalledApplicationsSerializer
 
 
-class ApplicationList(generics.ListAPIView):
+class InstalledApplicationList(generics.ListAPIView):
     """
     List of all available applications.
     """

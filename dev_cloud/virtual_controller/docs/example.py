@@ -18,7 +18,7 @@
 # @COPYRIGHT_end
 
 import json
-from newrelic.packages import requests
+import requests
 from core.settings import config
 
 username = config.CLM_LOGIN

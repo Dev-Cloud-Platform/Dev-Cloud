@@ -49,7 +49,7 @@ def get_logger(logger_id):
     active_loggers.add(logger_id)
     logger = logging.getLogger(log_name)
     hdlr = logging.FileHandler(os.path.join(settings.LOG_DIR, '%s.log' % log_name))
-    formatter = logging.Formatter(settings.LOG_FORMAT)
+    formatter = logging.Formatter(settings.ls)
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
     logger.setLevel(settings.LOG_LEVEL)
