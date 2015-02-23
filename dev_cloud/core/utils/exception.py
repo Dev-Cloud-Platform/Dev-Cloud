@@ -20,7 +20,7 @@
 
 class DevCloudException(Exception):
     """
-        Class for exception thrown by Dev Cloud functions
+    Class for exception thrown by Dev Cloud functions
     """
 
     @property

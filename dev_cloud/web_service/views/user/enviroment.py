@@ -23,7 +23,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
 from core.utils.decorators import django_view, user_permission
-from core.utils.log import exception
+from core.utils.log import error
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.views.user.user import generate_active
 
@@ -157,7 +157,7 @@ def define_environment(request, technology, template_name='app/environment/step_
             print application_details.text
         else:
             print "Problem with request: " + application_details.url
-            exception(request.session['user']['user_id'], "Problem with request: " + application_details.url)
+            error(request.session['user']['user_id'], "Problem with request: " + application_details.url)
 
     return render_to_response(template_name,
                               dict({'selected_applications': selected_applications}.items()),

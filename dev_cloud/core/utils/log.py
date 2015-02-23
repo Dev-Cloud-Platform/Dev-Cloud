@@ -20,10 +20,7 @@
 import logging
 import os
 
-from django.conf import settings
-
-
-
+from core.settings import config
 
 # Set of active loggers - ones currently writing to logs.
 active_loggers = set([])
@@ -48,11 +45,12 @@ def get_logger(logger_id):
 
     active_loggers.add(logger_id)
     logger = logging.getLogger(log_name)
-    hdlr = logging.FileHandler(os.path.join(settings.LOG_DIR, '%s.log' % log_name))
-    formatter = logging.Formatter(settings.ls)
+    hdlr = logging.FileHandler(os.path.join(config.LOG_DIR, '%s.log' % log_name))
+    formatter = logging.Formatter(config.LOG_FORMAT)
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr)
-    logger.setLevel(settings.LOG_LEVEL)
+    logger.setLevel(config.LOG_LEVEL)
+
     return logger
 
 
