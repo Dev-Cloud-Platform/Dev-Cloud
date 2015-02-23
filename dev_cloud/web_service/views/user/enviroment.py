@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import ast
 
 import requests
 from django.shortcuts import render_to_response
@@ -111,6 +112,23 @@ def get_selected_applications(request, technology):
     return selected_applications
 
 
+def calculate_requirements(list_application_details):
+    """
+
+    @param list_application_details:
+    @return:
+    """
+    cpu = 0
+    memory = 0
+    space = 0
+    minimal_tempalte = None
+
+    for key, details in list_application_details.iteritems():
+        print key + "_" + str(details['memory'])
+
+    return dict({'cpu': cpu, 'memory': memory, 'space': space}.items())
+
+
 @ajax
 @user_permission
 def customize_environment(request, technology, application, operation):
@@ -148,17 +166,20 @@ def define_environment(request, technology, template_name='app/environment/step_
     @param template_name: template to render.
     @return:
     """
-
+    list_application_details = {}
     selected_applications = get_selected_applications(request, technology)
-    for selected_application in selected_applications:
 
+    for selected_application in selected_applications:
         application_details = requests.get(config.REST_API_ADDRESS +
-            'rest_api/applications/get-application/?application=' + selected_application)
+                                           'rest_api/applications/get-application/?application=' + selected_application)
         if application_details.status_code == 200:
-            print application_details.text
+            list_application_details = dict(
+                list_application_details.items() + {
+                    selected_application: ast.literal_eval(application_details.text)}.items())
         else:
-            print "Problem with request: " + application_details.url
             error(request.session['user']['user_id'], "Problem with request: " + application_details.url)
+
+    calculate_requirements(list_application_details)
 
     return render_to_response(template_name,
                               dict({'selected_applications': selected_applications}.items()),

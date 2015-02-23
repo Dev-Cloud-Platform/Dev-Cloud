@@ -47,7 +47,7 @@ class ApplicationViewSet(viewsets.ReadOnlyModelViewSet):
                 serializer = self.get_serializer(get_application)
                 return Response(serializer.data)
             except Applications.DoesNotExist:
-                error(None, 'Application not found in database')
+                error(None, 'Application' + application + 'not found in database')
                 return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
