@@ -19,6 +19,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
+from core.utils.log import error
 
 from database.models import Applications
 from virtual_controller.api.serializers.applications_serializer import ApplicationsSerializer
@@ -41,9 +42,13 @@ class ApplicationViewSet(viewsets.ReadOnlyModelViewSet):
         """
         application = request.DATA.get('application', None) or request.query_params.get('application', None)
         if application:
-            get_application = Applications.objects.get(application_name=application)
-            serializer = self.get_serializer(get_application)
-            return Response(serializer.data)
+            try:
+                get_application = Applications.objects.get(application_name=application)
+                serializer = self.get_serializer(get_application)
+                return Response(serializer.data)
+            except Applications.DoesNotExist:
+                error(None, 'Application not found in database')
+                return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

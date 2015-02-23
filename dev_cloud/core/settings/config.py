@@ -41,6 +41,8 @@ CLM_PASSWORD = 'a4b53201134d95f4b817da90dd6bfc2e0b544470'
 
 CLM_ADDRESS = 'http://www.cloud.ifj.edu.pl:8000/'
 
+REST_API_ADDRESS = 'http://192.245.169.169/'
+
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = '54tdc1@#%r8+(#s4s03w(26u8l7x*l=us(hfcgwn^xw6^-32rh'

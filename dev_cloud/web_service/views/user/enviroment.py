@@ -22,6 +22,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
+from core.settings import config
 from core.utils.decorators import django_view, user_permission
 from core.utils.log import error
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
@@ -151,8 +152,8 @@ def define_environment(request, technology, template_name='app/environment/step_
     selected_applications = get_selected_applications(request, technology)
     for selected_application in selected_applications:
 
-        application_details = requests.get(
-            'http://127.0.0.1:8000/rest_api/applications/get-application/?application=' + selected_application)
+        application_details = requests.get(config.REST_API_ADDRESS +
+            'rest_api/applications/get-application/?application=' + selected_application)
         if application_details.status_code == 200:
             print application_details.text
         else:
