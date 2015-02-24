@@ -114,19 +114,44 @@ def get_selected_applications(request, technology):
 
 def calculate_requirements(list_application_details):
     """
-
-    @param list_application_details:
-    @return:
+    Calculates requirements for virtual instance.
+    @param list_application_details: the list with application and their details.
+    @return: dict of requirements.
     """
     cpu = 0
     memory = 0
     space = 0
-    minimal_tempalte = None
 
     for key, details in list_application_details.iteritems():
-        print key + "_" + str(details['memory'])
+        cpu = max(cpu, int(details['cpu']))
+        memory += int(details['memory'])
+        space += int(details['space'])
 
     return dict({'cpu': cpu, 'memory': memory, 'space': space}.items())
+
+
+def get_proper_template(requirements):
+    """
+    Gets proper template for given requirements.
+    @param requirements: the dict of requirements.
+    @return: proposal template for virtual instance.
+    """
+    list_of_templates = get_list_of_templates()
+
+    for template in list_of_templates:
+        if requirements['cpu'] <= template['cpu'] and requirements['memory'] <= (template['memory'] * 1024):
+            proper_template = template
+            break
+
+    return proper_template
+
+
+def get_list_of_templates():
+    """
+    Gets list of all available template for instances.
+    @return: list of all available template for instances.
+    """
+    return ast.literal_eval(requests.get(config.REST_API_ADDRESS + 'rest_api/template-instances/').text)
 
 
 @ajax
@@ -179,9 +204,12 @@ def define_environment(request, technology, template_name='app/environment/step_
         else:
             error(request.session['user']['user_id'], "Problem with request: " + application_details.url)
 
-    calculate_requirements(list_application_details)
+    requirements = calculate_requirements(list_application_details)
+    proposed_template = get_proper_template(requirements)
+    print proposed_template
 
     return render_to_response(template_name,
-                              dict({'selected_applications': selected_applications}.items()),
+                              dict({'requirements': requirements, 'template': proposed_template,
+                                    'list_of_templates': get_list_of_templates()}.items()),
                               context_instance=RequestContext(request))
 
