@@ -25,7 +25,7 @@ function defineEnvironment(technology) {
     ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
         //onSuccess
         jQuery('#tab2-3').html(content);
-        showUsage();
+        showUsage(document.getElementById("requirements").value);
     })
 }
 
@@ -111,7 +111,9 @@ function buildAll() {
 }
 
 
-function showUsage() {
+function showUsage(text) {
+    var obj = JSON.parse(text);
+    alert(obj);
     // TODO Need customize.
     // Donut Formatting
     Morris.Donut({
