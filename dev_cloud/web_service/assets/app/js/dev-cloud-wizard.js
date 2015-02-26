@@ -25,7 +25,48 @@ function defineEnvironment(technology) {
     ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
         //onSuccess
         jQuery('#tab2-3').html(content);
-        showUsage(document.getElementById("requirements").value);
+        var template = document.getElementById("template").value;
+        var requirements = document.getElementById("requirements").value
+
+        // SelectBoxIt Dropdown replacement
+        if ($.isFunction($.fn.selectBoxIt)) {
+            $("select.selectboxit").each(function (i, el) {
+                var $this = $(el),
+                    opts = {
+                        showFirstOption: attrDefault($this, 'first-option', true),
+                        'native': attrDefault($this, 'native', false),
+                        defaultText: attrDefault($this, 'text', ''),
+
+                        // Uses the jQuery 'fadeIn' effect when opening the drop down
+                        showEffect: "fadeIn",
+
+                        // Sets the jQuery 'fadeIn' effect speed to 400 milleseconds
+                        showEffectSpeed: 300,
+
+                        // Uses the jQuery 'fadeOut' effect when closing the drop down
+                        hideEffect: "fadeOut",
+
+                        // Sets the jQuery 'fadeOut' effect speed to 400 milleseconds
+                        hideEffectSpeed: 300
+                    };
+
+                $this.addClass('visible');
+                $this.selectBoxIt(opts);
+            });
+
+            var selectBox = $("select.selectboxit");
+            selectBox.data("selectBox-selectBoxIt").selectOption(template);
+
+            $(function () {
+                // Uses the jQuery bind method to bind to the focus event on the dropdown list
+                $("select.selectboxit").change(function (event, obj) {
+                    // Do something when the focus event is triggered
+                    updateUsage(requirements, $(this).val())
+                });
+            });
+        }
+
+        showUsage(requirements, template);
     })
 }
 
@@ -72,7 +113,7 @@ function styleLoad() {
 }
 
 
-window.technology = null
+window.technology = null;
 
 function setTechnology(technology) {
     window.technology = technology
@@ -96,7 +137,7 @@ function buildAll() {
 
     } else if (getTechnology() == null) {
         setTechnology(current_technology);
-        if(getTechnology() != null) {
+        if (getTechnology() != null) {
             show_loading_bar({
                 pct: 78,
                 finish: function (pct) {
@@ -110,17 +151,28 @@ function buildAll() {
     defineEnvironment(getTechnology());
 }
 
+var cpu = null;
+var memory = null;
+var space = null;
 
-function showUsage(text) {
-    var obj = JSON.parse(text);
-    alert(obj);
-    // TODO Need customize.
+function showUsage(requirements, template) {
+    var requirementsObj = eval('(' + requirements + ')');
+    var templateObj = eval('(' + template + ')');
+
     // Donut Formatting
-    Morris.Donut({
+    cpu = Morris.Donut({
         element: 'chart-CPU',
         data: [
-            {value: 70, label: 'used', formatted: 'at least 70%'},
-            {value: 30, label: 'free', formatted: 'approx. 30%'}
+            {
+                value: requirementsObj['cpu'],
+                label: 'used',
+                formatted: requirementsObj['cpu'] + ' cores'
+            },
+            {
+                value: templateObj['cpu'] - requirementsObj['cpu'],
+                label: 'free',
+                formatted: templateObj['cpu'] - requirementsObj['cpu'] + ' cores'
+            }
         ],
         formatter: function (x, data) {
             return data.formatted;
@@ -128,31 +180,89 @@ function showUsage(text) {
         colors: ['#b92527', '#ffaaab']
     });
 
-    Morris.Donut({
+    memory = Morris.Donut({
         element: 'chart-RAM',
         data: [
-            {value: 70, label: 'foo', formatted: 'at least 70%'},
-            {value: 15, label: 'bar', formatted: 'approx. 15%'},
-            {value: 10, label: 'baz', formatted: 'approx. 10%'},
-            {value: 5, label: 'A really really long label', formatted: 'at most 5%'}
+            {
+                value: requirementsObj['memory'],
+                label: 'used',
+                formatted: requirementsObj['memory'] + ' MBs'
+            },
+            {
+                value: (templateObj['memory'] * 1024) - requirementsObj['memory'],
+                label: 'free',
+                formatted: ((templateObj['memory'] * 1024) - requirementsObj['memory']).toFixed(0) + ' MBs'
+            }
         ],
         formatter: function (x, data) {
             return data.formatted;
         },
-        colors: ['#b92527', '#d13c3e', '#ff6264', '#ffaaab']
+        colors: ['#242d3c', '#566275']
     });
 
-    Morris.Donut({
+    space = Morris.Donut({
         element: 'chart-HDD',
         data: [
-            {value: 70, label: 'foo', formatted: 'at least 70%'},
-            {value: 15, label: 'bar', formatted: 'approx. 15%'},
-            {value: 10, label: 'baz', formatted: 'approx. 10%'},
-            {value: 5, label: 'A really really long label', formatted: 'at most 5%'}
+            {
+                value: requirementsObj['space'],
+                label: 'used',
+                formatted: requirementsObj['space'] + ' MBs'
+            },
+            {
+                value: 10 * 1024 - requirementsObj['space'],
+                label: 'free',
+                formatted: (10 * 1024 - requirementsObj['space']).toFixed(0) + ' MBs'
+            }
         ],
         formatter: function (x, data) {
             return data.formatted;
         },
-        colors: ['#b92527', '#d13c3e', '#ff6264', '#ffaaab']
+        colors: ['#D9D022', '#FFF879']
     });
+}
+
+
+function updateUsage(requirements, template) {
+    var requirementsObj = eval('(' + requirements + ')');
+    var templateObj = eval('(' + template + ')');
+
+    if (cpu != null && memory != null) {
+        cpu.setData([
+            {
+                value: requirementsObj['cpu'],
+                label: 'used',
+                formatted: requirementsObj['cpu'] + ' cores'
+            },
+            {
+                value: templateObj['cpu'] - requirementsObj['cpu'],
+                label: 'free',
+                formatted: templateObj['cpu'] - requirementsObj['cpu'] + ' cores'
+            }]);
+
+        memory.setData([
+            {
+                value: requirementsObj['memory'],
+                label: 'used',
+                formatted: requirementsObj['memory'] + ' MBs'
+            },
+            {
+                value: (templateObj['memory'] * 1024) - requirementsObj['memory'],
+                label: 'free',
+                formatted: ((templateObj['memory'] * 1024) - requirementsObj['memory']).toFixed(0) + ' MBs'
+            }
+        ]);
+
+        space.setData([
+            {
+                value: requirementsObj['space'],
+                label: 'used',
+                formatted: requirementsObj['space'] + ' MBs'
+            },
+            {
+                value: 10 * 1024 - requirementsObj['space'],
+                label: 'free',
+                formatted: (10 * 1024 - requirementsObj['space']).toFixed(0) + ' MBs'
+            }
+        ]);
+    }
 }
