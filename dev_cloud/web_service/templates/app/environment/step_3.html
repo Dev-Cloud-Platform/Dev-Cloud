@@ -1,18 +1,22 @@
 {% load i18n %}
 {% load form_tags %}
 
-<div class="col-md-6">
+<div class="col-md-5">
     <div class="form-group">
         <label class="control-label" for="full_name">{% trans "Template instances" %}</label>
         <select name="template" class="selectboxit" data-first-option="false">
             <option>{% trans "Select template" %}</option>
             {% for template_name in list_of_templates %}
                 <option value="{{ template_name }}" {% if template_name.cpu < template.cpu %}
-                        disabled {% endif %}>{{ template_name.template_name }}</option>
+                        disabled {% endif %} data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-original-title="{% trans "Performance" %}"
+                        data-content="{% trans "CPU: " %}{{ template_name.cpu }} cores <br /> {% trans " RAM memory: " %} {{ template_name.memory }} GB <br /> {% trans "HDD space: " %} 10 GB">{{ template_name.template_name }}
+                </option>
             {% endfor %}
         </select>
     </div>
 </div>
+
 
 <table class="table table-responsive">
     <tbody>
@@ -44,10 +48,7 @@
 
 
 <link rel="stylesheet" href="{{ STATIC_URL }}app/js/selectboxit/jquery.selectBoxIt.css">
-{#<link rel="stylesheet" href="{{ STATIC_URL }}app/js/select2/select2-bootstrap.css">#}
-{#<link rel="stylesheet" href="{{ STATIC_URL }}app/js/select2/select2.css">#}
 
-{#<script src="{{ STATIC_URL }}app/js/select2/select2.min.js"></script>#}
 <script src="{{ STATIC_URL }}app/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js"></script>
 <script src="{{ STATIC_URL }}app/js/selectboxit/jquery.selectBoxIt.min.js"></script>
 

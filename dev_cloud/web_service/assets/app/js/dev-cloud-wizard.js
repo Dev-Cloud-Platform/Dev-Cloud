@@ -17,6 +17,7 @@ function customize(application, operation) {
     ajaxGet('/main/app/create/environment/customize/' + getTechnology()
     + '/' + application + '/' + operation, function (content) {
         //onSuccess
+        // TODO: Create method to set selected technology.
     })
 }
 
@@ -27,6 +28,7 @@ function defineEnvironment(technology) {
         jQuery('#step3').html(content);
         var template = document.getElementById("template").value;
         var requirements = document.getElementById("requirements").value
+        setTemplate(template);
 
         // SelectBoxIt Dropdown replacement
         if ($.isFunction($.fn.selectBoxIt)) {
@@ -62,11 +64,35 @@ function defineEnvironment(technology) {
                 $("select.selectboxit").change(function (event, obj) {
                     // Do something when the focus event is triggered
                     updateUsage(requirements, $(this).val())
+                    setTemplate($(this).val())
                 });
             });
         }
 
-        showUsage(requirements, template);
+        // Popovers and tooltips
+		$('[data-toggle="popover"]').each(function(i, el)
+		{
+			var $this = $(el),
+				placement = attrDefault($this, 'placement', 'right'),
+				trigger = attrDefault($this, 'trigger', 'click'),
+				popover_class = $this.hasClass('popover-secondary') ? 'popover-secondary' : ($this.hasClass('popover-primary') ? 'popover-primary' : ($this.hasClass('popover-default') ? 'popover-default' : ''));
+
+			$this.popover({
+				placement: placement,
+				trigger: trigger,
+                container: "body",
+                html: true
+			});
+
+			$this.on('shown.bs.popover', function(ev)
+			{
+				var $popover = $this.next();
+
+				$popover.addClass(popover_class);
+			});
+		});
+
+        showUsage(requirements, getTemplate());
     })
 }
 
@@ -114,15 +140,23 @@ function styleLoad() {
 
 
 window.technology = null;
+window.template = null;
 
 function setTechnology(technology) {
-    window.technology = technology
+    window.technology = technology;
 }
 
 function getTechnology() {
-    return window.technology
+    return window.technology;
 }
 
+function setTemplate(template) {
+    window.template = template;
+}
+
+function getTemplate() {
+    return window.template;
+}
 
 function buildAll() {
     var current_technology = $(".switch-on :input").val();

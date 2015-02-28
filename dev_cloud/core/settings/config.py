@@ -27,8 +27,8 @@ LOG_DIR = '/var/log/DevCloud/'
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 DEV_CLOUD_DATA = {
-    'site_domain': '192.245.169.169',   # Web interface address for activation link
-    'site_name': 'Dev Cloud'            # System name in emails
+    'site_domain': '192.245.169.169',  # Web interface address for activation link
+    'site_name': 'Dev Cloud'  # System name in emails
 }
 
 AWS_ACCESS_KEY_ID = 'm4gik'
@@ -41,7 +41,7 @@ CLM_PASSWORD = 'a4b53201134d95f4b817da90dd6bfc2e0b544470'
 
 CLM_ADDRESS = 'http://www.cloud.ifj.edu.pl:8000/'
 
-REST_API_ADDRESS = 'http://192.245.169.169/' #'http://127.0.0.1:8000/'
+REST_API_ADDRESS = 'http://192.245.169.169/' # 'http://127.0.0.1:8000/'
 
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
