@@ -59,10 +59,10 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                    <input type="radio" name="radio1" data-validate="required"
-                                           value="java"/>
-                                </div>
+                            <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="java"/>
+                            </div>
                         </div>
                     </div>
 
@@ -73,10 +73,10 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                                <div id="switch"  class="make-switch is-radio switch-small"  onclick="generateDependencies()">
-                                    <input type="radio" name="radio1" data-validate="required"
-                                           value="php"/>
-                                </div>
+                            <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="php"/>
+                            </div>
                         </div>
                     </div>
 
@@ -87,10 +87,10 @@
                                      class="img-responsive img-rounded"/>
                             </a>
 
-                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                    <input type="radio" name="radio1" data-validate="required"
-                                           value="ruby"/>
-                                </div>
+                            <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="ruby"/>
+                            </div>
                         </div>
                     </div>
 
@@ -102,10 +102,10 @@
                                      class="img-responsive  img-rounded"/>
                             </a>
 
-                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                    <input type="radio" name="radio1" data-validate="required"
-                                           value="node"/>
-                                </div>
+                            <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="node"/>
+                            </div>
                         </div>
                     </div>
 
@@ -116,10 +116,10 @@
                                      class="img-responsive  img-rounded"/>
                             </a>
 
-                                <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
-                                    <input  type="radio" name="radio1" data-validate="required"
-                                           value="python"/>
-                                </div>
+                            <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="python"/>
+                            </div>
                         </div>
                     </div>
 
@@ -137,7 +137,22 @@
 
             <div class="tab-pane" id="tab2-3">
 
-                {# Auto generate content #}
+                <strong>{% trans "Define environment" %}</strong>
+                <br/>
+                <br/>
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="full_name">{% trans "Environment Name" %}</label>
+                            <input class="form-control" name="full_name" id="full_name" data-validate="required"
+                                   placeholder="Your full name"/>
+                        </div>
+                    </div>
+                    <div id="step3">
+                        {# Auto generate content #}
+                    </div>
+                </div>
 
             </div>
 

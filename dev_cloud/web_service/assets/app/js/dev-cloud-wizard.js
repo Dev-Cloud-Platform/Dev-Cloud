@@ -24,7 +24,7 @@ function customize(application, operation) {
 function defineEnvironment(technology) {
     ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
         //onSuccess
-        jQuery('#tab2-3').html(content);
+        jQuery('#step3').html(content);
         var template = document.getElementById("template").value;
         var requirements = document.getElementById("requirements").value
 
