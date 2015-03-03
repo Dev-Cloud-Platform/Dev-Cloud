@@ -3,13 +3,13 @@
  */
 
 function generateDependencies() {
-    var technology = $(".switch-on :input").val()
-    setTechnology(technology)
+    var technology = $(".switch-on :input").val();
+    setTechnology(technology);
     ajaxGet('/main/app/create/environment/technology/' + getTechnology(), function (content) {
         //onSuccess
         jQuery('#tab2-2').html(content);
         styleLoad();
-    })
+    });
 }
 
 
@@ -17,9 +17,47 @@ function customize(application, operation) {
     ajaxGet('/main/app/create/environment/customize/' + getTechnology()
     + '/' + application + '/' + operation, function (content) {
         //onSuccess
-        // TODO: Create method to set selected technology.
-    })
+        setApplcations(content);
+    });
 }
+
+
+function summary() {
+    ajaxGet('/main/app/create/environment/summary/', function (content) {
+        //onSuccess
+        jQuery('#step4').html(content);
+        printInvoiceTemplate(template);
+        printInvoicePublicIP();
+        printInvoiceDate();
+    });
+}
+
+
+function printInvoiceDate() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth(); //January is 0!
+    var yyyy = today.getFullYear();
+    var months = new Array('January', 'February', 'March', 'April', 'May',
+        'June', 'July', 'August', 'September', 'October', 'November', 'December');
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    today = dd + ' ' + months[mm] + ' ' + yyyy;
+    jQuery('#invoice-date').html(today);
+}
+
+
+function printInvoiceTemplate(template) {
+    var templateObj = eval('(' + template + ')');
+    var information = '<br />CPU: ' + templateObj['cpu'] + ' cores <br />RAM memory: ' + templateObj['memory'] + 'GB';
+    jQuery('#template-selected').html(information);
+}
+
+
+function printInvoicePublicIP() {}
 
 
 function defineEnvironment(technology) {
@@ -141,6 +179,7 @@ function styleLoad() {
 
 window.technology = null;
 window.template = null;
+window.applications = null;
 
 function setTechnology(technology) {
     window.technology = technology;
@@ -157,6 +196,15 @@ function setTemplate(template) {
 function getTemplate() {
     return window.template;
 }
+
+function setApplcations(applications) {
+    window.applications = applications;
+}
+
+function getApplcations() {
+    return window.applications;
+}
+
 
 function buildAll() {
     var current_technology = $(".switch-on :input").val();
@@ -182,7 +230,13 @@ function buildAll() {
         }
     }
 
-    defineEnvironment(getTechnology());
+    if (getApplcations() != null) {
+        defineEnvironment(getTechnology());
+    }
+
+    if (getApplcations() != null && getTemplate() != null) {
+        summary();
+    }
 }
 
 var cpu = null;

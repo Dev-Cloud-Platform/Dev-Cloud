@@ -180,6 +180,8 @@ def customize_environment(request, technology, application, operation):
     if technology == PYTHON:
         update_application(request.session.get(PYTHON, []), application, operation)
 
+    return get_selected_applications(request, technology)
+
 
 @ajax
 @user_permission
@@ -213,3 +215,15 @@ def define_environment(request, technology, template_name='app/environment/step_
                                     'list_of_templates': get_list_of_templates()}.items()),
                               context_instance=RequestContext(request))
 
+
+@ajax
+@user_permission
+def summary(request, template_name='app/environment/step_4.html'):
+    """
+
+    @param request:
+    @param template_name:
+    @return:
+    """
+
+    return render_to_response(template_name, dict(), context_instance=RequestContext(request))

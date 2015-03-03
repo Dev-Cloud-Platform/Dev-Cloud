@@ -19,7 +19,7 @@
 from django.conf.urls import patterns, url, include
 from core.utils.decorators import user_permission
 from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment, \
-    define_environment
+    define_environment, summary
 
 main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/$', user_permission(wizard_setup),
@@ -27,11 +27,12 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/technology/(?P<technology>\w+)/$',
                              user_permission(generate_dependencies),
                              name='generate_dependencies'),
-                         url(
-                             r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
+                         url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
                              user_permission(customize_environment), name='customize_environment'),
                          url(r'^app/create/environment/define/(?P<technology>\w+)/$',
-                             user_permission(define_environment), name='define_environment'))
+                             user_permission(define_environment), name='define_environment'),
+                         url(r'^app/create/environment/summary/$', user_permission(summary), name='summary'))
+
 
 urlpatterns = patterns('',
                        url(r'^main/', include(main_patterns)))
