@@ -63,75 +63,82 @@ function printInvoicePublicIP() {}
 function defineEnvironment(technology) {
     ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
         //onSuccess
-        jQuery('#step3').html(content);
-        var template = document.getElementById("template").value;
-        var requirements = document.getElementById("requirements").value
-        setTemplate(template);
+        show_loading_bar({
+            pct: 78,
+            finish: function (pct) {
+                jQuery('#step3').html(content);
+                var template = document.getElementById("template").value;
+                var requirements = document.getElementById("requirements").value
+                setTemplate(template);
 
-        // SelectBoxIt Dropdown replacement
-        if ($.isFunction($.fn.selectBoxIt)) {
-            $("select.selectboxit").each(function (i, el) {
-                var $this = $(el),
-                    opts = {
-                        showFirstOption: attrDefault($this, 'first-option', true),
-                        'native': attrDefault($this, 'native', false),
-                        defaultText: attrDefault($this, 'text', ''),
+                // SelectBoxIt Dropdown replacement
+                if ($.isFunction($.fn.selectBoxIt)) {
+                    $("select.selectboxit").each(function (i, el) {
+                        var $this = $(el),
+                            opts = {
+                                showFirstOption: attrDefault($this, 'first-option', true),
+                                'native': attrDefault($this, 'native', false),
+                                defaultText: attrDefault($this, 'text', ''),
 
-                        // Uses the jQuery 'fadeIn' effect when opening the drop down
-                        showEffect: "fadeIn",
+                                // Uses the jQuery 'fadeIn' effect when opening the drop down
+                                showEffect: "fadeIn",
 
-                        // Sets the jQuery 'fadeIn' effect speed to 400 milleseconds
-                        showEffectSpeed: 300,
+                                // Sets the jQuery 'fadeIn' effect speed to 400 milleseconds
+                                showEffectSpeed: 300,
 
-                        // Uses the jQuery 'fadeOut' effect when closing the drop down
-                        hideEffect: "fadeOut",
+                                // Uses the jQuery 'fadeOut' effect when closing the drop down
+                                hideEffect: "fadeOut",
 
-                        // Sets the jQuery 'fadeOut' effect speed to 400 milleseconds
-                        hideEffectSpeed: 300
-                    };
+                                // Sets the jQuery 'fadeOut' effect speed to 400 milleseconds
+                                hideEffectSpeed: 300
+                            };
 
-                $this.addClass('visible');
-                $this.selectBoxIt(opts);
-            });
+                        $this.addClass('visible');
+                        $this.selectBoxIt(opts);
+                    });
 
-            var selectBox = $("select.selectboxit");
-            selectBox.data("selectBox-selectBoxIt").selectOption(template);
+                    var selectBox = $("select.selectboxit");
+                    selectBox.data("selectBox-selectBoxIt").selectOption(template);
 
-            $(function () {
-                // Uses the jQuery bind method to bind to the focus event on the dropdown list
-                $("select.selectboxit").change(function (event, obj) {
-                    // Do something when the focus event is triggered
-                    updateUsage(requirements, $(this).val())
-                    setTemplate($(this).val())
+                    $(function () {
+                        // Uses the jQuery bind method to bind to the focus event on the dropdown list
+                        $("select.selectboxit").change(function (event, obj) {
+                            // Do something when the focus event is triggered
+                            updateUsage(requirements, $(this).val())
+                            setTemplate($(this).val())
+                        });
+                    });
+                }
+
+                // Popovers and tooltips
+                $('[data-toggle="popover"]').each(function(i, el)
+                {
+                    var $this = $(el),
+                        placement = attrDefault($this, 'placement', 'right'),
+                        trigger = attrDefault($this, 'trigger', 'click'),
+                        popover_class = $this.hasClass('popover-secondary') ? 'popover-secondary' : ($this.hasClass('popover-primary') ? 'popover-primary' : ($this.hasClass('popover-default') ? 'popover-default' : ''));
+
+                    $this.popover({
+                        placement: placement,
+                        trigger: trigger,
+                        container: "body",
+                        html: true
+                    });
+
+                    $this.on('shown.bs.popover', function(ev)
+                    {
+                        var $popover = $this.next();
+
+                        $popover.addClass(popover_class);
+                    });
                 });
-            });
-        }
 
-        // Popovers and tooltips
-		$('[data-toggle="popover"]').each(function(i, el)
-		{
-			var $this = $(el),
-				placement = attrDefault($this, 'placement', 'right'),
-				trigger = attrDefault($this, 'trigger', 'click'),
-				popover_class = $this.hasClass('popover-secondary') ? 'popover-secondary' : ($this.hasClass('popover-primary') ? 'popover-primary' : ($this.hasClass('popover-default') ? 'popover-default' : ''));
+                showUsage(requirements, getTemplate());
+                hide_loading_bar();
+            }
+        });
 
-			$this.popover({
-				placement: placement,
-				trigger: trigger,
-                container: "body",
-                html: true
-			});
-
-			$this.on('shown.bs.popover', function(ev)
-			{
-				var $popover = $this.next();
-
-				$popover.addClass(popover_class);
-			});
-		});
-
-        showUsage(requirements, getTemplate());
-    })
+    });
 }
 
 
