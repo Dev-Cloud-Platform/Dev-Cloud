@@ -17,7 +17,7 @@ function customize(application, operation) {
     ajaxGet('/main/app/create/environment/customize/' + getTechnology()
     + '/' + application + '/' + operation, function (content) {
         //onSuccess
-        setApplcations(content);
+        setApplications(content);
     });
 }
 
@@ -61,6 +61,8 @@ function printInvoicePublicIP() {}
 
 
 function defineEnvironment(technology) {
+    jQuery('#step3').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
+    'margin-right: auto; width: 1%;"><img src="/static/app/images/ajax-loader.gif" /></div></div>');
     ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
         //onSuccess
         show_loading_bar({
@@ -135,6 +137,7 @@ function defineEnvironment(technology) {
 
                 showUsage(requirements, getTemplate());
                 hide_loading_bar();
+                jQuery('#loadObject').remove();
             }
         });
 
@@ -204,11 +207,11 @@ function getTemplate() {
     return window.template;
 }
 
-function setApplcations(applications) {
+function setApplications(applications) {
     window.applications = applications;
 }
 
-function getApplcations() {
+function getApplications() {
     return window.applications;
 }
 
@@ -237,11 +240,11 @@ function buildAll() {
         }
     }
 
-    if (getApplcations() != null) {
+    if (getApplications() != null) {
         defineEnvironment(getTechnology());
     }
 
-    if (getApplcations() != null && getTemplate() != null) {
+    if (getApplications() != null && getTemplate() != null) {
         summary();
     }
 }
