@@ -185,7 +185,7 @@ def customize_environment(request, technology, application, operation):
 
 @ajax
 @user_permission
-def define_environment(request, technology, template_name='app/environment/step_3.html'):
+def define_environment(request, technology, exposed_ip, template_name='app/environment/step_3.html'):
     """
 
     @param request:
@@ -208,7 +208,15 @@ def define_environment(request, technology, template_name='app/environment/step_
 
     requirements = calculate_requirements(list_application_details)
     proposed_template = get_proper_template(requirements)
-    print proposed_template
+
+    # if exposed_ip == 'expose':
+    #     requests.session['public'] = dict({'exposed': True}.items())
+    #
+    # if exposed_ip == 'unexpose':
+    #     requests.session['public'] = dict({'exposed': False}.items())
+
+    # Check if is possible to obtain public ip.
+    print exposed_ip
 
     return render_to_response(template_name,
                               dict({'requirements': requirements, 'template': proposed_template,
@@ -226,4 +234,5 @@ def summary(request, template_name='app/environment/step_4.html'):
     @return:
     """
 
-    return render_to_response(template_name, dict(), context_instance=RequestContext(request))
+    return render_to_response(template_name, dict({'exposed': request.session.get('publicIP')}.items()),
+                              context_instance=RequestContext(request))

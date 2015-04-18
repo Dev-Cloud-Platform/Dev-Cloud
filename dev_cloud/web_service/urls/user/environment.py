@@ -29,7 +29,7 @@ main_patterns = patterns('web_service.views.user.enviroment',
                              name='generate_dependencies'),
                          url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
                              user_permission(customize_environment), name='customize_environment'),
-                         url(r'^app/create/environment/define/(?P<technology>\w+)/$',
+                         url(r'^app/create/environment/define/(?P<technology>\w+)/(?P<exposed_ip>\w+)/$',
                              user_permission(define_environment), name='define_environment'),
                          url(r'^app/create/environment/summary/$', user_permission(summary), name='summary'))
 

@@ -13,6 +13,12 @@ function generateDependencies() {
 }
 
 
+function getPublicIP() {
+    var ip = ($("#ip .switch-on :input").val() === undefined) ? 'unexpose' :$("#ip .switch-on :input").val();
+    setIP(ip);
+}
+
+
 function customize(application, operation) {
     ajaxGet('/main/app/create/environment/customize/' + getTechnology()
     + '/' + application + '/' + operation, function (content) {
@@ -57,11 +63,15 @@ function printInvoiceTemplate(template) {
 }
 
 
-function printInvoicePublicIP() {}
+function printInvoicePublicIP() {
+    if (getIP() == 'expose') {
+        jQuery('#public-ip').append('<td class="text-center">3</td> <td>IP <span id="public-ip-adresss"></span></td> <td>1</td>  <td class="text-right">$0,00</td>');
+    }
+}
 
 
 function defineEnvironment(technology) {
-    ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
+    ajaxGet('/main/app/create/environment/define/' + technology + '/' + getIP(), function (content) {
         //onSuccess
         show_loading_bar({
             pct: 78,
@@ -187,6 +197,7 @@ function styleLoad() {
 window.technology = null;
 window.template = null;
 window.applications = null;
+window.ip = 'unexpose';
 
 function setTechnology(technology) {
     window.technology = technology;
@@ -210,6 +221,14 @@ function setApplcations(applications) {
 
 function getApplcations() {
     return window.applications;
+}
+
+function setIP(ip) {
+    window.ip = ip;
+}
+
+function getIP() {
+    return window.ip;
 }
 
 
@@ -239,6 +258,7 @@ function buildAll() {
 
     if (getApplcations() != null) {
         defineEnvironment(getTechnology());
+        getPublicIP();
     }
 
     if (getApplcations() != null && getTemplate() != null) {
