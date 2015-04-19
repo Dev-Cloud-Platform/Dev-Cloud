@@ -19,6 +19,7 @@
 from django.conf.urls import patterns, url, include
 from rest_framework.routers import DefaultRouter
 from virtual_controller.api.views.application import ApplicationViewSet
+from virtual_controller.api.views.installed_application import InstalledApplicationList
 from virtual_controller.api.views.template_instances import TemplateInstancesViewSet
 from virtual_controller.api.views.user import UserViewSet
 
@@ -27,6 +28,7 @@ router = DefaultRouter()
 router.register(r'applications', ApplicationViewSet)
 router.register(r'template-instances', TemplateInstancesViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'installed-applications', InstalledApplicationList)
 
 # Example how to call:
 # curl -i -H "Accept: application/json" -H "Content-Tyon/json"

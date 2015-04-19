@@ -16,17 +16,33 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import generics
+from rest_framework import viewsets
 from database.models.installed_applications import InstalledApplications
-from virtual_controller.serializers.installed_applications_serializer import InstalledApplicationsSerializer
+from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
+from virtual_controller.api.permissions import base_permissions as api_permissions
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
+from virtual_controller.cc1_module.public_ip import request as new_ip_request
 
 
-class InstalledApplicationList(generics.ListAPIView):
+class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
     """
     List of all available applications.
     """
     queryset = InstalledApplications.objects.all()
     serializer_class = InstalledApplicationsSerializer
+    permission_classes = {api_permissions.UsersPermission}
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    @list_route(methods=['get'], url_path='obtain-ip')
+    def obtain_ip(self, request):
+        """
+        Gets available IP address.
+        @param request:
+        @return: Public IP address.
+        """
+        # TODO : Implement method to obtain public IP form CC1.
+
+        return Response(new_ip_request())

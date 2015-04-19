@@ -16,18 +16,12 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import serializers
 
-from database.models import InstalledApplications, Applications
+from core.settings import config
 
+username = config.CLM_LOGIN
+password = config.CLM_PASSWORD
+address_clm = config.CLM_ADDRESS
+CM_ID = 1
 
-class InstalledApplicationsSerializer(serializers.ModelSerializer):
-    # applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
-
-    class Meta:
-        model = InstalledApplications
-        fields = (
-            'installed_app_id', 'workspace', 'clx_ip', 'public_port', 'private_port', 'user', 'application',
-            'virtual_machine')
-
-
+payload = {'login': username, 'password': password, 'cm_id': CM_ID}
