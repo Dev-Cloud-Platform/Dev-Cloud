@@ -65,15 +65,17 @@ function printInvoiceTemplate(template) {
 
 function printInvoicePublicIP() {
     if (getIP() == 'expose') {
-        jQuery('#public-ip').append('<td class="text-center">3</td> <td>IP <span id="public-ip-adresss"></span></td>' +
+        jQuery('#public-ip').append('<td class="text-center">3</td> <td>Public IP <span id="public-ip-adresss"></span></td>' +
         ' <td>1</td>  <td class="text-right">$0,00</td>');
     }
 }
 
 
 function defineEnvironment(technology) {
-    jQuery('#step3').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
-    'margin-right: auto; width: 1%;"><img src="/static/app/images/ajax-loader.gif" /></div></div>');
+    if (!jQuery('#loadObject').length) {
+        jQuery('#step3').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
+        'margin-right: auto; width: 1%;"><img src="/static/app/images/ajax-loader.gif" /></div></div>');
+    }
     ajaxGet('/main/app/create/environment/define/' + technology + '/' + getIP(), function (content) {
         //onSuccess
         show_loading_bar({

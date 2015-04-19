@@ -209,18 +209,18 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
     requirements = calculate_requirements(list_application_details)
     proposed_template = get_proper_template(requirements)
 
-    # if exposed_ip == 'expose':
-    #     requests.session['public'] = dict({'exposed': True}.items())
-    #
-    # if exposed_ip == 'unexpose':
-    #     requests.session['public'] = dict({'exposed': False}.items())
+    exposed_status = None
 
-    # Check if is possible to obtain public ip.
-    print exposed_ip
+    if exposed_ip == 'expose':
+        # Check if is possible to obtain public ip.
+        exposed_status = True
+
+    if exposed_ip == 'unexpose':
+        exposed_status = False
 
     return render_to_response(template_name,
                               dict({'requirements': requirements, 'template': proposed_template,
-                                    'list_of_templates': get_list_of_templates()}.items()),
+                                    'list_of_templates': get_list_of_templates(), 'exposed_status': exposed_status}.items()),
                               context_instance=RequestContext(request))
 
 
