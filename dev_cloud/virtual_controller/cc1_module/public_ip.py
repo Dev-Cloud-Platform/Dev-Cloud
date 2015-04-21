@@ -63,10 +63,17 @@ def unassign():
     pass
 
 
-def release():
+def release(ip_to_release):
     """
     Removes IP from callers public IP's pool and makes it available
     for other users to be further requested. Caller doesn't dispose this IP
     any more. He'll have to send another request if he needs more IPs.
+    @param ip_to_release: Ip to release.
     """
-    pass
+    payload['public_ip_id'] = ip_to_release
+    released_ip = requests.post(address_clm + '/user/public_ip/release/', data=json.dumps(payload))
+
+    if released_ip.status_code == 200:
+        return ast.literal_eval(released_ip.text)
+    else:
+        error("CC1 - Problem with request: " + released_ip.url)

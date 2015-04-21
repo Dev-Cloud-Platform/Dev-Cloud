@@ -17,12 +17,15 @@
 #
 # @COPYRIGHT_end
 from rest_framework import viewsets
+from core.utils.python_object_encoder import SetEncoder
 from database.models.installed_applications import InstalledApplications
 from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
 from virtual_controller.api.permissions import base_permissions as api_permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from virtual_controller.cc1_module.public_ip import request as new_ip_request
+from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list, release
+from virtual_controller.tasks import reserved_pool_ip
+from json import dumps
 
 
 class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
@@ -44,5 +47,9 @@ class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
         @return: Public IP address.
         """
         # TODO : Implement method to obtain public IP form CC1.
-
-        return Response(new_ip_request())
+        result = reserved_pool_ip.add(2, 11)
+        # result = reserved_pool_ip.sleeptask.delay(10)
+        # result_two = reserved_pool_ip.sleeptask.delay(10)
+        j = dumps(result, cls=SetEncoder)
+        # release(28)
+        return Response(j)

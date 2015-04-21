@@ -374,6 +374,13 @@ CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
 # See: http://docs.celeryproject.org/en/master/configuration.html#std:setting-CELERY_CHORD_PROPAGATES
 CELERY_CHORD_PROPAGATES = True
 
+BROKER_URL = 'redis://192.245.169.169:6379/0'
+BROKER_TRANSPORT = 'redis'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 # See: http://celery.github.com/celery/django/
 setup_loader()
 ########## END CELERY CONFIGURATION
