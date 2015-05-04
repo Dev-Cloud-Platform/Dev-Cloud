@@ -17,35 +17,54 @@
 #
 # @COPYRIGHT_end
 from __future__ import absolute_import
-
-from celery import group
-from djcelery import celery
 from core.utils.celery import app
+from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list
 
-Global_i = 1
+poolIPList = []
 
-@celery.task
-def add(x, y):
-    return x + y
+
+class PoolIP(object):
+    """
+    Class represents pool for IP address.
+    """
+    public_ip_id = ""
+    ip_address = ""
+
+    @staticmethod
+    def get_public_id(address_list, ip_address):
+        return filter(lambda address: address["address"] == ip_address, address_list)[0].get("public_ip_id")
+
+    def __init__(self):
+        self.assign()
+
+    def assign(self):
+        ip_request = new_ip_request()
+        if ip_request.get("status") == "ok":
+            PoolIP.ip_address = ip_request.get("data")
+            PoolIP.public_ip_id = PoolIP.get_public_id(get_list().get("data"), PoolIP.ip_address)
+
+    def get_ip_adress(self):
+        return PoolIP.ip_address
+
+    def get_public_ip_id(self):
+        return PoolIP.public_ip_id
 
 
 @app.task(trail=True)
-def sleeptask(i):
-    from time import sleep
-    sleep(i)
-    print Global_i + Global_i
-    return add(2, 3)
+def request(i):
+    """
+
+    @return:
+    """
+    poolIP = PoolIP()
+    poolIPList.append(poolIP)
+    return release.delay(i)
 
 
 @app.task(trail=True)
-def A(how_many):
-    print group(B.s(i) for i in range(how_many))()
-    return group(B.s(i) for i in range(how_many))()
+def release(i):
+    """
 
-@app.task(trail=True)
-def B(i):
-    return pow2.delay(i)
-
-@app.task(trail=True)
-def pow2(i):
-    return i ** 2
+    @return:
+    """
+    pass

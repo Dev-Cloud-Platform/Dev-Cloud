@@ -47,7 +47,8 @@ class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
         @return: Public IP address.
         """
         # TODO : Implement method to obtain public IP form CC1.
-        result = reserved_pool_ip.add(2, 11)
+        # result = get_list()
+        result = reserved_pool_ip.request(15)
         # result = reserved_pool_ip.sleeptask.delay(10)
         # result_two = reserved_pool_ip.sleeptask.delay(10)
         j = dumps(result, cls=SetEncoder)
