@@ -373,6 +373,7 @@ CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
 
 # See: http://docs.celeryproject.org/en/master/configuration.html#std:setting-CELERY_CHORD_PROPAGATES
 CELERY_CHORD_PROPAGATES = True
+# CELERY_ALWAYS_EAGER = False
 
 BROKER_URL = 'redis://192.245.169.169:6379/0'
 BROKER_TRANSPORT = 'redis'

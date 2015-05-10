@@ -17,8 +17,10 @@
 #
 # @COPYRIGHT_end
 from __future__ import absolute_import
+from datetime import datetime, timedelta
 from core.utils.celery import app
-from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list
+from core.utils.log import info
+from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list, release as ip_release
 
 poolIPList = []
 
@@ -29,42 +31,62 @@ class PoolIP(object):
     """
     public_ip_id = ""
     ip_address = ""
+    user_id = ""
 
     @staticmethod
     def get_public_id(address_list, ip_address):
         return filter(lambda address: address["address"] == ip_address, address_list)[0].get("public_ip_id")
 
-    def __init__(self):
-        self.assign()
+    def __init__(self, user_id):
+        self.assign(user_id)
 
-    def assign(self):
+    def assign(self, user_id):
         ip_request = new_ip_request()
         if ip_request.get("status") == "ok":
-            PoolIP.ip_address = ip_request.get("data")
-            PoolIP.public_ip_id = PoolIP.get_public_id(get_list().get("data"), PoolIP.ip_address)
+            self.ip_address = ip_request.get("data")
+            self.public_ip_id = self.get_public_id(get_list().get("data"), self.ip_address)
+            self.user_id = user_id
+            info(user_id, "Assigned IP:" + self.get_ip_address())
 
-    def get_ip_adress(self):
-        return PoolIP.ip_address
+    def remove(self):
+        ip_release(self.get_public_ip_id())
+        info(self.user_id, "Release IP:" + self.get_ip_address())
+
+    def get_ip_address(self):
+        return self.ip_address
 
     def get_public_ip_id(self):
-        return PoolIP.public_ip_id
+        return self.public_ip_id
+
+    @property
+    def dict(self):
+        """
+        @returns{dict} dictionary of PoolIP class
+        \n fields:
+        @dictkey{public_ip_id,int} id of ip address
+        @dictkey{ip_address,string} ip address
+        @dictkey{user_id,int} user id
+        """
+        d = {'public_ip_id': self.public_ip_id, 'ip_address': self.ip_address, 'user_id': self.user_id}
+        return d
 
 
 @app.task(trail=True)
-def request(i):
+def request(user_id):
     """
-
+    Method to obtain public IP form CC1.
     @return:
     """
-    poolIP = PoolIP()
+    poolIP = PoolIP(user_id)
     poolIPList.append(poolIP)
-    return release.delay(i)
+    return release.apply_async(args=(poolIP.dict,), eta=datetime.now() + timedelta(seconds=1), serializer='json')
 
 
 @app.task(trail=True)
-def release(i):
+def release(poolIP):
     """
 
     @return:
     """
-    pass
+    poolIP.remove()
+    poolIPList.remove(poolIP)
