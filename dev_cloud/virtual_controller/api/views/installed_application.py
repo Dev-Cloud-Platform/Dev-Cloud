@@ -46,6 +46,6 @@ class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
         @return: Public IP address.
         """
         user_id = api_permissions.UsersPermission.get_user(request).id
-        result = reserved_pool_ip.request(args=(user_id,))
+        result = reserved_pool_ip.request.apply_async(args=(user_id,))
         j = dumps(result, cls=SetEncoder)
         return Response(j)
