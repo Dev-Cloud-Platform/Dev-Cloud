@@ -21,10 +21,16 @@ import os
 
 from celery import Celery
 from django.conf import settings
+from core.settings.common import BROKER_URL
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.common')
 
-app = Celery('DevCloud_celery')
+app = Celery('dev_cloud', broker=BROKER_URL, backend='redis', include=['virtual_controller.tasks'])
+
+# Optional configuration, see the application user guide.
+app.conf.update(
+    CELERY_TASK_RESULT_EXPIRES=3600,
+    )
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.

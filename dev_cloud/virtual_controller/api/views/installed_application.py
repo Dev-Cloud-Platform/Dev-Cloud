@@ -23,7 +23,7 @@ from virtual_controller.api.serializers.installed_applications_serializer import
 from virtual_controller.api.permissions import base_permissions as api_permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from dev_cloud.virtual_controller.tasks import reserved_pool_ip
+from virtual_controller.tasks import reserved_pool_ip
 from json import dumps
 
 
