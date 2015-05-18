@@ -26,7 +26,7 @@ LOG_DIR = '/var/log/DevCloud/'
 # Log format for each entry
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
-DEV_CLOUD_IP_ADDRESS = '192.245.169.169'
+DEV_CLOUD_IP_ADDRESS = '127.0.0.1'
 
 DEV_CLOUD_DATA = {
     'site_domain': DEV_CLOUD_IP_ADDRESS,  # Web interface address for activation link
