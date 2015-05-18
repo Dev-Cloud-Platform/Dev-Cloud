@@ -23,7 +23,6 @@ from virtual_controller.api.serializers.installed_applications_serializer import
 from virtual_controller.api.permissions import base_permissions as api_permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list, release
 from virtual_controller.tasks import reserved_pool_ip
 from json import dumps
 
@@ -47,6 +46,6 @@ class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
         @return: Public IP address.
         """
         user_id = api_permissions.UsersPermission.get_user(request).id
-        result = reserved_pool_ip.request(user_id)
+        result = reserved_pool_ip.request(args=(user_id,))
         j = dumps(result, cls=SetEncoder)
         return Response(j)

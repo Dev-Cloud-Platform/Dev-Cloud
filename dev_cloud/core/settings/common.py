@@ -27,7 +27,7 @@ from djcelery import setup_loader
 
 
 try:
-    from config import LOG_LEVEL, LOG_DIR, SECRET_KEY
+    from config import LOG_LEVEL, LOG_DIR, SECRET_KEY, DEV_CLOUD_IP_ADDRESS
 except Exception, ex:
     print "Error importing WI configuration file: config.py\nReason: %s" % str(ex)
     exit()
@@ -375,7 +375,7 @@ CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
 CELERY_CHORD_PROPAGATES = True
 # CELERY_ALWAYS_EAGER = False
 
-BROKER_URL = 'redis://192.245.169.169:6379/0'
+BROKER_URL = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
 BROKER_TRANSPORT = 'redis'
 
 CELERY_ACCEPT_CONTENT = ['json']

@@ -79,13 +79,13 @@ def request(user_id):
     """
     poolIP = PoolIP(user_id)
     poolIPList.append(poolIP)
-    return release.apply_async(args=(poolIP.dict,), eta=datetime.now() + timedelta(seconds=1), serializer='json')
+    return release.apply_async(args=(poolIP.dict,), eta=datetime.now() + timedelta(minutes=1), serializer='json')
 
 
 @app.task(trail=True)
 def release(poolIP):
     """
-
+    Method to release public IP form CC1.
     @return:
     """
     poolIP.remove()
