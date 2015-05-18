@@ -25,7 +25,7 @@ from core.settings.common import BROKER_URL
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.common')
 
-app = Celery('dev_cloud', broker=BROKER_URL, backend='redis', include=['virtual_controller.tasks'])
+app = Celery('dev_cloud.virtual_controller.celery', broker=BROKER_URL, backend='redis', include=['virtual_controller.tasks'])
 
 # Optional configuration, see the application user guide.
 app.conf.update(
