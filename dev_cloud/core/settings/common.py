@@ -382,7 +382,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-CELERY_IMPORTS = ('tasks',)
+CELERY_IMPORTS = ('virtual_controller.tasks',)
 
 # See: http://celery.github.com/celery/django/
 setup_loader()
