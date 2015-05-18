@@ -71,7 +71,7 @@ class PoolIP(object):
         return d
 
 
-@app.task(trail=True)
+@app.task(trail=True, name='request')
 def request(user_id):
     """
     Method to obtain public IP form CC1.
@@ -82,7 +82,7 @@ def request(user_id):
     return release.apply_async(args=(poolIP.dict,), eta=datetime.now() + timedelta(minutes=1), serializer='json')
 
 
-@app.task(trail=True)
+@app.task(trail=True, name='release')
 def release(poolIP):
     """
     Method to release public IP form CC1.

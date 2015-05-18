@@ -382,6 +382,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+CELERY_IMPORTS = ('request',)
+
 # See: http://celery.github.com/celery/django/
 setup_loader()
 ########## END CELERY CONFIGURATION
