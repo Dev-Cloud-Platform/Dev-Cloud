@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from __future__ import absolute_import
+from .celery import app as celery_app
 from exception import RestErrorException
 from messages_codes import get_error
 

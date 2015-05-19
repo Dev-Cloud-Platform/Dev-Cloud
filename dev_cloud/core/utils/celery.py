@@ -16,16 +16,15 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from __future__ import absolute_import
 import os
 
 from celery import Celery
 from django.conf import settings
-from core.settings.common import BROKER_URL
+from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.common')
 
-app = Celery('dev_cloud.virtual_controller.celery', broker=BROKER_URL, backend='redis', include=['virtual_controller.tasks'])
+app = Celery('dev_cloud.virtual_controller.celery', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['virtual_controller.tasks'])
 
 # Optional configuration, see the application user guide.
 app.conf.update(

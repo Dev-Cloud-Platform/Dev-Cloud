@@ -18,7 +18,7 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 from datetime import datetime, timedelta
-from core.utils.celery import app
+from core.utils import celery_app
 from core.utils.log import info
 from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list, release as ip_release
 
@@ -71,7 +71,7 @@ class PoolIP(object):
         return d
 
 
-@app.task(trail=True, name='tasks.request')
+@celery_app.task(trail=True, name='tasks.request')
 def request(user_id):
     """
     Method to obtain public IP form CC1.
@@ -82,7 +82,7 @@ def request(user_id):
     return release.apply_async(args=(poolIP.dict,), eta=datetime.now() + timedelta(minutes=1), serializer='json')
 
 
-@app.task(trail=True, name='tasks.release')
+@celery_app.task(trail=True, name='tasks.release')
 def release(poolIP):
     """
     Method to release public IP form CC1.

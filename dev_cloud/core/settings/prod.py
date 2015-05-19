@@ -69,7 +69,7 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 ########## CELERY CONFIGURATION
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-transport
-BROKER_TRANSPORT = 'amqplib'
+BROKER_TRANSPORT = 'redis'
 
 # Set this number to the amount of allowed concurrent connections on your AMQP
 # provider, divided by the amount of active workers you have.
@@ -87,10 +87,10 @@ BROKER_POOL_LIMIT = 3
 BROKER_CONNECTION_MAX_RETRIES = 0
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-url
-BROKER_URL = environ.get('RABBITMQ_URL') or environ.get('CLOUDAMQP_URL')
+BROKER_URL = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#celery-result-backend
-CELERY_RESULT_BACKEND = 'amqp'
+CELERY_RESULT_BACKEND = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
 ########## END CELERY CONFIGURATION
 
 
