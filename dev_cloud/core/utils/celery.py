@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from __future__ import absolute_import
 import os
-
 from celery import Celery
 from django.conf import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND

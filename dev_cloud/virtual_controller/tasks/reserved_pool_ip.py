@@ -18,7 +18,7 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 from datetime import datetime, timedelta
-from core.utils import celery_app
+from core.utils.celery import app as celery_app
 from core.utils.log import info
 from virtual_controller.cc1_module.public_ip import request as new_ip_request, get_list, release as ip_release
 
