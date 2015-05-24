@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd ..
+cp -r dev_cloud/ /var/www/Dev-Cloud/
+
+service apache2 restart

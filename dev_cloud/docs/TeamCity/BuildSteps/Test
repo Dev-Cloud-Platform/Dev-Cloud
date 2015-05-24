@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PYENV_HOME=.pyenv/
+source $PYENV_HOME/bin/activate
+
+python manage.py prod test

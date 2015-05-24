@@ -1,0 +1,15 @@
+#!/bin/bash
+
+PYENV_HOME=.pyenv/
+source $PYENV_HOME/bin/activate
+
+python manage.py prod syncdb
+
+# Apply South's database migrations
+python manage.py prod migrate
+
+# Create translation files
+python manage.py prod compilemessages
+
+# Collect static files
+python manage.py prod collectstatic --noinput
