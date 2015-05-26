@@ -22,6 +22,7 @@ from celery import Celery
 from django.conf import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.common')
 
 app = Celery('dev_cloud.virtual_controller.celery', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['virtual_controller.tasks'])
