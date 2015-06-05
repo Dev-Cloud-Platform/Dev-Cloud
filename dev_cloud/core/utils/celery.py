@@ -17,15 +17,14 @@
 #
 # @COPYRIGHT_end
 from __future__ import absolute_import
-import sys
-
 from celery import Celery
+
 from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
-
-# os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % sys.argv[1])
 from virtual_controller.cc1_module.public_ip import PoolIP
 
+
+# os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
 # Optional configuration, see the application user guide.
@@ -35,7 +34,7 @@ app.conf.update(
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
-app.config_from_object("core.settings.%s" % sys.argv[1])  # django.conf:settings
+app.config_from_object("django.conf:settings")
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 # if __name__ == '__main__':
