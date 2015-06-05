@@ -27,9 +27,11 @@ https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/
 
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.prod")
+os.environ["CELERY_LOADER"] = "django"
 
 import djcelery
 djcelery.setup_loader()
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
+

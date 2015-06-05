@@ -19,8 +19,63 @@
 import ast
 import json
 import requests
-from core.utils.log import error
+from core.utils.log import error, info
 from virtual_controller.cc1_module import address_clm, payload
+
+
+class PoolIP(object):
+    """
+    Class represents pool for IP address.
+    """
+    public_ip_id = ""
+    ip_address = ""
+    user_id = ""
+
+    @staticmethod
+    def get_public_id_for_ip(ip_address):
+        address_list = get_list().get("data")
+        return filter(lambda address: address["address"] == ip_address, address_list)[0].get("public_ip_id")
+
+    def __init__(self, user_id, ip_address=None):
+        self.user_id = user_id
+        if ip_address is not None:
+            self.set_ip_address(ip_address)
+            self.set_public_ip_id(self.get_public_id_for_ip(self.get_ip_address()))
+
+    def assign(self):
+        ip_request = request()
+        if ip_request.get("status") == "ok":
+            self.ip_address = ip_request.get("data")
+            self.public_ip_id = self.get_public_id_for_ip(self.ip_address)
+            info(self.user_id, "Assigned IP:" + self.get_ip_address())
+
+    def remove(self):
+        release(self.get_public_ip_id())
+        info(self.user_id, "Release IP:" + self.get_ip_address())
+
+    def set_public_ip_id(self, public_ip_id):
+        self.public_ip_id = public_ip_id
+
+    def set_ip_address(self, ip_address):
+        self.ip_address = ip_address
+
+    def get_ip_address(self):
+        return self.ip_address
+
+    def get_public_ip_id(self):
+        return self.public_ip_id
+
+    @property
+    def dict(self):
+        """
+        @returns{dict} dictionary of PoolIP class
+        \n fields:
+        @dictkey{public_ip_id,int} id of ip address
+        @dictkey{ip_address,string} ip address
+        @dictkey{user_id,int} user id
+        """
+        d = {'public_ip_id': self.public_ip_id, 'ip_address': self.ip_address, 'user_id': self.user_id}
+        return d
 
 
 def get_list():

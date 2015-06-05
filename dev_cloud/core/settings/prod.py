@@ -18,14 +18,12 @@
 # @COPYRIGHT_end
 
 """Production settings and globals."""
-
 from os import environ
 
 # from memcacheify import memcacheify
 # from postgresify import postgresify
 # from S3 import CallingFormat
 from common import *
-
 
 ########## EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
@@ -58,12 +56,30 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 ########## DATABASE CONFIGURATION
 # DATABASES = postgresify()
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Dev_Cloud_db',
+        'USER': 'root',
+        'PASSWORD': 'qetuo1357',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
 ########## END DATABASE CONFIGURATION
 
 
 ########## CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
 # CACHES = memcacheify()
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 ########## END CACHE CONFIGURATION
 
 
@@ -91,6 +107,12 @@ BROKER_URL = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#celery-result-backend
 CELERY_RESULT_BACKEND = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
+
+# See: http://docs.celeryq.org/en/latest/configuration.html#celery-always-eager
+CELERY_ALWAYS_EAGER = False
+
+# See: http://docs.celeryproject.org/en/latest/configuration.html#celery-eager-propagates-exceptions
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = False
 ########## END CELERY CONFIGURATION
 
 
@@ -153,4 +175,6 @@ SECRET_KEY = environ.get('SECRET_KEY', SECRET_KEY)
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['.192.245.169.169']
 ########## END ALLOWED HOST CONFIGURATION
+
+
 

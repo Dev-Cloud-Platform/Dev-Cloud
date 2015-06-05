@@ -17,13 +17,14 @@
 #
 # @COPYRIGHT_end
 from rest_framework import viewsets
+from core.utils import celery
 from core.utils.python_object_encoder import SetEncoder
 from database.models.installed_applications import InstalledApplications
 from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
 from virtual_controller.api.permissions import base_permissions as api_permissions
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from virtual_controller.tasks import reserved_pool_ip
+from django.utils.translation import ugettext as _
 from json import dumps
 
 
@@ -46,6 +47,9 @@ class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
         @return: Public IP address.
         """
         user_id = api_permissions.UsersPermission.get_user(request).id
-        result = reserved_pool_ip.request.apply_async(args=(user_id,))
-        j = dumps(result, cls=SetEncoder)
-        return Response(j)
+        result = celery.request.apply_async(args=(user_id,)).get()
+        # j = dumps(result, cls=SetEncoder)
+        if result == "":
+            result = _("None available public IP")
+
+        return Response(result)

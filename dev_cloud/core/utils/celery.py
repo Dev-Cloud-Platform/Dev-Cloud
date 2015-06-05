@@ -17,15 +17,16 @@
 #
 # @COPYRIGHT_end
 from __future__ import absolute_import
-import os
+import sys
+
 from celery import Celery
-from django.conf import settings
+from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 
+# os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % sys.argv[1])
+from virtual_controller.cc1_module.public_ip import PoolIP
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings.common')
-
-app = Celery('dev_cloud.virtual_controller.celery', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['virtual_controller.tasks'])
+app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
 # Optional configuration, see the application user guide.
 app.conf.update(
@@ -34,5 +35,29 @@ app.conf.update(
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
-app.config_from_object('core.settings.common') #django.conf:settings
+app.config_from_object("core.settings.%s" % sys.argv[1])  # django.conf:settings
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
+# if __name__ == '__main__':
+# app.start()
+
+@app.task(trail=True, name='core.utils.tasks.request')
+def request(user_id):
+    """
+    Method to obtain public IP form CC1.
+    @return:
+    """
+    poolIP = PoolIP(user_id)
+    poolIP.assign()
+
+    return poolIP.get_ip_address()
+
+
+@app.task(trail=True, name='core.utils.tasks.release')
+def release(user_id, ip_address):
+    """
+    Method to release public IP form CC1.
+    @return:
+    """
+    poolIP = PoolIP(user_id, ip_address)
+    poolIP.remove()
