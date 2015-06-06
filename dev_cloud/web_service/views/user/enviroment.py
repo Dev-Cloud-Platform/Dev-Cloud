@@ -213,6 +213,9 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
 
     if exposed_ip == 'expose':
         # Check if is possible to obtain public ip.
+        # After discussion with supervisor,
+        # check possibility of obtain ip will be checked
+        # after pass form to create vm.
         exposed_status = True
 
     if exposed_ip == 'unexpose':
@@ -220,7 +223,8 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
 
     return render_to_response(template_name,
                               dict({'requirements': requirements, 'template': proposed_template,
-                                    'list_of_templates': get_list_of_templates(), 'exposed_status': exposed_status}.items()),
+                                    'list_of_templates': get_list_of_templates(),
+                                    'exposed_status': exposed_status}.items()),
                               context_instance=RequestContext(request))
 
 

@@ -30,8 +30,5 @@ def response(status, data=''):
     @param data:
     @return:
     """
-
-    d = {}
-    d['status'] = status
-    d['data'] = data
+    d = {'status': status, 'data': data}
     return d
