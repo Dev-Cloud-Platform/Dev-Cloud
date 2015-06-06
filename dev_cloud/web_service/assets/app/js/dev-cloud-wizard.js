@@ -387,3 +387,32 @@ function updateUsage(requirements, template) {
         ]);
     }
 }
+
+
+function showAjaxModal() {
+    jQuery("html, body").animate({scrollTop: 0}, "slow");
+    jQuery('#modal-7').modal('show', {backdrop: 'static'});
+    show_loading_bar({
+        pct: 78,
+        finish: function (pct) {
+            var templateObj = eval('(' + getTemplate() + ')');
+            ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_id']
+            + '/' + getApplications() + '/' + getIP(), function (content) {
+                //onSuccess
+                jQuery('#modal-7 .modal-body').html(content);
+            })
+            hide_loading_bar();
+        }
+    });
+}
+
+
+jQuery(document).ready(function () {
+    jQuery('form.form-wizard').submit(function (e) {
+        if (jQuery('div.checkbox').hasClass('checked')) {
+            e.preventDefault();
+            showAjaxModal();
+            //jQuery('form.form-wizard2').unbind('submit').submit();
+        }
+    });
+});

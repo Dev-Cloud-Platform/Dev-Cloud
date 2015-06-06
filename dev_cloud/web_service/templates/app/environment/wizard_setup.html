@@ -22,8 +22,9 @@
         <h4>{% trans "Please fill the details to create new environment." %}</h4>
     </div>
 
-    <form id="rootwizard-2" method="post" action="" class="form-wizard validate">
 
+    <form id="rootwizard-2" method="post" action="" class="form-wizard validate">
+        {% csrf_token %}
         <div class="steps-progress hidden-print">
             <div class="progress-indicator"></div>
         </div>
@@ -217,5 +218,27 @@
     <script src="{{ STATIC_URL }}app/js/bootstrap-switch.min.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.multi-select.js"></script>
     <script src="{{ STATIC_URL }}app/js/jquery.peity.min.js"></script>
+
+{% endblock %}
+
+{% block modal %}
+
+    <!-- Modal 7 (Ajax Modal)-->
+    <div class="modal fade" id="modal-7">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{% trans "Validation Process" %}</h4>
+                </div>
+
+                <div class="modal-body">
+                    {# Auto generate content #}
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

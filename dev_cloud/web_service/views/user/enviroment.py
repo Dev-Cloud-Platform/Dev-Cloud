@@ -17,15 +17,18 @@
 #
 # @COPYRIGHT_end
 import ast
+from django.views.decorators.cache import never_cache
 
 import requests
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
+from core.common.states import OK, FAILED
 from core.settings import config
 from core.utils.decorators import django_view, user_permission
 from core.utils.log import error
+from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.views.user.user import generate_active
 
@@ -232,7 +235,7 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
 @user_permission
 def summary(request, template_name='app/environment/step_4.html'):
     """
-
+    Display summary for invoice.
     @param request:
     @param template_name:
     @return:
@@ -240,3 +243,31 @@ def summary(request, template_name='app/environment/step_4.html'):
 
     return render_to_response(template_name, dict({'exposed': request.session.get('publicIP')}.items()),
                               context_instance=RequestContext(request))
+
+
+def validate_ip(request):
+    status = FAILED
+    obtained_ip = requests.get(config.REST_API_ADDRESS + '/rest_api/virtual-machines/obtain-ip/')
+    print obtained_ip.status_code
+    if obtained_ip.status_code == 200:
+        if obtained_ip.text != NONE_AVAILABLE_PUBLIC_IP:
+            requests.get(
+                config.REST_API_ADDRESS + '/rest_api/virtual-machines/release-ip/?ip=' + obtained_ip.text)
+            status = OK
+    else:
+        error(request.session['user']['user_id'], "Problem with request: " + obtained_ip.url)
+
+    print status
+    return status
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process(request, template, application, exposed_ip,
+                       template_name='app/environment/validation_modal.html'):
+    if exposed_ip == 'expose':
+        validate_ip(request)
+
+    return render_to_response(template_name, dict(), context_instance=RequestContext(request))

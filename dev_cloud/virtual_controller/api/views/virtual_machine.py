@@ -16,28 +16,28 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
-from core.utils import celery
-from core.utils.python_object_encoder import SetEncoder
-from database.models.installed_applications import InstalledApplications
-from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
-from virtual_controller.api.permissions import base_permissions as api_permissions
+from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
+
+from core.utils import celery
+from core.utils.python_object_encoder import SetEncoder
+from database.models.virtual_machines import VirtualMachines
+from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
+from virtual_controller.api.permissions import base_permissions as api_permissions
+from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
+
 from django.utils.translation import ugettext as _
 from json import dumps
 
 
-class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
+class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
     """
-    List of all available applications.
+    List of all available virtual machines.
     """
-    queryset = InstalledApplications.objects.all()
+    queryset = VirtualMachines.objects.all()
     serializer_class = InstalledApplicationsSerializer
     permission_classes = {api_permissions.UsersPermission}
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
 
     @list_route(methods=['get'], url_path='obtain-ip')
     def obtain_ip(self, request):
@@ -50,6 +50,24 @@ class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
         result = celery.request.apply_async(args=(user_id,)).get()
         # j = dumps(result, cls=SetEncoder)
         if result == "":
-            result = _("None available public IP")
+            result = NONE_AVAILABLE_PUBLIC_IP
 
         return Response(result)
+
+
+    @list_route(methods=['get'], url_path='release-ip')
+    def release_ip(self, request):
+        """
+        Release give ip address.
+        You need add payload with key ip and your ip address as value.
+        Example: GET /rest_api/virtual-machines/release_ip/?ip=192.168.1.1
+        @param request:
+        @return:
+        """
+        ip_to_release = request.DATA.get('ip', None) or request.query_params.get('ip', None)
+        if ip_to_release:
+            user_id = api_permissions.UsersPermission.get_user(request).id
+            celery.release.apply_async(args=(user_id, ip_to_release))
+            return Response(status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

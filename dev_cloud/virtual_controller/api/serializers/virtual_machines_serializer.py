@@ -16,38 +16,13 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.utils.translation import ugettext as _
+from rest_framework import serializers
+from database.models.virtual_machines import VirtualMachines
 
-FAILED = _('failed')
-OK = _('ok')
 
-vm_states = {
-    'init': 0,
-    'running': 1,
-    'closing': 2,
-    'closed': 3,
-    'saving': 4,
-    'failed': 5,
-    'saving failed': 6,
-    'running ctx': 7,
-    'restart': 8,
-    'suspend': 9,
-    'turned off': 10,
-    'erased': 11,
-    'erasing': 12
-}
+class VirtualMachinesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VirtualMachines
+        fields = ('id', 'ctx', 'disk_space', 'public_ip', 'private_ip', 'template_instance')
 
-user_active_states = {
-    'inactive': 0,
-    'email_confirmed': 1,
-    'ok': 2,
-    'blocked': 3
-}
 
-registration_states = {
-    'completed': 0,
-    'mail_confirmation': 1,
-    'admin_confirmation': 2,
-    'error': 3,
-    'disallowed': 4
-}

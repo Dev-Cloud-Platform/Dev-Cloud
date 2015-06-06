@@ -19,7 +19,7 @@
 from django.conf.urls import patterns, url, include
 from core.utils.decorators import user_permission
 from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment, \
-    define_environment, summary
+    define_environment, summary, validation_process
 
 main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/$', user_permission(wizard_setup),
@@ -31,7 +31,10 @@ main_patterns = patterns('web_service.views.user.enviroment',
                              user_permission(customize_environment), name='customize_environment'),
                          url(r'^app/create/environment/define/(?P<technology>\w+)/(?P<exposed_ip>\w+)/$',
                              user_permission(define_environment), name='define_environment'),
-                         url(r'^app/create/environment/summary/$', user_permission(summary), name='summary'))
+                         url(r'^app/create/environment/summary/$', user_permission(summary), name='summary'),
+                         url(
+                             r'^app/create/environment/validation_process/(?P<template>\w+)/(?P<application>[\w\-]+)/(?P<exposed_ip>\w+)/$',
+                             user_permission(validation_process), name='validation_process'))
 
 
 urlpatterns = patterns('',

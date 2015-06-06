@@ -21,6 +21,10 @@ import json
 import requests
 from core.utils.log import error, info
 from virtual_controller.cc1_module import address_clm, payload
+from django.utils.translation import ugettext as _
+
+
+NONE_AVAILABLE_PUBLIC_IP = _("None available public IP")
 
 
 class PoolIP(object):
@@ -33,8 +37,7 @@ class PoolIP(object):
 
     @staticmethod
     def get_public_id_for_ip(ip_address):
-        address_list = get_list().get("data")
-        return filter(lambda address: address["address"] == ip_address, address_list)[0].get("public_ip_id")
+        return filter(lambda address: address["address"] == ip_address, get_list().get("data"))[0].get("public_ip_id")
 
     def __init__(self, user_id, ip_address=None):
         self.user_id = user_id
