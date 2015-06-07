@@ -44,7 +44,9 @@ CLM_PASSWORD = 'a4b53201134d95f4b817da90dd6bfc2e0b544470'
 CLM_ADDRESS = 'http://www.cloud.ifj.edu.pl:8000/'
 
 # REST_API_ADDRESS = 'http://' + DEV_CLOUD_IP_ADDRESS + '/'
-REST_API_ADDRESS = 'http://127.0.0.1/'
+REST_API_ADDRESS = 'http://127.0.0.1:8000/'
+
+CELERY_IP_ADDRESS = '127.0.0.1'
 
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key

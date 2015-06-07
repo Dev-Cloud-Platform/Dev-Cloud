@@ -103,10 +103,10 @@ BROKER_POOL_LIMIT = 3
 BROKER_CONNECTION_MAX_RETRIES = 0
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-url
-BROKER_URL = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
+BROKER_URL = 'redis://' + CELERY_IP_ADDRESS + ':6379/0'
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#celery-result-backend
-CELERY_RESULT_BACKEND = 'redis://' + DEV_CLOUD_IP_ADDRESS + ':6379/0'
+CELERY_RESULT_BACKEND = 'redis://' + CELERY_IP_ADDRESS + ':6379/0'
 
 # See: http://docs.celeryq.org/en/latest/configuration.html#celery-always-eager
 CELERY_ALWAYS_EAGER = False
