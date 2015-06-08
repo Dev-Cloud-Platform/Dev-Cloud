@@ -7,7 +7,8 @@
             <div class="panel-body">
                 <table class="table mail-table">
                     <tbody>
-                    <tr>
+                    {% if ip_to_validate == True %}
+                        <tr id="ip_validation">
                         <td class="col-name">
                             <b class="col-name">Public IP</b>
                         </td>
@@ -19,6 +20,7 @@
                         <td class="col-options"></td>
                         <td class="col-time"><img src="/static/app/images/ajax-loader-small.gif"/></td>
                     </tr>
+                    {% endif %}
 
                     <tr>
                         <td class="col-name">
@@ -49,6 +51,9 @@
 
 
 <script type="text/javascript">
+    if (getIP() == "unexpose") {
+        jQuery('#ip_validation').hide();
+    }
     {#    $(function() {#}
     {#        $('form#form').on('submit', function(e) {#}
     {#            ajaxPost('/main/app/user_activation/' + {{ id }} +'/', $('form#form').serialize(), function(content){#}

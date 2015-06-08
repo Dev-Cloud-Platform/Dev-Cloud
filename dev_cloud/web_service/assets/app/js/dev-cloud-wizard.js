@@ -392,15 +392,24 @@ function updateUsage(requirements, template) {
 function showAjaxModal() {
     jQuery("html, body").animate({scrollTop: 0}, "slow");
     jQuery('#modal-7').modal('show', {backdrop: 'static'});
+
     show_loading_bar({
         pct: 78,
         finish: function (pct) {
-            var templateObj = eval('(' + getTemplate() + ')');
-            ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_id']
-            + '/' + getApplications() + '/' + getIP(), function (content) {
+            var templateObj = eval('(' + getTemplate() + ')'); //
+
+            ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_id'] + '/'
+            + getApplications() + '/' + getIP(), function (content) {
                 //onSuccess
                 jQuery('#modal-7 .modal-body').html(content);
             })
+
+            if (getIP() == "expose") {
+                ajaxGet('/main/app/create/environment/validation_process_ip/' + getIP(), function (content) {
+                    //onSuccess
+                    jQuery('#modal-7 .modal-body').html(content);
+                })
+            }
             hide_loading_bar();
         }
     });

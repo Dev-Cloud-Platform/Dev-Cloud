@@ -19,7 +19,6 @@
 import ast
 from django.views.decorators.cache import never_cache
 
-import requests
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
@@ -28,6 +27,7 @@ from core.common.states import OK, FAILED
 from core.settings import config
 from core.utils.decorators import django_view, user_permission
 from core.utils.log import error
+from core.utils.messager import get
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.views.user.user import generate_active
@@ -154,7 +154,7 @@ def get_list_of_templates():
     Gets list of all available template for instances.
     @return: list of all available template for instances.
     """
-    return ast.literal_eval(requests.get(config.REST_API_ADDRESS + 'rest_api/template-instances/').text)
+    return ast.literal_eval(get('template-instances/').text)
 
 
 @ajax
@@ -200,8 +200,7 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
     selected_applications = get_selected_applications(request, technology)
 
     for selected_application in selected_applications:
-        application_details = requests.get(config.REST_API_ADDRESS +
-                                           'rest_api/applications/get-application/?application=' + selected_application)
+        application_details = get('applications/get-application/?application=' + selected_application)
         if application_details.status_code == 200:
             list_application_details = dict(
                 list_application_details.items() + {
@@ -247,18 +246,26 @@ def summary(request, template_name='app/environment/step_4.html'):
 
 def validate_ip(request):
     status = FAILED
-    obtained_ip = requests.get(config.REST_API_ADDRESS + '/rest_api/virtual-machines/obtain-ip/')
-    print obtained_ip.status_code
+    obtained_ip = get('virtual-machines/obtain-ip/', request)
+
     if obtained_ip.status_code == 200:
         if obtained_ip.text != NONE_AVAILABLE_PUBLIC_IP:
-            requests.get(
-                config.REST_API_ADDRESS + '/rest_api/virtual-machines/release-ip/?ip=' + obtained_ip.text)
+            get('virtual-machines/release-ip/?ip=%s' % obtained_ip.text.replace('"', ''), request)
             status = OK
     else:
         error(request.session['user']['user_id'], "Problem with request: " + obtained_ip.url)
 
-    print status
     return status
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process_ip(request, exposed_ip, template_name='app/environment/validation_modal.html'):
+    if exposed_ip == 'expose':
+        return render_to_response(template_name, dict({"validation_ip": 'test'}.items()),
+                                  context_instance=RequestContext(request))
 
 
 @ajax
@@ -267,7 +274,9 @@ def validate_ip(request):
 @never_cache
 def validation_process(request, template, application, exposed_ip,
                        template_name='app/environment/validation_modal.html'):
+    ip_to_validate = False
     if exposed_ip == 'expose':
-        validate_ip(request)
+        ip_to_validate = True
 
-    return render_to_response(template_name, dict(), context_instance=RequestContext(request))
+    return render_to_response(template_name, dict({"ip_to_validate": ip_to_validate}.items()),
+                              context_instance=RequestContext(request))

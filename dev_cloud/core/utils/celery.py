@@ -40,6 +40,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 # if __name__ == '__main__':
 # app.start()
 
+
 @app.task(trail=True, name='core.utils.tasks.request')
 def request(user_id):
     """
