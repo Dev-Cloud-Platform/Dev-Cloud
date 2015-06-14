@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load form_tags %}
+
+{% trans "ok" as ok %}
+{% trans "failed" as failed %}
+<td class="col-name">
+    <b class="col-name">{% trans "VM Resources" %}</b>
+</td>
+<td class="col-subject">
+    <p>
+        {% if validation_resources == ok %}
+            {% trans "Enough available resources" %}
+        {% elif validation_resources == failed %}
+            {% trans "Not enough available resources" %}
+        {% else %}
+            {% trans "Not enough information about available resources" %}
+        {% endif %}
+    </p>
+</td>
+<td class="col-options"></td>
+<td class="col-time">
+    {% if validation_resources == ok %}
+        <a class="star">
+            <i class="entypo-check"></i>
+        </a>
+    {% elif validation_resources == failed %}
+        <a class="star">
+            <i class="entypo-cancel"></i>
+        </a>
+    {% else %}
+        <img src="/static/app/images/ajax-loader-small.gif"/>
+    {% endif %}
+</td>

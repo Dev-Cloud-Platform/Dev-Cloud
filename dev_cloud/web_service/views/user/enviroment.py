@@ -32,6 +32,9 @@ from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.views.user.user import generate_active
 
+EXPOSE = 'expose'
+UNEXPOSE = 'unexpose'
+
 
 @django_view
 @csrf_protect
@@ -213,14 +216,14 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
 
     exposed_status = None
 
-    if exposed_ip == 'expose':
+    if exposed_ip == EXPOSE:
         # Check if is possible to obtain public ip.
         # After discussion with supervisor,
         # check possibility of obtain ip will be checked
         # after pass form to create vm.
         exposed_status = True
 
-    if exposed_ip == 'unexpose':
+    if exposed_ip == UNEXPOSE:
         exposed_status = False
 
     return render_to_response(template_name,
@@ -258,13 +261,34 @@ def validate_ip(request):
     return status
 
 
+def validate_resources(request, template_id):
+    status = FAILED
+    checked_resources = get('virtual-machines/resource-test/?template_id=%s' % template_id, request)
+
+    if checked_resources.status_code == 200:
+        pass
+    else:
+        error(request.session['user']['user_id'], "Problem with request: " + checked_resources.url)
+
+    return status
+
+
 @ajax
 @csrf_protect
 @user_permission
 @never_cache
-def validation_process_ip(request, exposed_ip, template_name='app/environment/validation_modal.html'):
-    if exposed_ip == 'expose':
-        return render_to_response(template_name, dict({"validation_ip": 'test'}.items()),
+def validation_process_ip_pre(request, exposed_ip, template_name='app/environment/validation_ip_pre.html'):
+    if exposed_ip == EXPOSE:
+        return render_to_response(template_name, dict(), context_instance=RequestContext(request))
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process_ip(request, exposed_ip, template_name='app/environment/validation_ip.html'):
+    if exposed_ip == EXPOSE:
+        return render_to_response(template_name, dict({"validation_ip": validate_ip(request)}.items()),
                                   context_instance=RequestContext(request))
 
 
@@ -272,11 +296,21 @@ def validation_process_ip(request, exposed_ip, template_name='app/environment/va
 @csrf_protect
 @user_permission
 @never_cache
-def validation_process(request, template, application, exposed_ip,
-                       template_name='app/environment/validation_modal.html'):
+def validation_process_resources(request, template_id, template_name='app/environment/validation_resources.html'):
+    return render_to_response(template_name,
+                              dict({"validation_resources": validate_resources(request, template_id)}.items()),
+                              context_instance=RequestContext(request))
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process(request, template, exposed_ip, template_name='app/environment/validation_modal.html'):
     ip_to_validate = False
-    if exposed_ip == 'expose':
+    if exposed_ip == EXPOSE:
         ip_to_validate = True
 
-    return render_to_response(template_name, dict({"ip_to_validate": ip_to_validate}.items()),
+    return render_to_response(template_name,
+                              dict({"ip_to_validate": ip_to_validate, "template_name": template}.items()),
                               context_instance=RequestContext(request))

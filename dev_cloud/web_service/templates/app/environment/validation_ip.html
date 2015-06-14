@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load form_tags %}
+
+{% trans "ok" as ok %}
+{% trans "failed" as failed %}
+<td class="col-name">
+    <b class="col-name">Public IP</b>
+</td>
+<td class="col-subject has-success">
+    <p>
+        {% if validation_ip == ok %}
+            {% trans "Public IP obtain success." %}
+        {% elif validation_ip == failed %}
+            {% trans "Public IP obtain failed." %}
+        {% else %}
+            {% trans "Public IP obtain unknown." %}
+        {% endif %}
+    </p>
+</td>
+<td class="col-options"></td>
+<td id="ip_validation" class="col-time">
+    {% if validation_ip == ok %}
+        <a class="star">
+            <i class="entypo-check"></i>
+        </a>
+    {% elif validation_ip == failed %}
+        <a class="star">
+            <i class="entypo-cancel"></i>
+        </a>
+    {% else %}
+        <img src="/static/app/images/ajax-loader-small.gif"/>
+    {% endif %}
+</td>

@@ -7,36 +7,31 @@
             <div class="panel-body">
                 <table class="table mail-table">
                     <tbody>
-                    {% if ip_to_validate == True %}
-                        <tr id="ip_validation">
+                    <tr id="resources_validation">
+                        {# Auto generate content #}
                         <td class="col-name">
-                            <b class="col-name">Public IP</b>
-                        </td>
-                        <td class="col-subject has-success">
-                            <p class="green">
-                                Public IP obtain success.
-                            </p>
-                        </td>
-                        <td class="col-options"></td>
-                        <td class="col-time"><img src="/static/app/images/ajax-loader-small.gif"/></td>
-                    </tr>
-                    {% endif %}
-
-                    <tr>
-                        <td class="col-name">
-                            <a href="#" class="star">
-                                <i class="entypo-check"></i>
-                            </a>
-                            <a href="mailbox-message.html" class="col-name">Google AdWords</a>
+                            <b class="col-name">{% trans "VM Resources" %}</b>
                         </td>
                         <td class="col-subject">
-                            <a href="mailbox-message.html">
-                                Google AdWords: Ads not serving
-                            </a>
+                            <p>{% trans "Testing available resources for" %} {{ template_name }}</p>
                         </td>
                         <td class="col-options"></td>
-                        <td class="col-time"><img src="/static/app/images/ajax-loader-small.gif"/></td>
+                        <td class="col-time">
+                            <img src="/static/app/images/ajax-loader-small.gif"/>
+                        </td>
                     </tr>
+
+                    {% if ip_to_validate == True %}
+                        <tr id="ip_validation">
+                            {# Auto generate content #}
+                            <td class="col-name">
+                                <b class="col-name">{% trans "Public IP" %}</b>
+                            </td>
+                            <td class="col-subject has-success"></td>
+                            <td class="col-options"></td>
+                            <td id="ip_validation" class="col-time"></td>
+                        </tr>
+                    {% endif %}
 
                     </tbody>
                 </table>

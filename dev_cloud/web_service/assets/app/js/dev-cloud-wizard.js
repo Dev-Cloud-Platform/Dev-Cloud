@@ -398,18 +398,32 @@ function showAjaxModal() {
         finish: function (pct) {
             var templateObj = eval('(' + getTemplate() + ')'); //
 
-            ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_id'] + '/'
-            + getApplications() + '/' + getIP(), function (content) {
+            ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_name'] + '/' + getIP(),
+                function (content) {
                 //onSuccess
                 jQuery('#modal-7 .modal-body').html(content);
-            })
 
-            if (getIP() == "expose") {
-                ajaxGet('/main/app/create/environment/validation_process_ip/' + getIP(), function (content) {
-                    //onSuccess
-                    jQuery('#modal-7 .modal-body').html(content);
-                })
-            }
+                    ajaxGet('/main/app/create/environment/validation_process_resources/' + templateObj['template_id'],
+                        function (content) {
+                            //onSuccess
+                            jQuery('#modal-7 .modal-body #resources_validation').html(content);
+
+                            if (getIP() == "expose") {
+                                ajaxGet('/main/app/create/environment/validation_process_ip_pre/' + getIP(),
+                                    function (content) {
+                                        //onSuccess
+                                        jQuery('#modal-7 .modal-body #ip_validation').html(content);
+
+                                        ajaxGet('/main/app/create/environment/validation_process_ip/' + getIP(),
+                                            function (content) {
+                                                //onSuccess
+                                                jQuery('#modal-7 .modal-body #ip_validation').html(content);
+                                            });
+                                    });
+                            }
+                        });
+                });
+
             hide_loading_bar();
         }
     });

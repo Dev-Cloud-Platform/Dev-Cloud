@@ -59,10 +59,10 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
     def release_ip(self, request):
         """
         Release give ip address.
-        You need add payload with key ip and your ip address as value.
-        Example: GET /rest_api/virtual-machines/release_ip/?ip=192.168.1.1
+        You need add payload with key as ip and your ip address as value.
+        Example: GET /rest_api/virtual-machines/release-ip/?ip=192.168.1.1
         @param request:
-        @return:
+        @return: status code.
         """
         ip_to_release = request.DATA.get('ip', None) or request.query_params.get('ip', None)
         if ip_to_release:
@@ -71,3 +71,16 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(status=status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+    @list_route(methods=['get'], url_path='resource-test')
+    def resource_test(self, request):
+        """
+        Test possibility of future allocated resources for VM.
+        Based on quota.
+        You need add payload with key as template_id and your if of template as value.
+        Example: GET /rest_api/virtual-machines/resource-test/?template_id=1
+        @param request:
+        @return:
+        """
+        pass
