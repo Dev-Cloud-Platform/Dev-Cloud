@@ -19,7 +19,7 @@
 import ast
 
 import requests
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
@@ -40,6 +40,10 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
     @param template_name: template to render.
     @return: view to render.
     """
+    if request.method == 'POST':
+        # Do creating virtual machine
+        return redirect('app_main')
+
     request.session[JAVA] = []
     request.session[PHP] = []
     request.session[RUBY] = []
