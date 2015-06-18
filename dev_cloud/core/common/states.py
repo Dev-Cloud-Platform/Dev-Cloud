@@ -19,7 +19,11 @@
 from django.utils.translation import ugettext as _
 
 FAILED = _('failed')
-OK = _('ok')
+
+OK = 'ok'
+STATUS = 'status'
+CM_ERROR = 'cm_error'
+PUBLIC_IP_LIMIT = 'public_lease_limit'
 
 vm_states = {
     'init': 0,

@@ -21,6 +21,7 @@ from celery import Celery
 
 from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
+from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.public_ip import PoolIP
 
 
@@ -30,7 +31,7 @@ app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, inc
 # Optional configuration, see the application user guide.
 app.conf.update(
     CELERY_TASK_RESULT_EXPIRES=3600,
-    )
+)
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
@@ -45,10 +46,10 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 def request(user_id):
     """
     Method to obtain public IP form CC1.
-    @return:
+    @return: Obtained IP.
     """
     poolIP = PoolIP(user_id)
-    poolIP.assign()
+    poolIP.request()
 
     return poolIP.get_ip_address()
 
@@ -61,3 +62,18 @@ def release(user_id, ip_address):
     """
     poolIP = PoolIP(user_id, ip_address)
     poolIP.remove()
+
+
+@app.task(trail=True, name='core.utils.tasks.check_resource')
+def check_resource(user_id, template_id):
+    """
+    Method to check available resource to create new virtual machine.
+    @param user_id: id of caller.
+    @param template_id: selected id for template.
+    @return: Status about available resources. If is ok return 200, if not return 402.
+    """
+    quota = Quota(user_id)
+    quota.check_quota(template_id)
+    print quota.get_status()
+
+    return quota.get_status()

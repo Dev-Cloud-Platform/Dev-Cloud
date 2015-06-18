@@ -83,4 +83,9 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         @param request:
         @return:
         """
-        pass
+        template_id = request.DATA.get('template_id', None) or request.query_params.get('template_id', None)
+        if template_id:
+            user_id = api_permissions.UsersPermission.get_user(request).id
+            return Response(status=celery.check_resource.apply_async(args=(user_id, template_id)))
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

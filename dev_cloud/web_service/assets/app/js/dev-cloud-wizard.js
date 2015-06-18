@@ -14,7 +14,7 @@ function generateDependencies() {
 
 
 function getPublicIP() {
-    var ip = ($("#ip .switch-on :input").val() === undefined) ? 'unexpose' :$("#ip .switch-on :input").val();
+    var ip = ($("#ip .switch-on :input").val() === undefined) ? 'unexpose' : $("#ip .switch-on :input").val();
     setIP(ip);
 }
 
@@ -126,8 +126,7 @@ function defineEnvironment(technology) {
                 }
 
                 // Popovers and tooltips
-                $('[data-toggle="popover"]').each(function(i, el)
-                {
+                $('[data-toggle="popover"]').each(function (i, el) {
                     var $this = $(el),
                         placement = attrDefault($this, 'placement', 'right'),
                         trigger = attrDefault($this, 'trigger', 'click'),
@@ -140,8 +139,7 @@ function defineEnvironment(technology) {
                         html: true
                     });
 
-                    $this.on('shown.bs.popover', function(ev)
-                    {
+                    $this.on('shown.bs.popover', function (ev) {
                         var $popover = $this.next();
 
                         $popover.addClass(popover_class);
@@ -400,8 +398,8 @@ function showAjaxModal() {
 
             ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_name'] + '/' + getIP(),
                 function (content) {
-                //onSuccess
-                jQuery('#modal-7 .modal-body').html(content);
+                    //onSuccess
+                    jQuery('#modal-7 .modal-body').html(content);
 
                     ajaxGet('/main/app/create/environment/validation_process_resources/' + templateObj['template_id'],
                         function (content) {

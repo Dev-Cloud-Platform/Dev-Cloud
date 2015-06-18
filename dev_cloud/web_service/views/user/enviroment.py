@@ -252,7 +252,7 @@ def validate_ip(request):
     obtained_ip = get('virtual-machines/obtain-ip/', request)
 
     if obtained_ip.status_code == 200:
-        if obtained_ip.text != NONE_AVAILABLE_PUBLIC_IP:
+        if obtained_ip.text.replace('"', '') != NONE_AVAILABLE_PUBLIC_IP:
             get('virtual-machines/release-ip/?ip=%s' % obtained_ip.text.replace('"', ''), request)
             status = OK
     else:
@@ -266,7 +266,7 @@ def validate_resources(request, template_id):
     checked_resources = get('virtual-machines/resource-test/?template_id=%s' % template_id, request)
 
     if checked_resources.status_code == 200:
-        pass
+        status = OK
     else:
         error(request.session['user']['user_id'], "Problem with request: " + checked_resources.url)
 
