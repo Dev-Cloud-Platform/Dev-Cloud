@@ -22,7 +22,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
-from core.common.states import OK, FAILED
+from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR
 from core.utils.decorators import django_view, user_permission
 from core.utils.log import error
 from core.utils.messager import get
@@ -254,7 +254,9 @@ def validate_ip(request):
     obtained_ip = get('virtual-machines/obtain-ip/', request)
 
     if obtained_ip.status_code == 200:
-        if obtained_ip.text.replace('"', '') != NONE_AVAILABLE_PUBLIC_IP:
+        if obtained_ip.text.replace('"', '') != NONE_AVAILABLE_PUBLIC_IP \
+                and obtained_ip.text.replace('"', '') != UNKNOWN_ERROR \
+                and obtained_ip.text.replace('"', '') != CM_ERROR:
             get('virtual-machines/release-ip/?ip=%s' % obtained_ip.text.replace('"', ''), request)
             status = OK
     else:

@@ -23,6 +23,7 @@ FAILED = _('failed')
 OK = 'ok'
 STATUS = 'status'
 CM_ERROR = 'cm_error'
+UNKNOWN_ERROR = 'Unknown error'
 PUBLIC_IP_LIMIT = 'public_lease_limit'
 
 vm_states = {

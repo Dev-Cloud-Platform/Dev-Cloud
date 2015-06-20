@@ -19,6 +19,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
+from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR
 
 from core.utils import celery
 from core.utils.python_object_encoder import SetEncoder
@@ -49,8 +50,12 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         user_id = api_permissions.UsersPermission.get_user(request).id
         result = celery.request.apply_async(args=(user_id,)).get()
         # j = dumps(result, cls=SetEncoder)
-        if result == "":
+        if result == PUBLIC_IP_LIMIT:
             result = NONE_AVAILABLE_PUBLIC_IP
+        elif result == CM_ERROR:
+            result = CM_ERROR
+        elif result == "":
+            result = UNKNOWN_ERROR
 
         return Response(result)
 

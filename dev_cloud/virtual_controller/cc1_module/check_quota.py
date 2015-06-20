@@ -46,7 +46,7 @@ class Quota(object):
         @param template_id: selected id for template.
         @return:
         """
-        test = requests.post(address_clm + 'user/user/check_quota/', data=json.dumps(payload))
+        test = requests.post(address_clm + 'user/user/get_quota/', data=json.dumps(payload))
 
         if test.status_code == 200:
             self.set_status(ast.literal_eval(test.text))
