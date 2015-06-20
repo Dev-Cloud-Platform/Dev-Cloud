@@ -1,0 +1,71 @@
+{% load i18n %}
+{% load form_tags %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary" data-collapsed="0">
+            <div class="panel-body">
+                <table class="table mail-table">
+                    <tbody>
+                    <tr id="resources_validation">
+                        {# Auto generate content #}
+                        <td class="col-name">
+                            <b class="col-name">{% trans "VM Resources" %}</b>
+                        </td>
+                        <td class="col-subject">
+                            <p>{% trans "Testing available resources for" %} {{ template_name }}</p>
+                        </td>
+                        <td class="col-options"></td>
+                        <td class="col-time">
+                            <img src="/static/app/images/ajax-loader-small.gif"/>
+                        </td>
+                    </tr>
+
+                    {% if ip_to_validate == True %}
+                        <tr id="ip_validation">
+                            {# Auto generate content #}
+                            <td class="col-name">
+                                <b class="col-name">{% trans "Public IP" %}</b>
+                            </td>
+                            <td class="col-subject has-success"></td>
+                            <td class="col-options"></td>
+                            <td id="ip_validation" class="col-time"></td>
+                        </tr>
+                    {% endif %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="reset" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+</div>
+
+
+<script type="text/javascript">
+    if (getIP() == "unexpose") {
+        jQuery('#ip_validation').hide();
+    }
+    {#    $(function() {#}
+    {#        $('form#form').on('submit', function(e) {#}
+    {#            ajaxPost('/main/app/user_activation/' + {{ id }} +'/', $('form#form').serialize(), function(content){#}
+    {#                //onSuccess#}
+    {#                show_loading_bar({#}
+    {#                    pct: 78,#}
+    {#                    finish: function(pct)#}
+    {#                    {#}
+    {#                        jQuery('#modal-7').modal('toggle');#}
+    {#                        jQuery('tbody#dynamic').html(content);#}
+    {#                        toastr.success('{{ login }} {% trans "successfully updated" %}')#}
+    {#                        hide_loading_bar();#}
+    {#                    }#}
+    {#                });#}
+    {##}
+    {#            });#}
+    {#            e.preventDefault();#}
+    {#        });#}
+    {#    });#}
+</script>

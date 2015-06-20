@@ -19,7 +19,8 @@
 from django.conf.urls import patterns, url, include
 from core.utils.decorators import user_permission
 from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment, \
-    define_environment, summary
+    define_environment, summary, validation_process, validation_process_ip, validation_process_resources, \
+    validation_process_ip_pre
 
 main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/$', user_permission(wizard_setup),
@@ -29,10 +30,16 @@ main_patterns = patterns('web_service.views.user.enviroment',
                              name='generate_dependencies'),
                          url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
                              user_permission(customize_environment), name='customize_environment'),
-                         url(r'^app/create/environment/define/(?P<technology>\w+)/$',
+                         url(r'^app/create/environment/define/(?P<technology>\w+)/(?P<exposed_ip>\w+)/$',
                              user_permission(define_environment), name='define_environment'),
-                         url(r'^app/create/environment/summary/$', user_permission(summary), name='summary'))
+                         url(r'^app/create/environment/summary/$', user_permission(summary), name='summary'),
+                         url(r'^app/create/environment/validation_process/(?P<template>\w+)/(?P<exposed_ip>\w+)/$',
+                             user_permission(validation_process), name='validation_process'),
+                         url(r'^app/create/environment/validation_process_ip/(?P<exposed_ip>\w+)/$',
+                             user_permission(validation_process_ip), name='validation_process_ip'),
+                         url(r'^app/create/environment/validation_process_ip_pre/(?P<exposed_ip>\w+)/$',
+                             user_permission(validation_process_ip_pre), name='validation_process_ip_pre'),
+                         url(r'^app/create/environment/validation_process_resources/(?P<template_id>\w+)/$',
+                             user_permission(validation_process_resources), name='validation_process_resources'))
 
-
-urlpatterns = patterns('',
-                       url(r'^main/', include(main_patterns)))
+urlpatterns = patterns('', url(r'^main/', include(main_patterns)))

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PYENV_HOME=.pyenv/
+source $PYENV_HOME/bin/activate
+
+# Install or upgrade dependencies
+pip install -r requirements/prod.txt --allow-external PIL --allow-unverified PIL

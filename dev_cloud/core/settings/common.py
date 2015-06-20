@@ -18,16 +18,18 @@
 # @COPYRIGHT_end
 
 """Common settings and globals."""
+import os
 
 from datetime import timedelta
 from sys import path
 from os.path import abspath, basename, dirname, join, normpath, pardir
+from django.conf import LazySettings
 
 from djcelery import setup_loader
 
 
 try:
-    from config import LOG_LEVEL, LOG_DIR, SECRET_KEY
+    from config import LOG_LEVEL, LOG_DIR, SECRET_KEY, DEV_CLOUD_IP_ADDRESS, CELERY_IP_ADDRESS
 except Exception, ex:
     print "Error importing WI configuration file: config.py\nReason: %s" % str(ex)
     exit()
@@ -77,22 +79,6 @@ FROM_EMAIL = 'devcloudplatform@gmail.com'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 ########## END MANAGER CONFIGURATION
-
-
-########## DATABASE CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Dev_Cloud_db',
-        'USER': 'root',
-        'PASSWORD': 'qetuo1357',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
-}
-########## END DATABASE CONFIGURATION
-
 
 ########## GENERAL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
@@ -296,6 +282,7 @@ LOCAL_APPS = (
     'virtual_controller',
     'web_service.templatetags',
     'core.utils.recaptcha',
+    'core.utils',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -374,6 +361,17 @@ CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
 # See: http://docs.celeryproject.org/en/master/configuration.html#std:setting-CELERY_CHORD_PROPAGATES
 CELERY_CHORD_PROPAGATES = True
 
+BROKER_URL = 'redis://' + CELERY_IP_ADDRESS + ':6379/0'
+BROKER_TRANSPORT = 'redis'
+CELERY_RESULT_BACKEND = 'redis://' + CELERY_IP_ADDRESS + ':6379/0'
+CELERY_IGNORE_RESULT = False
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_IMPORTS = ('core.utils',)
+
 # See: http://celery.github.com/celery/django/
 setup_loader()
 ########## END CELERY CONFIGURATION
@@ -402,3 +400,5 @@ COMPRESS_JS_FILTERS = [
     'compressor.filters.template.TemplateFilter',
 ]
 ########## END COMPRESSION CONFIGURATION
+
+settings = LazySettings()

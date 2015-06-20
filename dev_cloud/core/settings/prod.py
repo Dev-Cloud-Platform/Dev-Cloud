@@ -18,14 +18,12 @@
 # @COPYRIGHT_end
 
 """Production settings and globals."""
-
 from os import environ
 
 # from memcacheify import memcacheify
 # from postgresify import postgresify
 # from S3 import CallingFormat
 from common import *
-
 
 ########## EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
@@ -58,18 +56,36 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 ########## DATABASE CONFIGURATION
 # DATABASES = postgresify()
+
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Dev_Cloud_db',
+        'USER': 'root',
+        'PASSWORD': 'qetuo1357',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
 ########## END DATABASE CONFIGURATION
 
 
 ########## CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
 # CACHES = memcacheify()
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 ########## END CACHE CONFIGURATION
 
 
 ########## CELERY CONFIGURATION
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-transport
-BROKER_TRANSPORT = 'amqplib'
+BROKER_TRANSPORT = 'redis'
 
 # Set this number to the amount of allowed concurrent connections on your AMQP
 # provider, divided by the amount of active workers you have.
@@ -87,10 +103,16 @@ BROKER_POOL_LIMIT = 3
 BROKER_CONNECTION_MAX_RETRIES = 0
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#broker-url
-BROKER_URL = environ.get('RABBITMQ_URL') or environ.get('CLOUDAMQP_URL')
+BROKER_URL = 'redis://' + CELERY_IP_ADDRESS + ':6379/0'
 
 # See: http://docs.celeryproject.org/en/latest/configuration.html#celery-result-backend
-CELERY_RESULT_BACKEND = 'amqp'
+CELERY_RESULT_BACKEND = 'redis://' + CELERY_IP_ADDRESS + ':6379/0'
+
+# See: http://docs.celeryq.org/en/latest/configuration.html#celery-always-eager
+CELERY_ALWAYS_EAGER = False
+
+# See: http://docs.celeryproject.org/en/latest/configuration.html#celery-eager-propagates-exceptions
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = False
 ########## END CELERY CONFIGURATION
 
 
@@ -151,6 +173,8 @@ SECRET_KEY = environ.get('SECRET_KEY', SECRET_KEY)
 
 ########## ALLOWED HOSTS CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['.192.245.169.169']
+ALLOWED_HOSTS = ['.192.245.169.169', '.127.0.0.1']
 ########## END ALLOWED HOST CONFIGURATION
+
+
 

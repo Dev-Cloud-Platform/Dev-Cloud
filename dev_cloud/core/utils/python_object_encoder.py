@@ -16,17 +16,12 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import generics
-from database.models.installed_applications import InstalledApplications
-from virtual_controller.serializers.installed_applications_serializer import InstalledApplicationsSerializer
+import json
+import pickle
 
 
-class InstalledApplicationList(generics.ListAPIView):
-    """
-    List of all available applications.
-    """
-    queryset = InstalledApplications.objects.all()
-    serializer_class = InstalledApplicationsSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (list, dict, str, unicode, int, float, bool, type(None))):
+            return json.JSONEncoder.default(self, obj)
+        return {'_python_object': pickle.dumps(obj)}

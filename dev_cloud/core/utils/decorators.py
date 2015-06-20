@@ -19,8 +19,9 @@
 import logging
 
 from django.contrib.messages import success
+from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.http.response import HttpResponseNotAllowed, Http404
+from django.http.response import Http404
 from django.utils.http import urlquote
 
 from core.settings import common
@@ -37,6 +38,7 @@ def django_view(function):
     @return:
     """
     dev_logger = logging.getLogger('dev_logger')
+
     def wrapper(*args, **kwargs):
         """
         Returned decorated function.
@@ -56,15 +58,18 @@ def django_view(function):
     wrapper.__doc__ = function.__doc__
     return wrapper
 
+
 login_url = common.LOGIN_URL
 
 
+@transaction.atomic
 def user_permission(view_func):
     """
     \b Decorator for views with logged user permissions.
     @param view_func:
     @return:
     """
+
     def wrap(request, *args, **kwds):
         """
         Returned decorated function.
@@ -87,15 +92,18 @@ def user_permission(view_func):
         path = urlquote(request.get_full_path())
         tup = login_url, REDIRECT_FIELD_NAME, path
         return HttpResponseRedirect('%s?%s=%s' % tup)
+
     return wrap
 
 
+@transaction.atomic
 def admin_permission(view_func):
     """
     \b Decorator for views with logged admin permissions.
     @param view_func:
     @return:
     """
+
     @user_permission
     def wrap(request, *args, **kwds):
         """
@@ -110,6 +118,7 @@ def admin_permission(view_func):
             return view_func(request, *args, **kwds)
 
         raise Http404('Access denied')
+
     return wrap
 
 
@@ -119,6 +128,7 @@ def load_basic_data(method_to_decorate):
     @param function:
     @return:
     """
+
     def wrap(request, *args, **kwds):
         """
         Returned decorated function.
@@ -145,6 +155,7 @@ def lock_screen(view_func):
     @param view_func:
     @return:
     """
+
     def wrap(request, *args, **kwds):
         """
         Returned decorated function.

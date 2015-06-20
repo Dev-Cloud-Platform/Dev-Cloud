@@ -19,7 +19,9 @@
 from django.conf.urls import patterns, url, include
 from rest_framework.routers import DefaultRouter
 from virtual_controller.api.views.application import ApplicationViewSet
+from virtual_controller.api.views.installed_applications import InstalledApplicationList
 from virtual_controller.api.views.template_instances import TemplateInstancesViewSet
+from virtual_controller.api.views.virtual_machine import VirtualMachineList
 from virtual_controller.api.views.user import UserViewSet
 
 # Create a router and register our viewsets with it.
@@ -27,6 +29,9 @@ router = DefaultRouter()
 router.register(r'applications', ApplicationViewSet)
 router.register(r'template-instances', TemplateInstancesViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'installed-applications', InstalledApplicationList)
+router.register(r'virtual-machines', VirtualMachineList)
+
 
 # Example how to call:
 # curl -i -H "Accept: application/json" -H "Content-Tyon/json"

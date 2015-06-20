@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from rest_framework import viewsets
+from database.models.installed_applications import InstalledApplications
+from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
+from virtual_controller.api.permissions import base_permissions as api_permissions
 
 
-import logging
-log = logging.getLogger(__name__)
-
-
-def response(status, data=''):
+class InstalledApplicationList(viewsets.ReadOnlyModelViewSet):
     """
-    Returns dictionary which is the response for the request.
-    The dictionary contains 2 keys: status and data.
-    @param status:
-    @param data:
-    @return:
+    List of all available applications.
     """
-    d = {'status': status, 'data': data}
-    return d
+    queryset = InstalledApplications.objects.all()
+    serializer_class = InstalledApplicationsSerializer
+    permission_classes = {api_permissions.UsersPermission}
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)

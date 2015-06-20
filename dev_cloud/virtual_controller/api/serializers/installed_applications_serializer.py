@@ -22,7 +22,7 @@ from database.models import InstalledApplications, Applications
 
 
 class InstalledApplicationsSerializer(serializers.ModelSerializer):
-    applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
+    # applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
 
     class Meta:
         model = InstalledApplications

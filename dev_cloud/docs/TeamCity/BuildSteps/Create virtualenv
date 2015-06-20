@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PYENV_HOME=.pyenv/
+
+# Create virtualenv and install necessary packages
+virtualenv --no-site-packages $PYENV_HOME
+. $PYENV_HOME/bin/activate
+
+
+#python manage.py migrate                       # Apply South's database migrations
+#python $WORKSPACE/web_service/manage.py compilemessages               # Create translation files
+#python $WORKSPACE/web_service/manage.py collectstatic --noinput      # Collect static files
+#sudo apachectl graceful                       # Restart the server, e.g. Apache
+#python $WORKSPACE/web_service/manage.py test --noinput app1 app2      # Run the tests

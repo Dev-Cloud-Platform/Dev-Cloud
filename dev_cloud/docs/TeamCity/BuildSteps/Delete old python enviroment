@@ -1,0 +1,8 @@
+#!/bin/bash
+
+PYENV_HOME=.pyenv/
+
+# Delete previously built virtualenv
+if [ -d $PYENV_HOME ]; then
+rm -rf $PYENV_HOME
+fi

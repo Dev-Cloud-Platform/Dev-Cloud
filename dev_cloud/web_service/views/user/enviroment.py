@@ -17,17 +17,21 @@
 #
 # @COPYRIGHT_end
 import ast
-
-import requests
+from django.views.decorators.cache import never_cache
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
-from core.settings import config
+from core.common.states import OK, FAILED
 from core.utils.decorators import django_view, user_permission
 from core.utils.log import error
+from core.utils.messager import get
+from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.views.user.user import generate_active
+
+EXPOSE = 'expose'
+UNEXPOSE = 'unexpose'
 
 
 @django_view
@@ -155,7 +159,7 @@ def get_list_of_templates():
     Gets list of all available template for instances.
     @return: list of all available template for instances.
     """
-    return ast.literal_eval(requests.get(config.REST_API_ADDRESS + 'rest_api/template-instances/').text)
+    return ast.literal_eval(get('template-instances/').text)
 
 
 @ajax
@@ -189,7 +193,7 @@ def customize_environment(request, technology, application, operation):
 
 @ajax
 @user_permission
-def define_environment(request, technology, template_name='app/environment/step_3.html'):
+def define_environment(request, technology, exposed_ip, template_name='app/environment/step_3.html'):
     """
 
     @param request:
@@ -201,8 +205,7 @@ def define_environment(request, technology, template_name='app/environment/step_
     selected_applications = get_selected_applications(request, technology)
 
     for selected_application in selected_applications:
-        application_details = requests.get(config.REST_API_ADDRESS +
-                                           'rest_api/applications/get-application/?application=' + selected_application)
+        application_details = get('applications/get-application/?application=' + selected_application)
         if application_details.status_code == 200:
             list_application_details = dict(
                 list_application_details.items() + {
@@ -212,11 +215,23 @@ def define_environment(request, technology, template_name='app/environment/step_
 
     requirements = calculate_requirements(list_application_details)
     proposed_template = get_proper_template(requirements)
-    print proposed_template
+
+    exposed_status = None
+
+    if exposed_ip == EXPOSE:
+        # Check if is possible to obtain public ip.
+        # After discussion with supervisor,
+        # check possibility of obtain ip will be checked
+        # after pass form to create vm.
+        exposed_status = True
+
+    if exposed_ip == UNEXPOSE:
+        exposed_status = False
 
     return render_to_response(template_name,
                               dict({'requirements': requirements, 'template': proposed_template,
-                                    'list_of_templates': get_list_of_templates()}.items()),
+                                    'list_of_templates': get_list_of_templates(),
+                                    'exposed_status': exposed_status}.items()),
                               context_instance=RequestContext(request))
 
 
@@ -224,10 +239,80 @@ def define_environment(request, technology, template_name='app/environment/step_
 @user_permission
 def summary(request, template_name='app/environment/step_4.html'):
     """
-
+    Display summary for invoice.
     @param request:
     @param template_name:
     @return:
     """
 
-    return render_to_response(template_name, dict(), context_instance=RequestContext(request))
+    return render_to_response(template_name, dict({'exposed': request.session.get('publicIP')}.items()),
+                              context_instance=RequestContext(request))
+
+
+def validate_ip(request):
+    status = FAILED
+    obtained_ip = get('virtual-machines/obtain-ip/', request)
+
+    if obtained_ip.status_code == 200:
+        if obtained_ip.text.replace('"', '') != NONE_AVAILABLE_PUBLIC_IP:
+            get('virtual-machines/release-ip/?ip=%s' % obtained_ip.text.replace('"', ''), request)
+            status = OK
+    else:
+        error(request.session['user']['user_id'], "Problem with request: " + obtained_ip.url)
+
+    return status
+
+
+def validate_resources(request, template_id):
+    status = FAILED
+    checked_resources = get('virtual-machines/resource-test/?template_id=%s' % template_id, request)
+
+    if checked_resources.status_code == 200:
+        status = OK
+    else:
+        error(request.session['user']['user_id'], "Problem with request: " + checked_resources.url)
+
+    return status
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process_ip_pre(request, exposed_ip, template_name='app/environment/validation_ip_pre.html'):
+    if exposed_ip == EXPOSE:
+        return render_to_response(template_name, dict(), context_instance=RequestContext(request))
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process_ip(request, exposed_ip, template_name='app/environment/validation_ip.html'):
+    if exposed_ip == EXPOSE:
+        return render_to_response(template_name, dict({"validation_ip": validate_ip(request)}.items()),
+                                  context_instance=RequestContext(request))
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process_resources(request, template_id, template_name='app/environment/validation_resources.html'):
+    return render_to_response(template_name,
+                              dict({"validation_resources": validate_resources(request, template_id)}.items()),
+                              context_instance=RequestContext(request))
+
+
+@ajax
+@csrf_protect
+@user_permission
+@never_cache
+def validation_process(request, template, exposed_ip, template_name='app/environment/validation_modal.html'):
+    ip_to_validate = False
+    if exposed_ip == EXPOSE:
+        ip_to_validate = True
+
+    return render_to_response(template_name,
+                              dict({"ip_to_validate": ip_to_validate, "template_name": template}.items()),
+                              context_instance=RequestContext(request))

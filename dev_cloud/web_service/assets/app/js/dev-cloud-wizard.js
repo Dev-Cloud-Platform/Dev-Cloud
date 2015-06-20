@@ -13,6 +13,12 @@ function generateDependencies() {
 }
 
 
+function getPublicIP() {
+    var ip = ($("#ip .switch-on :input").val() === undefined) ? 'unexpose' : $("#ip .switch-on :input").val();
+    setIP(ip);
+}
+
+
 function customize(application, operation) {
     ajaxGet('/main/app/create/environment/customize/' + getTechnology()
     + '/' + application + '/' + operation, function (content) {
@@ -57,13 +63,20 @@ function printInvoiceTemplate(template) {
 }
 
 
-function printInvoicePublicIP() {}
+function printInvoicePublicIP() {
+    if (getIP() == 'expose') {
+        jQuery('#public-ip').append('<td class="text-center">3</td> <td>Public IP <span id="public-ip-adresss"></span></td>' +
+        ' <td>1</td>  <td class="text-right">$0,00</td>');
+    }
+}
 
 
 function defineEnvironment(technology) {
-    jQuery('#step3').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
-    'margin-right: auto; width: 1%;"><img src="/static/app/images/ajax-loader.gif" /></div></div>');
-    ajaxGet('/main/app/create/environment/define/' + technology, function (content) {
+    if (!jQuery('#loadObject').length) {
+        jQuery('#step3').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
+        'margin-right: auto; width: 1%;"><img src="/static/app/images/ajax-loader.gif" /></div></div>');
+    }
+    ajaxGet('/main/app/create/environment/define/' + technology + '/' + getIP(), function (content) {
         //onSuccess
         show_loading_bar({
             pct: 78,
@@ -113,8 +126,7 @@ function defineEnvironment(technology) {
                 }
 
                 // Popovers and tooltips
-                $('[data-toggle="popover"]').each(function(i, el)
-                {
+                $('[data-toggle="popover"]').each(function (i, el) {
                     var $this = $(el),
                         placement = attrDefault($this, 'placement', 'right'),
                         trigger = attrDefault($this, 'trigger', 'click'),
@@ -127,8 +139,7 @@ function defineEnvironment(technology) {
                         html: true
                     });
 
-                    $this.on('shown.bs.popover', function(ev)
-                    {
+                    $this.on('shown.bs.popover', function (ev) {
                         var $popover = $this.next();
 
                         $popover.addClass(popover_class);
@@ -190,6 +201,7 @@ function styleLoad() {
 window.technology = null;
 window.template = null;
 window.applications = null;
+window.ip = 'unexpose';
 
 function setTechnology(technology) {
     window.technology = technology;
@@ -213,6 +225,14 @@ function setApplications(applications) {
 
 function getApplications() {
     return window.applications;
+}
+
+function setIP(ip) {
+    window.ip = ip;
+}
+
+function getIP() {
+    return window.ip;
 }
 
 
@@ -242,6 +262,7 @@ function buildAll() {
 
     if (getApplications() != null) {
         defineEnvironment(getTechnology());
+        getPublicIP();
     }
 
     if (getApplications() != null && getTemplate() != null) {
@@ -364,3 +385,55 @@ function updateUsage(requirements, template) {
         ]);
     }
 }
+
+
+function showAjaxModal() {
+    jQuery("html, body").animate({scrollTop: 0}, "slow");
+    jQuery('#modal-7').modal('show', {backdrop: 'static'});
+
+    show_loading_bar({
+        pct: 78,
+        finish: function (pct) {
+            var templateObj = eval('(' + getTemplate() + ')'); //
+
+            ajaxGet('/main/app/create/environment/validation_process/' + templateObj['template_name'] + '/' + getIP(),
+                function (content) {
+                    //onSuccess
+                    jQuery('#modal-7 .modal-body').html(content);
+
+                    ajaxGet('/main/app/create/environment/validation_process_resources/' + templateObj['template_id'],
+                        function (content) {
+                            //onSuccess
+                            jQuery('#modal-7 .modal-body #resources_validation').html(content);
+
+                            if (getIP() == "expose") {
+                                ajaxGet('/main/app/create/environment/validation_process_ip_pre/' + getIP(),
+                                    function (content) {
+                                        //onSuccess
+                                        jQuery('#modal-7 .modal-body #ip_validation').html(content);
+
+                                        ajaxGet('/main/app/create/environment/validation_process_ip/' + getIP(),
+                                            function (content) {
+                                                //onSuccess
+                                                jQuery('#modal-7 .modal-body #ip_validation').html(content);
+                                            });
+                                    });
+                            }
+                        });
+                });
+
+            hide_loading_bar();
+        }
+    });
+}
+
+
+jQuery(document).ready(function () {
+    jQuery('form.form-wizard').submit(function (e) {
+        if (jQuery('div.checkbox').hasClass('checked')) {
+            e.preventDefault();
+            showAjaxModal();
+            //jQuery('form.form-wizard2').unbind('submit').submit();
+        }
+    });
+});
