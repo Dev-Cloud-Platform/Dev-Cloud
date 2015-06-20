@@ -61,7 +61,7 @@ def release(user_id, ip_address):
     @return:
     """
     poolIP = PoolIP(user_id, ip_address)
-    poolIP.remove()
+    return poolIP.remove()
 
 
 @app.task(trail=True, name='core.utils.tasks.check_resource')

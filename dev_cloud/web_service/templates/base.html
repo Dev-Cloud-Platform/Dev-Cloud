@@ -148,7 +148,7 @@
                 </a>
             </li>
             <li class="{{ lock_screen }}">
-                <a href="{% url 'lock_screen' %}">
+                <a id="lock_screen">
                     <i class="entypo-lock"></i>
                     <span>{% trans "Lock screen" %}</span>
                 </a>
@@ -599,7 +599,28 @@
     {% include "app/bottom_scripts.html" %}
 
     <script>
-        setTimeout('location.replace("{% url 'lock_screen' %}");', 900000);
+        jQuery('#lock_screen').attr('href','{% url 'lock_screen' %}?next=' + window.location.pathname);
+
+        var idleTime = 0;
+        jQuery(document).ready(function () {
+            //Increment the idle time counter every minute.
+            var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+
+            //Zero the idle timer on mouse movement.
+            jQuery(this).mousemove(function (e) {
+                idleTime = 0;
+            });
+            jQuery(this).keypress(function (e) {
+                idleTime = 0;
+            });
+        });
+
+        function timerIncrement() {
+            idleTime = idleTime + 1;
+            if (idleTime > 19) { // 20 minutes
+                location.replace("{% url 'lock_screen' %}?next=" + window.location.pathname);
+            }
+        }
     </script>
 
 {% endblock %}

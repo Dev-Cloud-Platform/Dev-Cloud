@@ -54,7 +54,6 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
 
         return Response(result)
 
-
     @list_route(methods=['get'], url_path='release-ip')
     def release_ip(self, request):
         """
