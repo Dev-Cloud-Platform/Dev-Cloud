@@ -74,6 +74,5 @@ def check_resource(user_id, template_id):
     """
     quota = Quota(user_id)
     quota.check_quota(template_id)
-    print quota.get_status()
 
     return quota.get_status()

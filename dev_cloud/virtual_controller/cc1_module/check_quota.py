@@ -19,6 +19,7 @@
 import ast
 import json
 import requests
+from rest_framework import status as status_code
 from core.utils.log import error
 from virtual_controller.cc1_module import address_clm, payload
 
@@ -32,12 +33,26 @@ class Quota(object):
     status = ""
 
     def __init__(self, user_id):
+        """
+        Constructor for Quota object which assign basic properties such us user id.
+        @param user_id: User id to set.
+        """
         self.user_id = user_id
 
     def set_status(self, status):
+        """
+        Setter for status.
+        @param status: Status about available resources.
+        If code is equal 200 everything is OK, if 402 there are not enough resources.
+        """
         self.status = status
 
     def get_status(self):
+        """
+        Getter for status.
+        Gets value about check quotation.
+        @return:  If code is equal 200 everything is OK, if 402 there are not enough resources.
+        """
         return self.status
 
     def check_quota(self, template_id):
@@ -49,7 +64,38 @@ class Quota(object):
         test = requests.post(address_clm + 'user/user/get_quota/', data=json.dumps(payload))
 
         if test.status_code == 200:
-            self.set_status(ast.literal_eval(test.text))
+            resource_status = ast.literal_eval(test.text)
+            if self.__calculate_available_resources(self.__get_free_resources(resource_status.get('data')),
+                                                    template_id):
+                self.set_status(status_code.HTTP_200_OK)
+            else:
+                self.set_status(status_code.HTTP_402_PAYMENT_REQUIRED)
             return self.get_status()
         else:
             error(self.user_id, "CC1 - Problem with request: " + test.url)
+
+    @staticmethod
+    def __get_free_resources(data):
+        """
+        Gets free resources, based on given data.
+        @param data: Data from CC1 about amount of used and free resources.
+        @return: Calculated free resources.
+        """
+        free_resources = {'cpu': int(data.get('cpu')) - int(data.get('used_cpu')),
+                          'memory': int(data.get('memory')) - int(data.get('used_memory')),
+                          'storage': int(data.get('storage')) - int(data.get('used_storage')),
+                          'public_ip': int(data.get('public_ip')) - int(data.get('used_public_ip'))}
+
+        return free_resources
+
+    @staticmethod
+    def __calculate_available_resources(free_resources, template_id):
+        """
+        Calculates available resources for current template.
+        @param free_resources: Dictionary with information about free resources.
+        @param template_id: Id of template to create.
+        @return: If True, enough resources, if False not enough resources.
+        """
+        is_available = False
+
+        return is_available
