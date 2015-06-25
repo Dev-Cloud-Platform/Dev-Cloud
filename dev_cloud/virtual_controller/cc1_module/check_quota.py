@@ -21,6 +21,7 @@ import json
 import requests
 from rest_framework import status as status_code
 from core.utils.log import error
+from core.utils.messager import get
 from virtual_controller.cc1_module import address_clm, payload
 
 
@@ -96,6 +97,17 @@ class Quota(object):
         @param template_id: Id of template to create.
         @return: If True, enough resources, if False not enough resources.
         """
-        is_available = False
+        is_available = True
+        selected_template = ast.literal_eval(get('template-instances/get-template/?template_id=%s' % template_id).text)
+
+        if int(free_resources.get('cpu')) - int(selected_template.get('cpu')) <= 0:
+            is_available = False
+            error('Not enough cpu cores')
+
+        if int(free_resources.get('memory')) - (int(selected_template.get('memory')) * 1000) <= 0:
+            is_available = False
+            error('Not enough free memory')
+
+        # TODO: Check also storage, and optional IP.
 
         return is_available

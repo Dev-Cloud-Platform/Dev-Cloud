@@ -16,7 +16,10 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from rest_framework import viewsets
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import viewsets, status
+from rest_framework.decorators import list_route
+from rest_framework.response import Response
 from database.models.template_instances import TemplateInstances
 from virtual_controller.api.serializers.template_instances_serializer import TemplateInstancesSerializer
 
@@ -27,3 +30,23 @@ class TemplateInstancesViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = TemplateInstances.objects.all()
     serializer_class = TemplateInstancesSerializer
+
+    @list_route(methods=['get'], url_path='get-template')
+    def get_template(self, request):
+        """
+        Gets available templates for VM.
+        You need add payload with key as template_id and your id of template as value.
+        Example: GET /rest_api/template-instances/get-template/?template_id=1
+        @param request:
+        @return:
+        """
+        template_id = request.DATA.get('template_id', None) or request.query_params.get('template_id', None)
+        if template_id:
+            try:
+                template = TemplateInstances.objects.get(template_id=template_id)
+                serializer = self.get_serializer(template)
+                return Response(serializer.data)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

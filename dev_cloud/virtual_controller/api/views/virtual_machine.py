@@ -76,20 +76,19 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
     @list_route(methods=['get'], url_path='resource-test')
     def resource_test(self, request):
         """
         Test possibility of future allocated resources for VM.
         Based on quota.
-        You need add payload with key as template_id and your if of template as value.
+        You need add payload with key as template_id and your id of template as value.
         Example: GET /rest_api/virtual-machines/resource-test/?template_id=1
         @param request:
-        @return:
+        @return: Status about available resources. If is ok return 200, if not return 402.
         """
         template_id = request.DATA.get('template_id', None) or request.query_params.get('template_id', None)
         if template_id:
             user_id = api_permissions.UsersPermission.get_user(request).id
-            return Response(status=celery.check_resource.apply_async(args=(user_id, template_id)))
+            return Response(status=celery.check_resource.apply_async(args=(user_id, template_id)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

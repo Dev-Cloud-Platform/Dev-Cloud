@@ -386,6 +386,9 @@ function updateUsage(requirements, template) {
     }
 }
 
+function handler() {
+    jQuery('form.form-wizard2').unbind('submit').submit();
+}
 
 function showAjaxModal() {
     jQuery("html, body").animate({scrollTop: 0}, "slow");
@@ -418,6 +421,13 @@ function showAjaxModal() {
                                                 jQuery('#modal-7 .modal-body #ip_validation').html(content);
                                             });
                                     });
+                            } else {
+                                if (jQuery('.entypo-check').hasClass('entypo-check')) {
+                                    jQuery('.modal-footer').append('<button type="button" id="start" class="btn btn-info">Launch VM</button>');
+                                    jQuery('#start').each(function () {
+                                        jQuery(this).click(handler);
+                                    });
+                                }
                             }
                         });
                 });
@@ -433,7 +443,6 @@ jQuery(document).ready(function () {
         if (jQuery('div.checkbox').hasClass('checked')) {
             e.preventDefault();
             showAjaxModal();
-            //jQuery('form.form-wizard2').unbind('submit').submit();
         }
     });
 });
