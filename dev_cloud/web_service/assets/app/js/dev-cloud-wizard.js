@@ -387,7 +387,7 @@ function updateUsage(requirements, template) {
 }
 
 function handler() {
-    jQuery('form.form-wizard2').unbind('submit').submit();
+    jQuery('#rootwizard-2').unbind('submit').submit();
 }
 
 function showAjaxModal() {
@@ -419,10 +419,17 @@ function showAjaxModal() {
                                             function (content) {
                                                 //onSuccess
                                                 jQuery('#modal-7 .modal-body #ip_validation').html(content);
+                                                if (jQuery('#resource_validation i').hasClass('entypo-check')
+                                                    && jQuery('#ip_validation i').hasClass('entypo-check')) {
+                                                    jQuery('.modal-footer').append('<button type="button" id="start" class="btn btn-info">Launch VM</button>');
+                                                    jQuery('#start').each(function () {
+                                                        jQuery(this).click(handler);
+                                                    });
+                                                }
                                             });
                                     });
                             } else {
-                                if (jQuery('.entypo-check').hasClass('entypo-check')) {
+                                if (jQuery('#resource_validation i').hasClass('entypo-check')) {
                                     jQuery('.modal-footer').append('<button type="button" id="start" class="btn btn-info">Launch VM</button>');
                                     jQuery('#start').each(function () {
                                         jQuery(this).click(handler);
