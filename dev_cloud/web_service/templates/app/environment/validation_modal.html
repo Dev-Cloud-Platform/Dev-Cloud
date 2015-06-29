@@ -50,23 +50,4 @@
     if (getIP() == "unexpose") {
         jQuery('#ip_validation').hide();
     }
-    {#    $(function() {#}
-    {#        $('form#form').on('submit', function(e) {#}
-    {#            ajaxPost('/main/app/user_activation/' + {{ id }} +'/', $('form#form').serialize(), function(content){#}
-    {#                //onSuccess#}
-    {#                show_loading_bar({#}
-    {#                    pct: 78,#}
-    {#                    finish: function(pct)#}
-    {#                    {#}
-    {#                        jQuery('#modal-7').modal('toggle');#}
-    {#                        jQuery('tbody#dynamic').html(content);#}
-    {#                        toastr.success('{{ login }} {% trans "successfully updated" %}')#}
-    {#                        hide_loading_bar();#}
-    {#                    }#}
-    {#                });#}
-    {##}
-    {#            });#}
-    {#            e.preventDefault();#}
-    {#        });#}
-    {#    });#}
 </script>

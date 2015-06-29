@@ -31,7 +31,7 @@ attrs_dict = {'class': 'required'}
 
 class PasswordForm(forms.Form):
     """
-     Class for <b>setting password</b> form.
+    Class for <b>setting password</b> form.
     """
     new_password = forms.RegexField(regex=regexp['password'],
                                     max_length=32,
@@ -62,8 +62,8 @@ class PasswordForm(forms.Form):
 
 class PasswordResetForm(forms.Form):
     """
-        Class of the <b>password's reset</b> form.
-        """
+    Class of the <b>password's reset</b> form.
+    """
     email = forms.EmailField(label=_("E-mail"),
                              max_length=255)
 

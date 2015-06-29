@@ -28,6 +28,7 @@ from core.utils.log import error
 from core.utils.messager import get
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
+from web_service.forms.enviroment.create_vm import CreateVMForm
 from web_service.views.user.user import generate_active
 
 EXPOSE = 'expose'
@@ -46,6 +47,7 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
     """
     if request.method == 'POST':
         # Do creating virtual machine
+        create_vm = CreateVMForm(request)
         return redirect('app_main')
 
     request.session[JAVA] = []
