@@ -446,7 +446,7 @@ function showAjaxModal() {
 
 
 jQuery(document).ready(function () {
-    jQuery('form.form-wizard').submit(function (e) {
+    jQuery('#rootwizard-2').submit(function (e) {
         if (jQuery('div.checkbox').hasClass('checked')) {
             e.preventDefault();
             showAjaxModal();
