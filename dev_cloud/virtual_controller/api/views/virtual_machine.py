@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import ast
+import json
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -23,9 +25,11 @@ from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR
 
 from core.utils import celery
 from core.utils.python_object_encoder import SetEncoder
+from database.models.installed_applications import InstalledApplications
+from database.models.template_instances import TemplateInstances
 from database.models.virtual_machines import VirtualMachines
-from virtual_controller.api.serializers.installed_applications_serializer import InstalledApplicationsSerializer
 from virtual_controller.api.permissions import base_permissions as api_permissions
+from virtual_controller.api.serializers.virtual_machines_serializer import VirtualMachinesSerializer
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 
 from django.utils.translation import ugettext as _
@@ -37,7 +41,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
     List of all available virtual machines.
     """
     queryset = VirtualMachines.objects.all()
-    serializer_class = InstalledApplicationsSerializer
+    serializer_class = VirtualMachinesSerializer
     permission_classes = {api_permissions.UsersPermission}
 
     @list_route(methods=['get'], url_path='obtain-ip')
@@ -92,3 +96,31 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(status=celery.check_resource.apply_async(args=(user_id, template_id)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=['post', 'get'], url_path='create-vm')
+    def create_virtual_machine(self, request):
+        """
+
+        @param request:
+        @return:
+        """
+        applications = request.DATA.get('applications', None) or request.query_params.get('applications', None)
+        template_id = request.DATA.get('template_id', None) or request.query_params.get('template_id', None)
+        workspace = request.DATA.get('workspace', None) or request.query_params.get('workspace', None)
+        public_ip = request.DATA.get('public_ip', None) or request.query_params.get('public_ip', None)
+        disk_space = request.DATA.get('disk_space', None) or request.query_params.get('disk_space', None)
+
+        app = ast.literal_eval(applications)
+        virtual_machine = self.serializer_class.Meta.model.objects.create(disk_space=disk_space, public_ip=public_ip,
+                                                                          template_instance_id=template_id)
+
+        # instaled_application = InstalledApplications.objects.create(workspace=workspace,
+        # user_id=api_permissions.UsersPermission.get_user(
+        # request).id, application_id=1, virtual_machine_id=virtual_machine.objects.get())
+
+        print app[0]
+        print template_id
+        print workspace
+        print public_ip
+        print disk_space
+        return Response(status=status.HTTP_200_OK)

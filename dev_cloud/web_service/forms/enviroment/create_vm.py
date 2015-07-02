@@ -34,7 +34,7 @@ class CreateVMForm(object):
 
     public_ip = False
 
-    disk_space = '10000'  # For feature improve, assign by UI.
+    disk_space = ''
 
     def __init__(self, request):
         """
@@ -43,7 +43,8 @@ class CreateVMForm(object):
         self.set_applications(self.__get_list_of_applications(request))
         self.set_template(ast.literal_eval(request.POST['template']).get('template_id'))
         self.set_workspace(request.POST['full_name'])
-        self.set_public_ip(request.POST['variable'])
+        self.set_public_ip(request.POST['public_ip'])
+        self.set_disk_space('10000')  # For feature improve, assign by UI.
 
     def set_applications(self, applications):
         self.applications = applications

@@ -25,7 +25,7 @@ from django_ajax.decorators import ajax
 from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR
 from core.utils.decorators import django_view, user_permission
 from core.utils.log import error
-from core.utils.messager import get
+from core.utils.messager import get, post
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.forms.enviroment.create_vm import CreateVMForm
@@ -48,6 +48,11 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
     if request.method == 'POST':
         # Do creating virtual machine
         create_vm = CreateVMForm(request)
+        get('virtual-machines/create-vm/?applications=%s' % create_vm.get_applications()
+            + '&template_id=%s' % create_vm.get_template()
+            + '&workspace=%s' % create_vm.get_workspace()
+            + '&public_ip=%s' % create_vm.get_public_ip()
+            + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request)
         return redirect('app_main')
 
     request.session[JAVA] = []

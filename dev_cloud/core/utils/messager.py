@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import json
+from django.core.exceptions import ObjectDoesNotExist
 import requests
 from core.settings import config
 from core.utils.auth import session_key
@@ -29,14 +31,33 @@ def get(url, request_session=None, credentials=None):
     Method create request get for Dev Cloud API.
     @param url: request url to call.
     @param request_session: request session to obtain user credentials.
+    @param credentials: credentials to authorization.
     @return: status code.
     """
     if request_session:
         try:
             user = Users.objects.get(id=int(request_session.session[session_key]))
             credentials = 'username=' + user.login + '&password=' + user.password
-        except:
+        except ObjectDoesNotExist:
             credentials = None
 
     return requests.get(API_ADDRESS + url, params=credentials)
 
+
+def post(url, request_session=None, credentials=None, data=None):
+    """
+    TODO: Not working properly. TO FIX!
+    Method create post request for Dev Cloud API
+    @param url: request url to call.
+    @param request_session: request session to obtain user credentials.
+    @param credentials: credentials to authorization.
+    @return: status code.
+    """
+    if request_session:
+        try:
+            user = Users.objects.get(id=int(request_session.session[session_key]))
+            credentials = 'username=' + user.login + '&password=' + user.password
+        except ObjectDoesNotExist:
+            credentials = None
+
+    return requests.post(API_ADDRESS + url, data=json.dumps(data))
