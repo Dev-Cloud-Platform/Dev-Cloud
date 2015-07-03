@@ -31,7 +31,7 @@ def get_upload_path(instance, filename):
 
 
 class Users(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     login = models.CharField(unique=True, max_length=45)
     password = models.CharField(max_length=255)
     name = models.CharField(max_length=45, blank=True)

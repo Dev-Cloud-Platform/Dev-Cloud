@@ -28,7 +28,7 @@ from users import Users
 
 
 class InstalledApplications(models.Model):
-    installed_app_id = models.IntegerField(primary_key=True)
+    installed_app_id = models.AutoField(primary_key=True)
     workspace = models.CharField(max_length=45, blank=True)
     clx_ip = models.CharField(max_length=45, blank=True)
     public_port = models.IntegerField(blank=True, null=True)

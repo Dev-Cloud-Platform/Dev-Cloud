@@ -26,7 +26,7 @@ from users import Users
 
 
 class UsersInRoles(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Users)
     role = models.ForeignKey(Roles)
 

@@ -76,3 +76,12 @@ def check_resource(user_id, template_id):
     quota.check_quota(template_id)
 
     return quota.get_status()
+
+
+@app.task(trail=True, name='core.utils.tasks.create_virtual_machine')
+def create_virtual_machine():
+    """
+
+    @return:
+    """
+    return None

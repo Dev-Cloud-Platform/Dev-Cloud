@@ -25,7 +25,7 @@ from template_instances import TemplateInstances
 
 
 class VirtualMachines(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     ctx = models.CharField(max_length=45, blank=True)
     disk_space = models.CharField(max_length=45, blank=True)
     public_ip = models.CharField(max_length=45, blank=True)

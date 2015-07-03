@@ -31,7 +31,7 @@ class Applications(models.Model):
     @models{Applications}
     Applications is an entity representing a object of application to install.
     """
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     application_name = models.CharField(max_length=45)
     description = models.CharField(max_length=45, blank=True)
     memory = models.FloatField(blank=True, null=True)

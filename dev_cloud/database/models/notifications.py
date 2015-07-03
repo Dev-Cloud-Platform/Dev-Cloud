@@ -23,7 +23,7 @@ from database.models import Users
 
 
 class Notifications(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     notification_name = models.CharField(max_length=255)
     notification_information = models.CharField(max_length=255)
     category = models.IntegerField(blank=True)
