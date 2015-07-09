@@ -32,9 +32,9 @@ class PoolIP(object):
     """
     Class represents pool for IP address.
     """
-    public_ip_id = ""
-    ip_address = ""
-    user_id = ""
+    public_ip_id = None
+    ip_address = None
+    user_id = None
 
     def __init__(self, user_id, ip_address=None):
         """

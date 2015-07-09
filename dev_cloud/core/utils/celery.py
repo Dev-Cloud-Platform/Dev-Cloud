@@ -26,6 +26,8 @@ from virtual_controller.cc1_module.public_ip import PoolIP
 
 
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
+from virtual_controller.cc1_module.virtual_machine import VirtualMachine
+
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
 # Optional configuration, see the application user guide.
@@ -58,7 +60,7 @@ def request(user_id):
 def release(user_id, ip_address):
     """
     Method to release public IP form CC1.
-    @return:
+    @return: Status about removed ip address.
     """
     poolIP = PoolIP(user_id, ip_address)
     return poolIP.remove()
@@ -79,9 +81,12 @@ def check_resource(user_id, template_id):
 
 
 @app.task(trail=True, name='core.utils.tasks.create_virtual_machine')
-def create_virtual_machine():
+def create_virtual_machine(user_id, vm_property):
     """
-
+    Creates new instance of virtual machine on CC1, making a request.
+    @param user_id: id of caller.
+    @param vm_property: instance of virtual machine form with properties.
     @return:
     """
-    return None
+    virtual_machine = VirtualMachine(user_id, vm_property)
+    return virtual_machine.create()

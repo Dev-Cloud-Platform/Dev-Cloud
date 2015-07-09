@@ -114,31 +114,23 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         @return:
         """
 
-        virtual_machine_form = CreateVMForm
+        virtual_machine_form = CreateVMForm()
 
-        virtual_machine_form.set_applications(
-            request.DATA.get('applications', None) or request.query_params.get('applications', None))
-        virtual_machine_form.set_template(
-            request.DATA.get('template_id', None) or request.query_params.get('template_id', None))
-        virtual_machine_form.set_workspace(
-            request.DATA.get('workspace', None) or request.query_params.get('workspace', None))
-        virtual_machine_form.set_public_ip(
-            request.DATA.get('public_ip', None) or request.query_params.get('public_ip', None))
-        virtual_machine_form.set_disk_space(
-            request.DATA.get('disk_space', None) or request.query_params.get('disk_space', None))
+        if virtual_machine_form.is_valid(request):
+            # Here do request to CC1.
+            user_id = api_permissions.UsersPermission.get_user(request).id
+            celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form))
 
-        # Here do request to CC1.
-        user_id = api_permissions.UsersPermission.get_user(request).id
-        celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form))
+            virtual_machine = self.serializer_class.Meta.model.objects.create(
+                disk_space=virtual_machine_form.get_disk_space(), public_ip=virtual_machine_form.get_public_ip(),
+                template_instance_id=virtual_machine_form.get_template())
 
-        virtual_machine = self.serializer_class.Meta.model.objects.create(
-            disk_space=virtual_machine_form.get_disk_space(), public_ip=virtual_machine_form.get_public_ip(),
-            template_instance_id=virtual_machine_form.get_template())
+            for application in ast.literal_eval(virtual_machine_form.get_applications()):
+                app = Applications.objects.get(application_name=application)
+                InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
+                                                     user_id=user_id, application_id=app.id,
+                                                     virtual_machine_id=virtual_machine.pk)
 
-        for application in ast.literal_eval(virtual_machine_form.get_applications()):
-            app = Applications.objects.get(application_name=application)
-            InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
-                                                 user_id=user_id, application_id=app.id,
-                                                 virtual_machine_id=virtual_machine.pk)
-
-        return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

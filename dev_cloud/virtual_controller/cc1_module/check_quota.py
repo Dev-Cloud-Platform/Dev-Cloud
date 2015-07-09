@@ -23,6 +23,7 @@ from rest_framework import status as status_code
 from core.utils.log import error
 from core.utils.messager import get
 from virtual_controller.cc1_module import address_clm, payload
+from django.utils.translation import ugettext as _
 
 
 class Quota(object):
@@ -30,8 +31,8 @@ class Quota(object):
     Class represents object for quota.
     """
 
-    user_id = ""
-    status = ""
+    user_id = None
+    status = None
 
     def __init__(self, user_id):
         """
@@ -73,7 +74,7 @@ class Quota(object):
                 self.set_status(status_code.HTTP_402_PAYMENT_REQUIRED)
             return self.get_status()
         else:
-            error(self.user_id, "CC1 - Problem with request: " + test.url)
+            error(self.user_id, _("CC1 - Problem with request: ") + test.url)
 
     @staticmethod
     def __get_free_resources(data):
@@ -102,11 +103,11 @@ class Quota(object):
 
         if int(free_resources.get('cpu')) - int(selected_template.get('cpu')) <= 0:
             is_available = False
-            error('Not enough cpu cores')
+            error(None, _('Not enough cpu cores'))
 
         if int(free_resources.get('memory')) - (int(selected_template.get('memory')) * 1000) <= 0:
             is_available = False
-            error('Not enough free memory')
+            error(None, _('Not enough free memory'))
 
         # TODO: Check also storage, and optional IP.
 

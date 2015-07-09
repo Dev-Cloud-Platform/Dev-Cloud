@@ -48,6 +48,8 @@ REST_API_ADDRESS = 'http://127.0.0.1/'
 
 CELERY_IP_ADDRESS = '127.0.0.1'
 
+VM_IMAGE_NAME = 'Dev Cloud - instance'
+
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = '54tdc1@#%r8+(#s4s03w(26u8l7x*l=us(hfcgwn^xw6^-32rh'

@@ -56,3 +56,9 @@ registration_states = {
     'error': 3,
     'disallowed': 4
 }
+
+image_access = {
+    'private': 0,
+    'public': 1,
+    'group': 2
+}

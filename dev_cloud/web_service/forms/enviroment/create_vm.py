@@ -36,15 +36,17 @@ class CreateVMForm(object):
 
     disk_space = ''
 
-    def __init__(self, request):
+    def __init__(self, request=None):
         """
         Constructor for creating Virtual Machine which assign passed properties from request.
+        @param request: Optional value, with data from request.
         """
-        self.set_applications(self.__get_list_of_applications(request))
-        self.set_template(ast.literal_eval(request.POST['template']).get('template_id'))
-        self.set_workspace(request.POST['full_name'])
-        self.set_public_ip(request.POST['public_ip'])
-        self.set_disk_space('10000')  # For feature improve, assign by UI.
+        if request:
+            self.set_applications(self.__get_list_of_applications(request))
+            self.set_template(ast.literal_eval(request.POST['template']).get('template_id'))
+            self.set_workspace(request.POST['full_name'])
+            self.set_public_ip(request.POST['public_ip'])
+            self.set_disk_space('10000')  # For feature improve, assign by UI.
 
     def set_applications(self, applications):
         self.applications = applications
@@ -75,6 +77,28 @@ class CreateVMForm(object):
 
     def get_disk_space(self):
         return self.disk_space
+
+    def is_valid(self, request):
+        """
+        This method valid the given request and set object class with given properties if is OK.
+        @return: True if given request is proper, False if is not.
+        """
+        is_valid = True
+
+        self.set_applications(request.DATA.get('applications', None) or request.query_params.get('applications', None))
+        self.set_template(request.DATA.get('template_id', None) or request.query_params.get('template_id', None))
+        self.set_workspace(request.DATA.get('workspace', None) or request.query_params.get('workspace', None))
+        self.set_public_ip(request.DATA.get('public_ip', None) or request.query_params.get('public_ip', None))
+        self.set_disk_space(request.DATA.get('disk_space', None) or request.query_params.get('disk_space', None))
+
+        if self.get_applications() is None \
+                or self.get_template() is None \
+                or self.get_workspace() is None \
+                or self.get_public_ip() is None \
+                or self.get_disk_space() is None:
+            is_valid = False
+
+        return is_valid
 
     @staticmethod
     def __get_list_of_applications(request):
