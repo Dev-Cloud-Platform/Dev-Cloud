@@ -17,12 +17,15 @@
 #
 # @COPYRIGHT_end
 import ast
+import copy
 import json
 import requests
 from rest_framework import status as status_code
+from core.common.states import STATUS
+from core.common.states import OK
 from core.utils.log import error
 from core.utils.messager import get
-from virtual_controller.cc1_module import address_clm, payload
+from virtual_controller.cc1_module import address_clm, payload as payload_org
 from django.utils.translation import ugettext as _
 
 
@@ -63,9 +66,10 @@ class Quota(object):
         @param template_id: selected id for template.
         @return:
         """
+        payload = copy.deepcopy(payload_org)
         test = requests.post(address_clm + 'user/user/get_quota/', data=json.dumps(payload))
 
-        if test.status_code == 200:
+        if test.status_code == 200 and ast.literal_eval(test.text).get(STATUS) == OK:
             resource_status = ast.literal_eval(test.text)
             if self.__calculate_available_resources(self.__get_free_resources(resource_status.get('data')),
                                                     template_id):

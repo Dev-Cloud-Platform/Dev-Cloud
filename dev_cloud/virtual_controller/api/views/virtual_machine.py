@@ -22,7 +22,7 @@ from django.db.transaction import atomic
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR
+from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, OK
 
 from core.utils import celery
 from core.utils.python_object_encoder import SetEncoder
@@ -119,18 +119,19 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         if virtual_machine_form.is_valid(request):
             # Here do request to CC1.
             user_id = api_permissions.UsersPermission.get_user(request).id
-            celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form))
+            if celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form)) == OK:
+                virtual_machine = self.serializer_class.Meta.model.objects.create(
+                    disk_space=virtual_machine_form.get_disk_space(), public_ip=virtual_machine_form.get_public_ip(),
+                    template_instance_id=virtual_machine_form.get_template())
 
-            virtual_machine = self.serializer_class.Meta.model.objects.create(
-                disk_space=virtual_machine_form.get_disk_space(), public_ip=virtual_machine_form.get_public_ip(),
-                template_instance_id=virtual_machine_form.get_template())
+                for application in ast.literal_eval(virtual_machine_form.get_applications()):
+                    app = Applications.objects.get(application_name=application)
+                    InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
+                                                         user_id=user_id, application_id=app.id,
+                                                         virtual_machine_id=virtual_machine.pk)
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_417_EXPECTATION_FAILED)
 
-            for application in ast.literal_eval(virtual_machine_form.get_applications()):
-                app = Applications.objects.get(application_name=application)
-                InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
-                                                     user_id=user_id, application_id=app.id,
-                                                     virtual_machine_id=virtual_machine.pk)
-
-            return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -17,11 +17,12 @@
 #
 # @COPYRIGHT_end
 import ast
+import copy
 import json
 import requests
 from core.common.states import OK, STATUS, CM_ERROR, PUBLIC_IP_LIMIT
 from core.utils.log import error, info
-from virtual_controller.cc1_module import address_clm, payload
+from virtual_controller.cc1_module import address_clm, payload as payload_org
 from django.utils.translation import ugettext as _
 
 
@@ -131,12 +132,13 @@ class PoolIP(object):
         """
         Returns list of caller's public IPs.
         """
+        payload = copy.deepcopy(payload_org)
         ip_list = requests.post(address_clm + '/user/public_ip/get_list/', data=json.dumps(payload))
 
-        if ip_list.status_code == 200:
+        if ip_list.status_code == 200 and ast.literal_eval(ip_list.text).get(STATUS) == OK:
             return ast.literal_eval(ip_list.text)
         else:
-            error(_("CC1 - Problem with request: ") + ip_list.url)
+            error(None, _("CC1 - Problem with request: ") + ip_list.url)
 
     @staticmethod
     def __request():
@@ -144,12 +146,13 @@ class PoolIP(object):
         Sends request to grant new public IP for caller. If caller's quota allows,
         user will obtain new public IP.
         """
-        new_ip = requests.post(address_clm + '/user/public_ip/request/', data=json.dumps(payload))
+        payload = copy.deepcopy(payload_org)
+        new_ip = requests.post(address_clm + 'user/public_ip/request/', data=json.dumps(payload))
 
-        if new_ip.status_code == 200:
+        if new_ip.status_code == 200 and ast.literal_eval(new_ip.text).get(STATUS) == OK:
             return ast.literal_eval(new_ip.text)
         else:
-            error(_("CC1 - Problem with request: ") + new_ip.url)
+            error(None, _("CC1 - Problem with request: ") + new_ip.url)
 
     @staticmethod
     def __assign():
@@ -174,10 +177,11 @@ class PoolIP(object):
         any more. He'll have to send another request if he needs more IPs.
         @param ip_id_to_release: Ip id to release.
         """
+        payload = copy.deepcopy(payload_org)
         payload['public_ip_id'] = ip_id_to_release
         released_ip = requests.post(address_clm + '/user/public_ip/release/', data=json.dumps(payload))
 
-        if released_ip.status_code == 200:
+        if released_ip.status_code == 200 and ast.literal_eval(released_ip.text).get(STATUS) == OK:
             return json.loads(released_ip.text)
         else:
-            error(_("CC1 - Problem with request: ") + released_ip.url)
+            error(None, _("CC1 - Problem with request: ") + released_ip.url)

@@ -17,12 +17,13 @@
 #
 # @COPYRIGHT_end
 import ast
+import copy
 import json
 import requests
-from core.common.states import OK
+from core.common.states import OK, STATUS
 from core.settings.config import VM_IMAGE_NAME
 from core.utils.log import error
-from virtual_controller.cc1_module import address_clm, payload
+from virtual_controller.cc1_module import address_clm, payload as payload_org
 from virtual_controller.cc1_module.master_user import MasterUser
 from virtual_controller.cc1_module.public_ip import PoolIP
 from django.utils.translation import ugettext as _
@@ -79,7 +80,7 @@ class VirtualMachine(object):
         self.template_id = self.vm_property.get_template()
         self.iso_list = None
         self.disk_list = None
-        self.groups = MasterUser.get_group_id()
+        # self.groups = MasterUser.get_groups()
 
     def get_vm_property(self):
         return self.vm_property
@@ -94,6 +95,7 @@ class VirtualMachine(object):
         """
         self.init()
 
+        payload = copy.deepcopy(payload_org)
         payload['caller_id'] = self.caller_id
         payload['name'] = self.name
         payload['description'] = self.description
@@ -109,9 +111,10 @@ class VirtualMachine(object):
         payload['ssh_key'] = self.ssh_key
         payload['ssh_username'] = self.ssh_username
 
-        vm = requests.post(address_clm + '/user/vm/create/', data=json.dumps(payload))
-        if vm.status_code == 200:
-            print ast.literal_eval(vm.text)  # .get('data')
+        vm = requests.post(address_clm + 'user/vm/create/', data=json.dumps(payload))
+        print ast.literal_eval(vm.text)
+        if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
+            return OK
         else:
             error(None, _("CC1 - Problem with request: ") + vm.url)
 

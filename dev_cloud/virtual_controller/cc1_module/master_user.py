@@ -17,12 +17,13 @@
 #
 # @COPYRIGHT_end
 import ast
+import copy
 import json
 import requests
 from core.common import states
 from core.common.states import STATUS, OK
 from core.utils.log import error
-from virtual_controller.cc1_module import address_clm, payload, check_quota
+from virtual_controller.cc1_module import address_clm, payload as payload_org, check_quota
 from django.utils.translation import ugettext as _
 
 
@@ -36,21 +37,27 @@ class MasterUser(check_quota.Quota):
         """
         Returns user's data.
         """
-        data = requests.post(address_clm + '/user/user/get_my_data/', data=json.dumps(payload))
-        if data.status_code == 200:
+        payload = copy.deepcopy(payload_org)
+        data = requests.post(address_clm + 'user/user/get_my_data/', data=json.dumps(payload))
+        if data.status_code == 200 and ast.literal_eval(data.text).get(STATUS) == OK:
             return ast.literal_eval(data.text).get('data')
         else:
             error(None, _("CC1 - Problem with request: ") + data.url)
 
     @staticmethod
-    def get_group_id():
-        groups_id = requests.post(address_clm + '/user/group/list_own_groups/', data=json.dumps(payload))
+    def get_groups():
+        payload = copy.deepcopy(payload_org)
+        groups_id = requests.post(address_clm + 'user/group/list_own_groups/', data=json.dumps(payload))
         if groups_id.status_code == 200 and ast.literal_eval(groups_id.text).get(STATUS) == OK:
-            for group_id in ast.literal_eval(groups_id.text).get('data'):
-                if group_id.get('name') == 'Dev Cloud':
-                    return group_id.get('group_id')
+            return ast.literal_eval(groups_id.text).get('data')
         else:
             error(None, _("CC1 - Problem with request: ") + groups_id.url)
+
+    @staticmethod
+    def get_group_id():
+        for group_id in MasterUser.get_groups():
+            if group_id.get('name') == 'Dev Cloud':
+                return group_id.get('group_id')
 
     @staticmethod
     def get_images_list():
@@ -58,11 +65,12 @@ class MasterUser(check_quota.Quota):
         Method returns list of images.
         @return: (list(dict)) images: {gid, name, [images]}
         """
+        payload = copy.deepcopy(payload_org)
         payload['caller_id'] = MasterUser.get_info_data().get('user_id')
         payload['group_id'] = MasterUser.get_group_id()
         payload['access'] = states.image_access.get('private')
-        images_list = requests.post(address_clm + '/user/system_image/get_list/', data=json.dumps(payload))
-        if images_list.status_code == 200:
+        images_list = requests.post(address_clm + 'user/system_image/get_list/', data=json.dumps(payload))
+        if images_list.status_code == 200 and ast.literal_eval(images_list.text).get(STATUS) == OK:
             return ast.literal_eval(images_list.text).get('data')
         else:
             error(None, _("CC1 - Problem with request: ") + images_list.url)
