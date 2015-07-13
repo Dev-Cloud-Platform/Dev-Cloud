@@ -22,7 +22,7 @@ import json
 import requests
 from core.common.states import OK, STATUS, CM_ERROR, PUBLIC_IP_LIMIT
 from core.utils.log import error, info
-from virtual_controller.cc1_module import address_clm, payload as payload_org
+from virtual_controller.cc1_module import address_clm, logger, payload as payload_org
 from django.utils.translation import ugettext as _
 
 
@@ -133,12 +133,12 @@ class PoolIP(object):
         Returns list of caller's public IPs.
         """
         payload = copy.deepcopy(payload_org)
-        ip_list = requests.post(address_clm + '/user/public_ip/get_list/', data=json.dumps(payload))
+        ip_list = requests.post(address_clm + 'user/public_ip/get_list/', data=json.dumps(payload))
 
         if ip_list.status_code == 200 and ast.literal_eval(ip_list.text).get(STATUS) == OK:
             return ast.literal_eval(ip_list.text)
         else:
-            error(None, _("CC1 - Problem with request: ") + ip_list.url)
+            logger.error(None, ip_list)
 
     @staticmethod
     def __request():
@@ -152,7 +152,7 @@ class PoolIP(object):
         if new_ip.status_code == 200 and ast.literal_eval(new_ip.text).get(STATUS) == OK:
             return ast.literal_eval(new_ip.text)
         else:
-            error(None, _("CC1 - Problem with request: ") + new_ip.url)
+            logger.error(None, new_ip)
 
     @staticmethod
     def __assign():
@@ -179,9 +179,10 @@ class PoolIP(object):
         """
         payload = copy.deepcopy(payload_org)
         payload['public_ip_id'] = ip_id_to_release
-        released_ip = requests.post(address_clm + '/user/public_ip/release/', data=json.dumps(payload))
+        released_ip = requests.post(address_clm + 'user/public_ip/release/', data=json.dumps(payload))
 
-        if released_ip.status_code == 200 and ast.literal_eval(released_ip.text).get(STATUS) == OK:
+        if released_ip.status_code == 200:
             return json.loads(released_ip.text)
         else:
-            error(None, _("CC1 - Problem with request: ") + released_ip.url)
+            error(None, _("CC1 - Problem with request:") + released_ip.url
+                  + _("Impossible to release ip with id: ") + str(ip_id_to_release))

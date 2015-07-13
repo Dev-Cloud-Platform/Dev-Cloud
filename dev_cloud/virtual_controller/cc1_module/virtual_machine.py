@@ -20,13 +20,12 @@ import ast
 import copy
 import json
 import requests
-from core.common.states import OK, STATUS
+from core.common.states import OK, STATUS, FAILED
 from core.settings.config import VM_IMAGE_NAME
-from core.utils.log import error
 from virtual_controller.cc1_module import address_clm, payload as payload_org
+from virtual_controller.cc1_module.logger import error
 from virtual_controller.cc1_module.master_user import MasterUser
 from virtual_controller.cc1_module.public_ip import PoolIP
-from django.utils.translation import ugettext as _
 
 
 class VirtualMachine(object):
@@ -105,20 +104,22 @@ class VirtualMachine(object):
         payload['iso_list'] = self.iso_list
         payload['disk_list'] = self.disk_list
         payload['vnc'] = self.vnc
-        payload['groups'] = self.groups
+        # payload['groups'] = self.groups
         payload['count'] = self.count
         payload['user_data'] = self.user_data
         payload['ssh_key'] = self.ssh_key
         payload['ssh_username'] = self.ssh_username
+        print json.dumps(payload)
 
         vm = requests.post(address_clm + 'user/vm/create/', data=json.dumps(payload))
         print ast.literal_eval(vm.text)
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return OK
         else:
-            error(None, _("CC1 - Problem with request: ") + vm.url)
-
-        return None
+            error(None, vm)
+            if payload.get('public_ip_id') is not None:
+                PoolIP.__release(payload.get('public_ip_id'))
+            return FAILED
 
     def destroy(self):
         pass

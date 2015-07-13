@@ -22,9 +22,8 @@ import json
 import requests
 from core.common import states
 from core.common.states import STATUS, OK
-from core.utils.log import error
+from virtual_controller.cc1_module.logger import error
 from virtual_controller.cc1_module import address_clm, payload as payload_org, check_quota
-from django.utils.translation import ugettext as _
 
 
 class MasterUser(check_quota.Quota):
@@ -42,7 +41,7 @@ class MasterUser(check_quota.Quota):
         if data.status_code == 200 and ast.literal_eval(data.text).get(STATUS) == OK:
             return ast.literal_eval(data.text).get('data')
         else:
-            error(None, _("CC1 - Problem with request: ") + data.url)
+            error(None, data)
 
     @staticmethod
     def get_groups():
@@ -51,7 +50,7 @@ class MasterUser(check_quota.Quota):
         if groups_id.status_code == 200 and ast.literal_eval(groups_id.text).get(STATUS) == OK:
             return ast.literal_eval(groups_id.text).get('data')
         else:
-            error(None, _("CC1 - Problem with request: ") + groups_id.url)
+            error(None, groups_id)
 
     @staticmethod
     def get_group_id():
@@ -73,4 +72,4 @@ class MasterUser(check_quota.Quota):
         if images_list.status_code == 200 and ast.literal_eval(images_list.text).get(STATUS) == OK:
             return ast.literal_eval(images_list.text).get('data')
         else:
-            error(None, _("CC1 - Problem with request: ") + images_list.url)
+            error(None, images_list)

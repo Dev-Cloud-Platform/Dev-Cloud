@@ -57,9 +57,9 @@ def get_logger(logger_id):
 def debug(logger_id, text):
     """
     @parameter{logger_id,int} optional, id of the logger. If no id is provided,
-    logs are anonymus.
+    logs are anonymous.
     @parameter{text,string} content of the log.
-    Prints debug log with @prm{contetnt} to log file of the user @prm{id}.
+    Prints debug log with @prm{content} to log file of the user @prm{id}.
     """
     get_logger(logger_id).debug(text)
 
@@ -67,9 +67,9 @@ def debug(logger_id, text):
 def info(logger_id, text):
     """
     @parameter{logger_id,int} optional, id of the logger. If no id is provided,
-    logs are anonymus.
+    logs are anonymous.
     @parameter{text,string} content of the log.
-    Prints info log with @prm{text} contetnt to log file of the user @prm{logger_id}.
+    Prints info log with @prm{text} content to log file of the user @prm{logger_id}.
     """
     get_logger(logger_id).info(text)
 
@@ -77,9 +77,9 @@ def info(logger_id, text):
 def warning(logger_id, text):
     """
     @parameter{logger_id,int} optional, id of the logger. If no logger_id is provided,
-    logs are anonymus.
+    logs are anonymous.
     @parameter{text,string} content of the log.
-    Prints warning log with @prm{text} contetnt to log file of the user @prm{logger_id}.
+    Prints warning log with @prm{text} content to log file of the user @prm{logger_id}.
     """
     get_logger(logger_id).warning(text)
 
@@ -87,9 +87,9 @@ def warning(logger_id, text):
 def exception(logger_id, text):
     """
     @parameter{logger_id,int} optional, id of the logger. If no id is provided,
-    logs are anonymus.
+    logs are anonymous.
     @parameter{text,string} content of the log.
-    Prints exception log with @prm{text} contetnt to log file of the user @prm{logger_id}.
+    Prints exception log with @prm{text} content to log file of the user @prm{logger_id}.
     """
     get_logger(logger_id).exception(text)
 
@@ -97,8 +97,8 @@ def exception(logger_id, text):
 def error(logger_id, text):
     """
     @parameter{logger_id,int} optional, id of the logger. If no id is provided,
-    logs are anonymus.
+    logs are anonymous.
     @parameter{text,string} content of the log.
-    Prints error log with @prm{text} contetnt to log file of the user @prm{logger_id}.
+    Prints error log with @prm{text} content to log file of the user @prm{logger_id}.
     """
     get_logger(logger_id).error(text)
