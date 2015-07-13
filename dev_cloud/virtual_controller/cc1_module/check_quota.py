@@ -21,7 +21,7 @@ import copy
 import json
 import requests
 from rest_framework import status as status_code
-from core.common.states import STATUS
+from core.common.states import STATUS, DATA
 from core.common.states import OK
 from core.utils import log
 from core.utils.messager import get
@@ -72,7 +72,7 @@ class Quota(object):
 
         if test.status_code == 200 and ast.literal_eval(test.text).get(STATUS) == OK:
             resource_status = ast.literal_eval(test.text)
-            if self.__calculate_available_resources(self.__get_free_resources(resource_status.get('data')),
+            if self.__calculate_available_resources(self.__get_free_resources(resource_status.get(DATA)),
                                                     template_id):
                 self.set_status(status_code.HTTP_200_OK)
             else:

@@ -21,7 +21,7 @@ import copy
 import json
 import requests
 from core.common import states
-from core.common.states import STATUS, OK
+from core.common.states import STATUS, OK, DATA
 from virtual_controller.cc1_module.logger import error
 from virtual_controller.cc1_module import address_clm, payload as payload_org, check_quota
 
@@ -39,7 +39,7 @@ class MasterUser(check_quota.Quota):
         payload = copy.deepcopy(payload_org)
         data = requests.post(address_clm + 'user/user/get_my_data/', data=json.dumps(payload))
         if data.status_code == 200 and ast.literal_eval(data.text).get(STATUS) == OK:
-            return ast.literal_eval(data.text).get('data')
+            return ast.literal_eval(data.text).get(DATA)
         else:
             error(None, data)
 
@@ -48,7 +48,7 @@ class MasterUser(check_quota.Quota):
         payload = copy.deepcopy(payload_org)
         groups_id = requests.post(address_clm + 'user/group/list_own_groups/', data=json.dumps(payload))
         if groups_id.status_code == 200 and ast.literal_eval(groups_id.text).get(STATUS) == OK:
-            return ast.literal_eval(groups_id.text).get('data')
+            return ast.literal_eval(groups_id.text).get(DATA)
         else:
             error(None, groups_id)
 
@@ -70,6 +70,6 @@ class MasterUser(check_quota.Quota):
         payload['access'] = states.image_access.get('private')
         images_list = requests.post(address_clm + 'user/system_image/get_list/', data=json.dumps(payload))
         if images_list.status_code == 200 and ast.literal_eval(images_list.text).get(STATUS) == OK:
-            return ast.literal_eval(images_list.text).get('data')
+            return ast.literal_eval(images_list.text).get(DATA)
         else:
             error(None, images_list)

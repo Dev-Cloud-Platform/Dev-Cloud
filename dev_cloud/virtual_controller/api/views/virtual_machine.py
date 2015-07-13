@@ -22,7 +22,7 @@ from django.db.transaction import atomic
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, OK
+from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, OK, FAILED
 
 from core.utils import celery
 from core.utils.python_object_encoder import SetEncoder
@@ -104,14 +104,17 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
     @atomic
     def create_virtual_machine(self, request):
         """
-
+        Creates virtual machine.
 
         A.D. Atomic
         Atomic blocks can be nested. In this case, when an inner block completes successfully, its effects can still be
         rolled back if an exception is raised in the outer block at a later point.
 
         @param request:
-        @return:
+        @return: Status about creation of virtual machine.
+                 If everything is OK return code 200 with dict{'vm_id': (vm.pk)},
+                 if not return code 400 for bad request, or 417 if creation of virtual machine goes wrong.
+
         """
 
         virtual_machine_form = CreateVMForm()
@@ -119,9 +122,11 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         if virtual_machine_form.is_valid(request):
             # Here do request to CC1.
             user_id = api_permissions.UsersPermission.get_user(request).id
-            if celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form)) == OK:
+            vm_id = celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form)).get()
+            if vm_id != FAILED:
                 virtual_machine = self.serializer_class.Meta.model.objects.create(
-                    disk_space=virtual_machine_form.get_disk_space(), public_ip=virtual_machine_form.get_public_ip(),
+                    vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
+                    public_ip=virtual_machine_form.get_public_ip(),
                     template_instance_id=virtual_machine_form.get_template())
 
                 for application in ast.literal_eval(virtual_machine_form.get_applications()):
@@ -129,7 +134,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                     InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
                                                          user_id=user_id, application_id=app.id,
                                                          virtual_machine_id=virtual_machine.pk)
-                return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_200_OK, data=dict({'vm_id': virtual_machine.pk}).items())
             else:
                 return Response(status=status.HTTP_417_EXPECTATION_FAILED)
 

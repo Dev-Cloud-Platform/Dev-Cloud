@@ -18,6 +18,7 @@
 # @COPYRIGHT_end
 import ast
 from django.utils.translation import ugettext as _
+from core.common.states import DATA
 from core.utils import log
 
 
@@ -45,6 +46,6 @@ def error(logger_id, data):
     """
     if data.status_code == 200:
         log.error(logger_id, _("CC1 - Problem with request: ") + data.url
-                  + _(" obtain problem: ") + ast.literal_eval(data.text)).get("data")
+                  + _(" obtain problem: ") + ast.literal_eval(data.text).get(DATA))
     else:
         log.error(logger_id, _("CC1 - Problem with request: ") + data.url)

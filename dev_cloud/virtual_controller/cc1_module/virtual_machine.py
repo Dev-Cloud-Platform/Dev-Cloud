@@ -20,7 +20,7 @@ import ast
 import copy
 import json
 import requests
-from core.common.states import OK, STATUS, FAILED
+from core.common.states import OK, STATUS, FAILED, DATA
 from core.settings.config import VM_IMAGE_NAME
 from virtual_controller.cc1_module import address_clm, payload as payload_org
 from virtual_controller.cc1_module.logger import error
@@ -62,15 +62,17 @@ class VirtualMachine(object):
     def init(self):
         """
         Initializes based value for request to create virtual machine.
+        @return: Object of poolIP.
         """
         self.caller_id = MasterUser.get_info_data().get('user_id')
-        self.name = 'DevCloud_' + self.vm_property.get_workspace() + '_' + str(self.user_id)
+        self.name = 'DevCloud_' + str(self.user_id) + '_' + self.vm_property.get_workspace()
         self.description = 'Virtual machine created by Dev Cloud, named: ' + self.name
 
         for image in MasterUser.get_images_list():
             if image.get('name') == VM_IMAGE_NAME:
                 self.image_id = image.get('system_image_id')
 
+        poolIP = None
         if self.vm_property.get_public_ip():
             poolIP = PoolIP(self.user_id)
             if poolIP.request() == OK:
@@ -80,6 +82,7 @@ class VirtualMachine(object):
         self.iso_list = None
         self.disk_list = None
         # self.groups = MasterUser.get_groups()
+        return poolIP
 
     def get_vm_property(self):
         return self.vm_property
@@ -90,9 +93,9 @@ class VirtualMachine(object):
     def create(self):
         """
         Creates virtual machines.
-        @return:
+        @return: Status OK if everything goes fine, another way failed status.
         """
-        self.init()
+        poolIP = self.init()
 
         payload = copy.deepcopy(payload_org)
         payload['caller_id'] = self.caller_id
@@ -109,20 +112,50 @@ class VirtualMachine(object):
         payload['user_data'] = self.user_data
         payload['ssh_key'] = self.ssh_key
         payload['ssh_username'] = self.ssh_username
-        print json.dumps(payload)
 
         vm = requests.post(address_clm + 'user/vm/create/', data=json.dumps(payload))
-        print ast.literal_eval(vm.text)
+
+        if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
+            return ast.literal_eval(vm.text).get(DATA)[0].get('vm_id')
+        else:
+            error(None, vm)
+            if payload.get('public_ip_id') is not None:
+                poolIP.remove()
+            return FAILED
+
+    @classmethod
+    def destroy(cls, vm_ids):
+        """
+        This function only destroys VM.
+
+        All the cleanup (removing disk, saving, rescuing resources, ...) is done by hook through
+        contextualization.update_vm method (yeah, intuitive).
+
+        Simple sequence diagram:
+        DevCloud        CLM        CM         CTX           Node (HOOK)
+            .            .
+         destroy ---->Destroy -->destroy
+                         |          |       (LV.destroy)
+                         |          |------------------------->HookScript
+                         .          .                          |
+                         .          .          ctx.update_vm<--|
+                         .          .           |              |
+                         .          .           |------------->cp
+                         .          .           |------------->rm
+                         .          .          update_resources
+
+        @param vm_ids: list of virtual machines' ids.
+        @return:  Status OK if everything goes fine, another way failed status.
+        """
+        payload = copy.deepcopy(payload_org)
+        payload['vm_ids'] = vm_ids
+        vm = requests.post(address_clm + 'user/vm/destroy/', data=json.dumps(payload))
+
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return OK
         else:
             error(None, vm)
-            if payload.get('public_ip_id') is not None:
-                PoolIP.__release(payload.get('public_ip_id'))
             return FAILED
-
-    def destroy(self):
-        pass
 
     def detach_vnc(self):
         pass
@@ -137,4 +170,7 @@ class VirtualMachine(object):
         pass
 
     def save_and_shutdown(self):
+        pass
+
+    def get_vm_status(self):
         pass

@@ -20,7 +20,7 @@ import ast
 import copy
 import json
 import requests
-from core.common.states import OK, STATUS, CM_ERROR, PUBLIC_IP_LIMIT
+from core.common.states import OK, STATUS, CM_ERROR, PUBLIC_IP_LIMIT, DATA
 from core.utils.log import error, info
 from virtual_controller.cc1_module import address_clm, logger, payload as payload_org
 from django.utils.translation import ugettext as _
@@ -55,7 +55,7 @@ class PoolIP(object):
         @return: Public id for given IP.
         """
         try:
-            return filter(lambda address: address["address"] == ip_address, self.__get_list().get("data"))[0].get(
+            return filter(lambda address: address["address"] == ip_address, self.__get_list().get(DATA))[0].get(
                 "public_ip_id")
         except IndexError:
             error(self.user_id, _("Given IP not found on CC1"))
@@ -67,7 +67,7 @@ class PoolIP(object):
         """
         ip_request = self.__request()
         if ip_request.get(STATUS) == OK:
-            self.ip_address = ip_request.get("data")
+            self.ip_address = ip_request.get(DATA)
             self.public_ip_id = self.get_public_id_for_ip(self.ip_address)
             info(self.user_id, _("Requested new IP:") + self.get_ip_address())
         elif ip_request.get(STATUS) == PUBLIC_IP_LIMIT:
@@ -94,6 +94,24 @@ class PoolIP(object):
 
         return release_request.get(STATUS)
 
+    def assign(self, lease_id, public_ip_id):
+        """
+        Method attaches caller's PublicIP to his VM.
+        VM's Lease instance's is assigned to PublicIP.
+        @param lease_id: id of the Lease in caller's UserNetwork.
+        @param public_ip_id: id of the Public_IP to be attached to VM.
+        @return:
+        """
+        pass
+
+    def unassign(self, lease_id):
+        """
+
+        @param lease_id:
+        @return:
+        """
+        pass
+
     def set_public_ip_id(self, public_ip_id):
         """
         Setter for id of public IP.
@@ -103,16 +121,23 @@ class PoolIP(object):
 
     def set_ip_address(self, ip_address):
         """
-        Setter for
-        @param ip_address:
-        @return:
+        Setter for IP address.
+        @param ip_address: IP address to set.
         """
         self.ip_address = ip_address
 
     def get_ip_address(self):
+        """
+        Gets IP address.
+        @return: IP address.
+        """
         return self.ip_address
 
     def get_public_ip_id(self):
+        """
+        Gets id of IP address.
+        @return: id of IP address.
+        """
         return self.public_ip_id
 
     @property
@@ -120,8 +145,8 @@ class PoolIP(object):
         """
         @returns{dict} dictionary of PoolIP class
         \n fields:
-        @dictkey{public_ip_id,int} id of ip address
-        @dictkey{ip_address,string} ip address
+        @dictkey{public_ip_id,int} id of IP address
+        @dictkey{ip_address,string} IP address
         @dictkey{user_id,int} user id
         """
         d = {'public_ip_id': self.public_ip_id, 'ip_address': self.ip_address, 'user_id': self.user_id}
