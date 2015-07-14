@@ -48,11 +48,12 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
     if request.method == 'POST':
         # Do creating virtual machine
         create_vm = CreateVMForm(request)
-        get('virtual-machines/create-vm/?applications=%s' % create_vm.get_applications()
-            + '&template_id=%s' % create_vm.get_template()
-            + '&workspace=%s' % create_vm.get_workspace()
-            + '&public_ip=%s' % create_vm.get_public_ip()
-            + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request)
+        vm = ast.literal_eval(get('virtual-machines/create-vm/?applications=%s' % create_vm.get_applications()
+                                  + '&template_id=%s' % create_vm.get_template()
+                                  + '&workspace=%s' % create_vm.get_workspace()
+                                  + '&public_ip=%s' % create_vm.get_public_ip()
+                                  + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
+        print vm
         return redirect('app_main')
 
     request.session[JAVA] = []

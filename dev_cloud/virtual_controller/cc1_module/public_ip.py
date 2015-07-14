@@ -172,8 +172,8 @@ class PoolIP(object):
         user will obtain new public IP.
         """
         payload = copy.deepcopy(payload_org)
-        new_ip = requests.post(address_clm + 'user/public_ip/request/', data=json.dumps(payload))
 
+        new_ip = requests.post(address_clm + 'user/public_ip/request/', data=json.dumps(payload))
         if new_ip.status_code == 200 and ast.literal_eval(new_ip.text).get(STATUS) == OK:
             return ast.literal_eval(new_ip.text)
         else:
@@ -204,6 +204,7 @@ class PoolIP(object):
         """
         payload = copy.deepcopy(payload_org)
         payload['public_ip_id'] = ip_id_to_release
+
         released_ip = requests.post(address_clm + 'user/public_ip/release/', data=json.dumps(payload))
 
         if released_ip.status_code == 200:

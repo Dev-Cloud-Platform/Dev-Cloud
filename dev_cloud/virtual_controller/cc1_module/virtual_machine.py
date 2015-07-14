@@ -93,7 +93,7 @@ class VirtualMachine(object):
     def create(self):
         """
         Creates virtual machines.
-        @return: Status OK if everything goes fine, another way failed status.
+        @return: id of virtual machine if everything goes fine, another way failed status.
         """
         poolIP = self.init()
 

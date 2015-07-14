@@ -17,6 +17,7 @@
 #
 # @COPYRIGHT_end
 import logging
+import datetime
 
 from django.contrib.messages import success
 from django.db import transaction
@@ -27,10 +28,50 @@ from django.utils.http import urlquote
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
-from database.models import Users
+from database.models import Users, Tasks
 from messages_codes import auth_error_text
 
+from core.utils.log import error
+from django.utils.translation import ugettext as _
 
+
+@transaction.atomic
+def check_status(view_func):
+    """
+    Check status is called by actor decorators defined in core.utils.decorators:
+    - core.utils.decorators.django_view
+
+    It calls decorated functions, additionally performing several tasks.
+
+    @return: HttpResponse response with content of JSON-ed tuple
+    (status, data), where status should be "ok" if everything went fine.
+    """
+
+    def wrap(request, *args, **kwds):
+        """
+        Returned decorated function.
+        @param request:
+        @param args:
+        @param kwds:
+        @return:
+        """
+        resp = {'test': 'test2'}
+
+        try:
+            user = Users.objects.get(id=int(request.session[session_key]))
+        except:
+            user = None
+
+        request.session['resp'] = resp
+
+        # TODO: Add data about notifications and tasks.
+
+        return view_func(request, *args, **kwds)
+
+    return wrap
+
+
+@transaction.atomic
 def django_view(function):
     """
     Logs any exception thrown by a view.
@@ -39,6 +80,7 @@ def django_view(function):
     """
     dev_logger = logging.getLogger('dev_logger')
 
+    @check_status
     def wrapper(*args, **kwargs):
         """
         Returned decorated function.
@@ -122,6 +164,7 @@ def admin_permission(view_func):
     return wrap
 
 
+@transaction.atomic
 def load_basic_data(method_to_decorate):
     """
     \b Decorator for views with with decorate with additional information.
@@ -175,3 +218,48 @@ def lock_screen(view_func):
         return HttpResponseRedirect('%s?%s=%s' % tup)
 
     return wrap
+
+
+class dev_cloud_task(object):
+    """
+    Decorator to automatically register task into database.
+    """
+
+    def __init__(self, arg1):
+        """
+        If there are decorator arguments, the function
+        to be decorated is not passed to the constructor!
+        """
+        self.task_name = arg1
+        self.task = None
+
+    @transaction.atomic
+    def __call__(self, function):
+        """
+        If there are decorator arguments, __call__() is only called
+        once, as part of the decoration process! You can only give
+        it a single argument, which is the function object.
+        """
+
+        def wrapped_function(*args):
+
+            try:
+                self.task = Tasks.objects.create(task_name=self.task_name, is_processing=True,
+                                                 create_time=datetime.datetime.now(), user_id=args[0])
+            except Exception:
+                error(None, _("DataBase - Problem with create new task") + Exception)
+
+            ret = function(*args)
+
+            if self.task:
+                try:
+                    self.task.is_processing = False
+                    self.task.save()
+                except Exception:
+                    error(None, _("DataBase - Problem with update a task") + Exception)
+
+            return ret
+
+        return wrapped_function
+
+

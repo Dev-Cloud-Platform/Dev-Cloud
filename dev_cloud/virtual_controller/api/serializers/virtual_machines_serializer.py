@@ -23,6 +23,6 @@ from database.models.virtual_machines import VirtualMachines
 class VirtualMachinesSerializer(serializers.ModelSerializer):
     class Meta:
         model = VirtualMachines
-        fields = ('id', 'ctx', 'disk_space', 'public_ip', 'private_ip', 'template_instance')
+        fields = ('id', 'vm_id', 'ctx', 'disk_space', 'public_ip', 'private_ip', 'template_instance')
 
 

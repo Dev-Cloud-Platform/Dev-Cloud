@@ -22,20 +22,16 @@ from django.db.transaction import atomic
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, OK, FAILED
+from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, FAILED
 
 from core.utils import celery
 from core.utils.python_object_encoder import SetEncoder
 from database.models.applications import Applications
 from database.models.installed_applications import InstalledApplications
-from database.models.template_instances import TemplateInstances
 from database.models.virtual_machines import VirtualMachines
 from virtual_controller.api.permissions import base_permissions as api_permissions
 from virtual_controller.api.serializers.virtual_machines_serializer import VirtualMachinesSerializer
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
-
-from django.utils.translation import ugettext as _
-from json import dumps
 from web_service.forms.enviroment.create_vm import CreateVMForm
 
 
@@ -112,9 +108,8 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
 
         @param request:
         @return: Status about creation of virtual machine.
-                 If everything is OK return code 200 with dict{'vm_id': (vm.pk)},
+                 If everything is OK return code 200 with VirtualMachinesSerializer serializer class,
                  if not return code 400 for bad request, or 417 if creation of virtual machine goes wrong.
-
         """
 
         virtual_machine_form = CreateVMForm()
@@ -128,13 +123,14 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                     vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
                     public_ip=virtual_machine_form.get_public_ip(),
                     template_instance_id=virtual_machine_form.get_template())
+                serializer = self.get_serializer(virtual_machine)
 
                 for application in ast.literal_eval(virtual_machine_form.get_applications()):
                     app = Applications.objects.get(application_name=application)
                     InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
                                                          user_id=user_id, application_id=app.id,
                                                          virtual_machine_id=virtual_machine.pk)
-                return Response(status=status.HTTP_200_OK, data=dict({'vm_id': virtual_machine.pk}).items())
+                return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_417_EXPECTATION_FAILED)
 

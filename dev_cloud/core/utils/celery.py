@@ -21,12 +21,18 @@ from celery import Celery
 
 from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
+from core.utils.decorators import dev_cloud_task
 from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.public_ip import PoolIP
 
 
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
+
+REQUEST_IP = 'Request new IP'
+RELEASE_IP = 'Release IP'
+CHECK_RESOURCE = 'Check resource'
+CREATE_VM = 'Create new virtual machine'
 
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
@@ -45,6 +51,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
 @app.task(trail=True, name='core.utils.tasks.request')
+@dev_cloud_task(REQUEST_IP)
 def request(user_id):
     """
     Method to obtain public IP form CC1.
@@ -52,11 +59,11 @@ def request(user_id):
     """
     poolIP = PoolIP(user_id)
     poolIP.request()
-
     return poolIP.get_ip_address()
 
 
 @app.task(trail=True, name='core.utils.tasks.release')
+@dev_cloud_task(RELEASE_IP)
 def release(user_id, ip_address):
     """
     Method to release public IP form CC1.
@@ -67,6 +74,7 @@ def release(user_id, ip_address):
 
 
 @app.task(trail=True, name='core.utils.tasks.check_resource')
+@dev_cloud_task(CHECK_RESOURCE)
 def check_resource(user_id, template_id):
     """
     Method to check available resource to create new virtual machine.
@@ -81,12 +89,13 @@ def check_resource(user_id, template_id):
 
 
 @app.task(trail=True, name='core.utils.tasks.create_virtual_machine')
+@dev_cloud_task(CREATE_VM)
 def create_virtual_machine(user_id, vm_property):
     """
     Creates new instance of virtual machine on CC1, making a request.
     @param user_id: id of caller.
     @param vm_property: instance of virtual machine form with properties.
-    @return:
+    @return: id of virtual machine.
     """
     virtual_machine = VirtualMachine(user_id, vm_property)
     return virtual_machine.create()
