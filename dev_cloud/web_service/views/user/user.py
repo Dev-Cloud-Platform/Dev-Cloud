@@ -32,7 +32,7 @@ from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key, update_session
 from core.utils.decorators import django_view, lock_screen
 from core.utils.decorators import user_permission
-from database.models import Users, VirtualMachines
+from database.models import Users, VirtualMachines, Tasks
 from web_service.forms.user.edit_user import EditUserForm
 from web_service.forms.user.unlock import UnlockForm
 
@@ -98,6 +98,20 @@ def members(request, template_name='app/members.html'):
                                    'site_name': current_site.name}.items()
                                   + generate_active('members').items()),
                               context_instance=RequestContext(request))
+
+
+@django_view
+@user_permission
+def tasks(request, template_name='app/tasks.html'):
+    """
+
+    @param request:
+    @param template_name:
+    @return:
+    """
+    tasks = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
+
+    return render_to_response(template_name, dict({'tasks': tasks}), context_instance=RequestContext(request))
 
 
 @django_view

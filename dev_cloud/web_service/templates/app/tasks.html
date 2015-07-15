@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Tasks" %}{% endblock %}
+
+
+{% block content %}
+
+    <ol class="breadcrumb bc-3">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Tasks" %}</strong>
+        </li>
+    </ol>
+
+    <h2>{% trans "List of tasks" %}</h2>
+    <br/>
+
+    <ul class="cbp_tmtimeline">
+        {% for task in tasks %}
+            <li>
+                <time class="cbp_tmtime" datetime="{{ task.create_time }}">
+                    <span>{{ task.create_time|time:'H:i' }}</span>
+                    <span>{{ task.create_time|date:'d-m-Y' }}</span></time>
+
+                {% if task.is_processing == True %}
+                    <div class="cbp_tmicon bg-secondary">
+                        <i class="entypo-clock"></i>
+                    </div>
+                {% else %}
+                    <div class="cbp_tmicon bg-info">
+                        <i class="entypo-check"></i>
+                    </div>
+                {% endif %}
+
+                <div class="cbp_tmlabel">
+                    <h2><a>{{ task.task_name }}</a></h2>
+                    <blockquote>
+                        <p>ID: <strong>#Task_{{ task.id }}</strong></p>
+                    </blockquote>
+                    {% if task.is_processing == True %}
+                        <br/>
+                        <div class="progress progress-striped active">
+                            <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="100"
+                                 aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}/app/js/vertical-timeline/css/component.css">
+{% endblock %}
