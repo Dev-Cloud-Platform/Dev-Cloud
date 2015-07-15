@@ -18,6 +18,7 @@
 # @COPYRIGHT_end
 
 from django.contrib.sites.models import RequestSite
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 
@@ -109,7 +110,20 @@ def tasks(request, template_name='app/tasks.html'):
     @param template_name:
     @return:
     """
-    tasks = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
+    tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
+    paginator = Paginator(tasks_list, 25)  # Show 25 contacts per page
+
+    page = request.GET.get('page')
+
+    try:
+        tasks = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        tasks = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        tasks = paginator.page(paginator.num_pages)
+
     return render_to_response(template_name, dict({'tasks': tasks}), context_instance=RequestContext(request))
 
 

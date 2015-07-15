@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load form_tags %}
+{% load custom_tags %}
 
 {% block title %}{{ block.super }} | {% trans "Tasks" %}{% endblock %}
 
@@ -53,6 +53,29 @@
             </li>
         {% endfor %}
     </ul>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pagination-container" style="text-align: center;">
+                <ul class="pagination">
+                    {% if tasks.has_previous %}
+                        <li><a href="?page={{ tasks.previous_page_number }}"><i class="entypo-left-open-mini"></i></a>
+                        </li>
+                    {% endif %}
+                    {% for i in tasks.paginator.num_pages|get_range %}
+                        {% if tasks.number == forloop.counter %}
+                            <li><a href="?page={{ forloop.counter }}"><strong>{{ forloop.counter }}</strong></a></li>
+                        {% else %}
+                            <li><a href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if tasks.has_next %}
+                        <li><a href="?page={{ tasks.next_page_number }}"><i class="entypo-right-open-mini"></i></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <link rel="stylesheet" href="{{ STATIC_URL }}/app/js/vertical-timeline/css/component.css">
 {% endblock %}

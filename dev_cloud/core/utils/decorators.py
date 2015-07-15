@@ -58,9 +58,10 @@ def check_status(view_func):
         resp = {'test': 'test2'}
 
         try:
-            user = Users.objects.get(id=int(request.session[session_key]))
+            processing_tasks = Tasks.objects.filter(user_id=int(request.session[session_key]),
+                                                    is_processing=True).order_by('-create_time')
         except:
-            user = None
+            processing_tasks = None
 
         request.session['resp'] = resp
 
