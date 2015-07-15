@@ -104,13 +104,12 @@ def members(request, template_name='app/members.html'):
 @user_permission
 def tasks(request, template_name='app/tasks.html'):
     """
-
+    Shows all tasks of user.
     @param request:
     @param template_name:
     @return:
     """
     tasks = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
-
     return render_to_response(template_name, dict({'tasks': tasks}), context_instance=RequestContext(request))
 
 
