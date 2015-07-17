@@ -111,20 +111,20 @@ def tasks(request, template_name='app/tasks.html'):
     @return:
     """
     tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
-    paginator = Paginator(tasks_list, 25)  # Show 25 contacts per page
+    paginator = Paginator(tasks_list, 25)  # Show 25 tasks per page
 
     page = request.GET.get('page')
 
     try:
-        tasks = paginator.page(page)
+        tasks_on_page = paginator.page(page)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
-        tasks = paginator.page(1)
+        tasks_on_page = paginator.page(1)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        tasks = paginator.page(paginator.num_pages)
+        tasks_on_page = paginator.page(paginator.num_pages)
 
-    return render_to_response(template_name, dict({'tasks': tasks}), context_instance=RequestContext(request))
+    return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
 
 
 @django_view

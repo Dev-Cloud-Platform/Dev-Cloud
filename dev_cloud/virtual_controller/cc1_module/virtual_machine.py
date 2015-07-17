@@ -22,10 +22,12 @@ import json
 import requests
 from core.common.states import OK, STATUS, FAILED, DATA
 from core.settings.config import VM_IMAGE_NAME
+from core.utils import log
 from virtual_controller.cc1_module import address_clm, payload as payload_org
 from virtual_controller.cc1_module.logger import error
 from virtual_controller.cc1_module.master_user import MasterUser
 from virtual_controller.cc1_module.public_ip import PoolIP
+from django.utils.translation import ugettext as _
 
 
 class VirtualMachine(object):
@@ -82,7 +84,6 @@ class VirtualMachine(object):
         self.iso_list = None
         self.disk_list = None
         # self.groups = MasterUser.get_groups()
-        print self.public_ip_id
         return poolIP
 
     def get_vm_property(self):
@@ -164,6 +165,9 @@ class VirtualMachine(object):
     def edit(self):
         pass
 
+    def get_by_id(self):
+        pass
+
     def get_list(self):
         pass
 
@@ -173,5 +177,33 @@ class VirtualMachine(object):
     def save_and_shutdown(self):
         pass
 
-    def get_vm_status(self, vm_id):
-        pass
+    # 7 #6  #52 Add api method to get info about status.
+    @classmethod
+    def get_vm_status(cls, vm_id):
+        """
+        Returns requested caller's VM.
+        @param vm_id: id of virtual machine.
+        @return: number status of virtual machine:
+                'init': 0,
+                'running': 1,
+                'closing': 2,
+                'closed': 3,
+                'saving': 4,
+                'failed': 5,
+                'saving failed': 6,
+                'running ctx': 7,
+                'restart': 8,
+                'suspend': 9,
+                'turned off': 10,
+                'erased': 11,
+                'erasing': 12
+        """
+        payload = copy.deepcopy(payload_org)
+        payload['vm_id'] = vm_id
+
+        vm = requests.post(address_clm + 'user/vm/get_by_id/', data=json.dumps(payload))
+        if vm.status_code == 200 and json.loads(vm.text).get(STATUS) == OK:
+            return json.loads(vm.text).get(DATA).get('state')
+        else:
+            log.error(None, _("CC1 - Problem with request: ") + vm.url)
+            return FAILED

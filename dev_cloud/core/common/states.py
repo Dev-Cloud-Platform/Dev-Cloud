@@ -28,19 +28,19 @@ UNKNOWN_ERROR = 'Unknown error'
 PUBLIC_IP_LIMIT = 'public_lease_limit'
 
 vm_states = {
-    'init': 0,
-    'running': 1,
-    'closing': 2,
-    'closed': 3,
-    'saving': 4,
-    'failed': 5,
-    'saving failed': 6,
-    'running ctx': 7,
-    'restart': 8,
-    'suspend': 9,
-    'turned off': 10,
-    'erased': 11,
-    'erasing': 12
+    0: _('init'),
+    1: _('running'),
+    2: _('closing'),
+    3: _('closed'),
+    4: _('saving'),
+    5: _('failed'),
+    6: _('saving failed'),
+    7: _('running ctx'),
+    8: _('restart'),
+    9: _('suspend'),
+    10: _('turned off'),
+    11: _('erased'),
+    12: _('erasing')
 }
 
 user_active_states = {

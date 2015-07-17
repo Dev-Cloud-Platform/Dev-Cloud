@@ -99,3 +99,15 @@ def create_virtual_machine(user_id, vm_property):
     """
     virtual_machine = VirtualMachine(user_id, vm_property)
     return virtual_machine.create()
+
+
+@app.task(trail=True, name='core.utils.tasks.get_virtual_machine_status')
+def get_virtual_machine_status(user_id, vm_id):
+    """
+    Gets requested caller's virtual machine.
+    @param user_id: id of caller.
+    @param vm_id: id of virtual machine.
+    @return: data contains information about virtual machine.
+    """
+    virtual_machine = VirtualMachine(user_id)
+    return virtual_machine.get_vm_status(vm_id)
