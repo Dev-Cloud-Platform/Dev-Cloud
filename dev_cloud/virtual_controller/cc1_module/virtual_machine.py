@@ -73,7 +73,7 @@ class VirtualMachine(object):
                 self.image_id = image.get('system_image_id')
 
         poolIP = None
-        if self.vm_property.get_public_ip():
+        if self.vm_property.get_public_ip() is True:
             poolIP = PoolIP(self.user_id)
             if poolIP.request() == OK:
                 self.public_ip_id = poolIP.get_public_ip_id()
@@ -82,6 +82,7 @@ class VirtualMachine(object):
         self.iso_list = None
         self.disk_list = None
         # self.groups = MasterUser.get_groups()
+        print self.public_ip_id
         return poolIP
 
     def get_vm_property(self):
@@ -172,5 +173,5 @@ class VirtualMachine(object):
     def save_and_shutdown(self):
         pass
 
-    def get_vm_status(self):
+    def get_vm_status(self, vm_id):
         pass
