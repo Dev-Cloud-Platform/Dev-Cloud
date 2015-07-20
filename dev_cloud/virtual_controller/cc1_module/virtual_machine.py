@@ -177,7 +177,6 @@ class VirtualMachine(object):
     def save_and_shutdown(self):
         pass
 
-    # 7 #6  #52 Add api method to get info about status.
     @classmethod
     def get_vm_status(cls, vm_id):
         """
