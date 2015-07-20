@@ -18,6 +18,7 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 from celery import Celery
+import jsonpickle
 
 from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
@@ -97,7 +98,7 @@ def create_virtual_machine(user_id, vm_property):
     @param vm_property: instance of virtual machine form with properties.
     @return: id of virtual machine.
     """
-    virtual_machine = VirtualMachine(user_id, vm_property)
+    virtual_machine = VirtualMachine(user_id, jsonpickle.decode(vm_property))
     return virtual_machine.create()
 
 

@@ -19,6 +19,7 @@
 import ast
 import json
 from django.db.transaction import atomic
+import jsonpickle
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -117,7 +118,8 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         if virtual_machine_form.is_valid(request):
             # Here do request to CC1.
             user_id = api_permissions.UsersPermission.get_user(request).id
-            vm_id = celery.create_virtual_machine.apply_async(args=(user_id, virtual_machine_form)).get()
+            pickle_vm = jsonpickle.encode(virtual_machine_form)
+            vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
             if vm_id != FAILED:
                 virtual_machine = self.serializer_class.Meta.model.objects.create(
                     vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
