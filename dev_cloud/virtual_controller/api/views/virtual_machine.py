@@ -18,7 +18,6 @@
 # @COPYRIGHT_end
 import ast
 import json
-from django.db.transaction import atomic
 import jsonpickle
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
@@ -26,6 +25,7 @@ from rest_framework.response import Response
 from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, FAILED
 
 from core.utils import celery
+from core.utils.decorators import manual_transaction
 from core.utils.python_object_encoder import SetEncoder
 from database.models.applications import Applications
 from database.models.installed_applications import InstalledApplications
@@ -98,15 +98,10 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['post', 'get'], url_path='create-vm')
-    @atomic
+    @manual_transaction
     def create_virtual_machine(self, request):
         """
         Creates virtual machine.
-
-        A.D. Atomic
-        Atomic blocks can be nested. In this case, when an inner block completes successfully, its effects can still be
-        rolled back if an exception is raised in the outer block at a later point.
-
         @param request:
         @return: Status about creation of virtual machine.
                  If everything is OK return code 200 with VirtualMachinesSerializer serializer class,

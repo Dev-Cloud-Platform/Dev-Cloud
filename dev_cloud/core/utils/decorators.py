@@ -221,6 +221,34 @@ def lock_screen(view_func):
     return wrap
 
 
+def manual_transaction(function):
+    """
+    Decorator to create safe transactions.
+    Behaviour similar to transaction.atomic.
+
+    A.D. Atomic
+        Atomic blocks can be nested. In this case, when an inner block completes successfully, its effects can still be
+        rolled back if an exception is raised in the outer block at a later point.
+    """
+
+    def wrap(*args, **kwargs):
+        transaction.set_autocommit(False)
+        try:
+            ret = function(*args, **kwargs)
+        except:
+            transaction.rollback()
+            error(None, _("DataBase - manual_transaction call rollback"))
+            raise
+        else:
+            transaction.commit()
+        finally:
+            transaction.set_autocommit(True)
+
+        return ret
+
+    return wrap
+
+
 class dev_cloud_task(object):
     """
     Decorator to automatically register task into database.
@@ -234,7 +262,7 @@ class dev_cloud_task(object):
         self.task_name = arg1
         self.task = None
 
-    @transaction.atomic
+    @manual_transaction
     def __call__(self, function):
         """
         If there are decorator arguments, __call__() is only called
@@ -243,12 +271,11 @@ class dev_cloud_task(object):
         """
 
         def wrapped_function(*args):
-
             try:
                 self.task = Tasks.objects.create(task_name=self.task_name, is_processing=True,
                                                  create_time=datetime.datetime.now(), user_id=args[0])
             except Exception:
-                error(None, _("DataBase - Problem with create new task") + Exception)
+                error(None, _("DataBase - Problem with create new task"))
 
             ret = function(*args)
 
@@ -257,7 +284,7 @@ class dev_cloud_task(object):
                     self.task.is_processing = False
                     self.task.save()
                 except Exception:
-                    error(None, _("DataBase - Problem with update a task") + Exception)
+                    error(None, _("DataBase - Problem with update a task"))
 
             return ret
 

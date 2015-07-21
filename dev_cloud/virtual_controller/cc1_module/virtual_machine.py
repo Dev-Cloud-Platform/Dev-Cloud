@@ -75,7 +75,7 @@ class VirtualMachine(object):
                 self.image_id = image.get('system_image_id')
 
         poolIP = None
-        if self.vm_property.get_public_ip() is True:
+        if self.vm_property.get_public_ip() == 'True':
             poolIP = PoolIP(self.user_id)
             if poolIP.request() == OK:
                 self.public_ip_id = poolIP.get_public_ip_id()
