@@ -174,7 +174,10 @@ class PoolIP(object):
         payload = copy.deepcopy(payload_org)
 
         new_ip = requests.post(address_clm + 'user/public_ip/request/', data=json.dumps(payload))
+        print ast.literal_eval(new_ip.text)
         if new_ip.status_code == 200 and ast.literal_eval(new_ip.text).get(STATUS) == OK:
+            return ast.literal_eval(new_ip.text)
+        elif new_ip.status_code == 200:
             return ast.literal_eval(new_ip.text)
         else:
             logger.error(None, new_ip)
