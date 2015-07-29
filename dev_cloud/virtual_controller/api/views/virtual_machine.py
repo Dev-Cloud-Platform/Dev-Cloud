@@ -98,7 +98,6 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['post', 'get'], url_path='create-vm')
-    @manual_transaction
     def create_virtual_machine(self, request):
         """
         Creates virtual machine.
@@ -114,7 +113,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             # Here do request to CC1.
             user_id = api_permissions.UsersPermission.get_user(request).id
             pickle_vm = jsonpickle.encode(virtual_machine_form)
-            vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm), countdown=5).get()
+            vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
             if vm_id != FAILED:
                 virtual_machine = self.serializer_class.Meta.model.objects.create(
                     vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),

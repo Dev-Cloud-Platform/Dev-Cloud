@@ -262,7 +262,7 @@ class dev_cloud_task(object):
         self.task_name = arg1
         self.task = None
 
-    @manual_transaction
+    @transaction.non_atomic_requests
     def __call__(self, function):
         """
         If there are decorator arguments, __call__() is only called
