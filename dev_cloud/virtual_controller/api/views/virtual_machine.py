@@ -118,6 +118,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                 virtual_machine = self.serializer_class.Meta.model.objects.create(
                     vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
                     public_ip=virtual_machine_form.get_public_ip(),
+                    ssh_key=virtual_machine_form.get_ssh_key(),
                     template_instance_id=virtual_machine_form.get_template())
                 serializer = self.get_serializer(virtual_machine)
 
@@ -146,3 +147,6 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(celery.get_virtual_machine_status.apply_async(args=(user_id, vm_id)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def add_ssh_key(self, request):
+        pass

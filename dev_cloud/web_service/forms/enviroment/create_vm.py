@@ -17,7 +17,6 @@
 #
 # @COPYRIGHT_end
 import ast
-
 from virtual_controller.juju_core.technology_builder import JAVA, PHP, RUBY, NODEJS, PYTHON
 
 
@@ -35,6 +34,8 @@ class CreateVMForm(object):
     public_ip = False
 
     disk_space = ''
+
+    ssh_key = ''
 
     def __init__(self, request=None):
         """
@@ -77,6 +78,12 @@ class CreateVMForm(object):
 
     def get_disk_space(self):
         return self.disk_space
+
+    def set_ssh_key(self, ssh_key):
+        self.ssh_key = ssh_key
+
+    def get_ssh_key(self):
+        return self.ssh_key
 
     def is_valid(self, request):
         """

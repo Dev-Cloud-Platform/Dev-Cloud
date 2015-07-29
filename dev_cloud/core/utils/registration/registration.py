@@ -17,13 +17,13 @@
 #
 # @COPYRIGHT_end
 
-from datetime import datetime
 import random
 import re
 from smtplib import SMTPRecipientsRefused
 import string
 
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from core.settings import config
 from core.common.states import user_active_states, registration_states
@@ -53,7 +53,7 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
     user.login = login
     user.email = email
     user.password = new_password
-    user.create_time = user.last_activity = datetime.now()
+    user.create_time = user.last_activity = timezone.now()
     user.is_active = user_active_states['inactive']
     user.activation_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for n in range(40))
 
@@ -76,7 +76,7 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
         if common.AUTOACTIVATION:
 
             user.is_active = user_active_states['ok']
-            user.activation_date = datetime.now()
+            user.activation_date = timezone.now()
             user.act_key = ''
 
             reg_state = registration_states['completed']
@@ -120,7 +120,7 @@ def activate(activation_key):
             user.is_active = user_active_states['ok']
             reg_state = registration_states['completed']
 
-        user.last_activity = datetime.now()
+        user.last_activity = timezone.now()
         user.act_key = ''
 
         try:

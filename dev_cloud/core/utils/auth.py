@@ -16,10 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from datetime import datetime
-import cPickle
-from django.core import serializers
-import pickle
+from django.utils import timezone
 
 from core.common.states import user_active_states
 from core.utils.exception import DevCloudException
@@ -72,7 +69,7 @@ def authenticate(username, password):
 
     if user.is_active == user_active_states['ok']:
         try:
-            user.last_activity = datetime.now()
+            user.last_activity = timezone.now()
             user.save()
         except:
             raise DevCloudException('user_edit')

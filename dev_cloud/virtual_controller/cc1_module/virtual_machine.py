@@ -83,6 +83,7 @@ class VirtualMachine(object):
         self.template_id = self.vm_property.get_template()
         self.iso_list = None
         self.disk_list = None
+        self.ssh_key = self.vm_property.get_ssh_key()
         # self.groups = MasterUser.get_groups()
         return poolIP
 
@@ -120,13 +121,12 @@ class VirtualMachine(object):
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return ast.literal_eval(vm.text).get(DATA)[0].get('vm_id')
         else:
-            error(None, vm)
+            error(self.user_id, vm)
             if payload.get('public_ip_id') is not None:
                 poolIP.remove()
             return FAILED
 
-    @classmethod
-    def destroy(cls, vm_ids):
+    def destroy(self, vm_ids):
         """
         This function only destroys VM.
 
@@ -156,7 +156,7 @@ class VirtualMachine(object):
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return OK
         else:
-            error(None, vm)
+            error(self.user_id, vm)
             return FAILED
 
     def detach_vnc(self):

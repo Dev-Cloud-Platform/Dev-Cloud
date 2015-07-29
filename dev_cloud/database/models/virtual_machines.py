@@ -31,6 +31,7 @@ class VirtualMachines(models.Model):
     disk_space = models.CharField(max_length=45, blank=True)
     public_ip = models.CharField(max_length=45, blank=True)
     private_ip = models.CharField(max_length=45, blank=True)
+    ssh_key = models.CharField(max_length=255, blank=True)
     template_instance = models.ForeignKey(TemplateInstances)
 
     class Meta:
