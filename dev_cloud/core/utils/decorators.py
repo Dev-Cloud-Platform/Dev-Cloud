@@ -230,7 +230,6 @@ def manual_transaction(function):
         Atomic blocks can be nested. In this case, when an inner block completes successfully, its effects can still be
         rolled back if an exception is raised in the outer block at a later point.
     """
-
     def wrap(*args, **kwargs):
         transaction.set_autocommit(False)
         try:

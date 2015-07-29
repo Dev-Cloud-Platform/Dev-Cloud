@@ -67,7 +67,7 @@ ADMINS = (
     ('M4GiK', 'devcloudplatform@gmail.com'),
 )
 
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL = 'devcloudplatform@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -297,7 +297,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'filters': {'require_debug_false': {
         '()': 'django.utils.log.RequireDebugFalse'
-        }
+    }
     },
     'formatters': {
         'verbose': {

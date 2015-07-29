@@ -89,7 +89,7 @@ def check_resource(user_id, template_id):
     return quota.get_status()
 
 
-@app.task(trail=True, name='core.utils.tasks.create_virtual_machine')
+@app.task(trail=True, name='core.utils.tasks.create_virtual_machine', bind=True, default_retry_delay=300, max_retries=5)
 @dev_cloud_task(CREATE_VM)
 def create_virtual_machine(user_id, vm_property):
     """
