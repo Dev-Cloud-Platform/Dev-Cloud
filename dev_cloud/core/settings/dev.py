@@ -59,8 +59,6 @@ DATABASES = {
         'PORT': '3306',
         }
 }
-
-DATABASES['default']['ATOMIC_REQUESTS'] = False
 ########## END DATABASE CONFIGURATION
 
 

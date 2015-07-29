@@ -67,7 +67,7 @@ ADMINS = (
     ('M4GiK', 'devcloudplatform@gmail.com'),
 )
 
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL = 'devcloudplatform@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
@@ -272,6 +272,9 @@ THIRD_PARTY_APPS = (
 
     # Django REST framework to build Web APIs:
     'rest_framework',
+
+    # Django transaction signals related to ticket https://code.djangoproject.com/ticket/14051
+    'django_transaction_signals',
 )
 
 LOCAL_APPS = (
@@ -297,7 +300,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'filters': {'require_debug_false': {
         '()': 'django.utils.log.RequireDebugFalse'
-        }
+    }
     },
     'formatters': {
         'verbose': {
