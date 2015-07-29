@@ -18,7 +18,7 @@
 # @COPYRIGHT_end
 import ast
 import json
-from django_transaction_signals import transaction
+from django.db import transaction
 import jsonpickle
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
@@ -35,7 +35,6 @@ from virtual_controller.api.permissions import base_permissions as api_permissio
 from virtual_controller.api.serializers.virtual_machines_serializer import VirtualMachinesSerializer
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from web_service.forms.enviroment.create_vm import CreateVMForm
-
 
 
 class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
@@ -100,7 +99,8 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['post', 'get'], url_path='create-vm')
-    def create_virtual_machine(self, request, **kwargs):
+    @transaction.non_atomic_requests
+    def create_virtual_machine(self, request):
         """
         Creates virtual machine.
         @param request:
@@ -134,8 +134,6 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
 
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    transaction.signals.post_commit.connect(create_virtual_machine)
 
     @list_route(methods=['get'], url_path='get-vm-status')
     def get_virtual_machine(self, request):

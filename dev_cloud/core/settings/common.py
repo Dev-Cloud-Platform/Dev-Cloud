@@ -272,9 +272,6 @@ THIRD_PARTY_APPS = (
 
     # Django REST framework to build Web APIs:
     'rest_framework',
-
-    # Django transaction signals related to ticket https://code.djangoproject.com/ticket/14051
-    'django_transaction_signals',
 )
 
 LOCAL_APPS = (
