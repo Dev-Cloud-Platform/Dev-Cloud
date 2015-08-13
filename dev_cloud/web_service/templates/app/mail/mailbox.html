@@ -1,0 +1,270 @@
+{% extends "app/account/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Mailbox" %}{% endblock %}
+
+{% block content %}
+    <div class="mail-env">
+
+        <!-- compose new email button -->
+        <div class="mail-sidebar-row visible-xs">
+            <a href="{% url 'mail_compose' %}" class="btn btn-success btn-icon btn-block">
+                {% trans 'Compose Mail' %}
+                <i class="entypo-pencil"></i>
+            </a>
+        </div>
+
+
+        <!-- Mail Body -->
+        <div class="mail-body">
+
+            <div class="mail-header">
+                <!-- title -->
+                <h3 class="mail-title">
+                    {% trans 'Inbox' %}
+                    <span class="count">(6)</span>
+                </h3>
+
+                <!-- search -->
+                <form method="get" role="form" class="mail-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="s"
+                               placeholder="{% trans 'Search for mail...' %}"/>
+
+                        <div class="input-group-addon">
+                            <i class="entypo-search"></i>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            <!-- mail table -->
+            <table class="table mail-table">
+                <!-- mail table header -->
+                <thead>
+                <tr>
+                    <th width="5%">
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox"/>
+                        </div>
+                    </th>
+                    <th colspan="4">
+
+                        <div class="mail-select-options">{% trans 'Mark as Read' %}</div>
+
+                        <div class="mail-pagination" colspan="2">
+                            <strong>1-30</strong> <span>of 789</span>
+
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-white"><i class="entypo-left-open"></i></a>
+                                <a href="#" class="btn btn-sm btn-white"><i class="entypo-right-open"></i></a>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+
+                <!-- email list -->
+                <tbody>
+                <tr class="unread"><!-- new email class: unread -->
+                    <td>
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox"/>
+                        </div>
+                    </td>
+                    <td class="col-name">
+                        <a href="#" class="star stared">
+                            <i class="entypo-star"></i>
+                        </a>
+                        <a href="{% url 'mail_message' %}" class="col-name">Facebook</a>
+                    </td>
+                    <td class="col-subject">
+                        <a href="{% url 'mail_message' %}">
+                            Reset your account password
+                        </a>
+                    </td>
+                    <td class="col-options">
+                        <a href="{% url 'mail_message' %}"><i class="entypo-attach"></i></a>
+                    </td>
+                    <td class="col-time">13:52</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox"/>
+                        </div>
+                    </td>
+                    <td class="col-name">
+                        <a href="#" class="star">
+                            <i class="entypo-star"></i>
+                        </a>
+                        <a href="{% url 'mail_message' %}" class="col-name">Google AdWords</a>
+                    </td>
+                    <td class="col-subject">
+                        <a href="{% url 'mail_message' %}">
+                            Google AdWords: Ads not serving
+                        </a>
+                    </td>
+                    <td class="col-options"></td>
+                    <td class="col-time">09:27</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox"/>
+                        </div>
+                    </td>
+                    <td class="col-name">
+                        <a href="#" class="star">
+                            <i class="entypo-star"></i>
+                        </a>
+                        <a href="{% url 'mail_message' %}" class="col-name">Apple.com</a>
+                    </td>
+                    <td class="col-subject">
+                        <a href="{% url 'mail_message' %}">
+                            <span class="label label-danger">Business</span>
+                            Your apple account ID has been accessed from un-familiar location.
+                        </a>
+                    </td>
+                    <td class="col-options"></td>
+                    <td class="col-time">Today</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox"/>
+                        </div>
+                    </td>
+                    <td class="col-name">
+                        <a href="#" class="star">
+                            <i class="entypo-star"></i>
+                        </a>
+                        <a href="{% url 'mail_message' %}" class="col-name">World Weather Online</a>
+                    </td>
+                    <td class="col-subject">
+                        <a href="{% url 'mail_message' %}">
+                            Over Throttle Alert
+                        </a>
+                    </td>
+                    <td class="col-options">
+                        <a href="{% url 'mail_message' %}"><i class="entypo-attach"></i></a>
+                    </td>
+                    <td class="col-time">Yesterday</td>
+                </tr>
+
+                </tbody>
+
+                <!-- mail table footer -->
+                <tfoot>
+                <tr>
+                    <th width="5%">
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox"/>
+                        </div>
+                    </th>
+                    <th colspan="4">
+
+                        <div class="mail-pagination" colspan="2">
+                            <strong>1-30</strong> <span>of 789</span>
+
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-sm btn-white"><i class="entypo-left-open"></i></a>
+                                <a href="#" class="btn btn-sm btn-white"><i class="entypo-right-open"></i></a>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="mail-sidebar">
+
+            <!-- compose new email button -->
+            <div class="mail-sidebar-row hidden-xs">
+                <a href="{% url 'mail_compose' %}" class="btn btn-success btn-icon btn-block">
+                    {% trans 'Compose Mail' %}
+                    <i class="entypo-pencil"></i>
+                </a>
+            </div>
+
+            <!-- menu -->
+            <ul class="mail-menu">
+                <li class="active">
+                    <a href="#">
+                        <span class="badge badge-danger pull-right">6</span>
+                        {% trans 'Inbox' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-gray pull-right">1</span>
+                        {% trans 'Sent' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        {% trans 'Drafts' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-gray pull-right">1</span>
+                        {% trans 'Spam' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        {% trans 'Trash' %}
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mail-distancer"></div>
+
+            <h4>{% trans 'Tags' %}</h4>
+
+            <!-- menu -->
+            <ul class="mail-menu">
+                <li>
+                    <a href="#">
+                        <span class="badge badge-danger badge-roundless pull-right"></span>
+                        {% trans 'Business' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-info badge-roundless pull-right"></span>
+                        {% trans 'Sports' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-warning badge-roundless pull-right"></span>
+                        {% trans 'Friends' %}
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <script src="{{ STATIC_URL }}/app/js/neon-mail.js"></script>
+
+{% endblock %}
+
+{% block modal %}
+{% endblock %}

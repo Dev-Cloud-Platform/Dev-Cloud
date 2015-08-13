@@ -50,7 +50,6 @@ def generate_active(selected_item):
             'manage_env': '',
             'mail_box_inbox': '',
             'mail_box_compose': '',
-            'mail_box_view': '',
             'user_activation': '',
             'members': '',
             'lock_screen': ''}

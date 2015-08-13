@@ -1,0 +1,180 @@
+{% extends "app/account/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Mailbox - Compose" %}{% endblock %}
+
+{% block content %}
+
+    <div class="mail-env">
+
+        <!-- compose new email button -->
+        <div class="mail-sidebar-row visible-xs">
+            <a href="{% url 'mail_compose' %}" class="btn btn-success btn-icon btn-block">
+                {% trans 'Compose Mail' %}
+                <i class="entypo-pencil"></i>
+            </a>
+        </div>
+
+
+        <!-- Mail Body -->
+        <div class="mail-body">
+
+            <div class="mail-header">
+                <!-- title -->
+                <div class="mail-title">
+                    {% trans 'Compose Mail' %} <i class="entypo-pencil"></i>
+                </div>
+
+                <!-- links -->
+                <div class="mail-links">
+
+                    <a href="#" class="btn btn-default">
+                        <i class="entypo-cancel"></i>
+                    </a>
+
+                    <a href="#" class="btn btn-default btn-icon">
+                        {% trans 'Draft' %}
+                        <i class="entypo-tag"></i>
+                    </a>
+
+                    <a class="btn btn-success btn-icon">
+                        {% trans 'Send' %}
+                        <i class="entypo-mail"></i>
+                    </a>
+
+                </div>
+            </div>
+
+
+            <div class="mail-compose">
+
+                <form method="post" role="form">
+
+                    <div class="form-group">
+                        <label for="to">{% trans 'To:' %}</label>
+                        <input type="text" class="form-control" id="to" tabindex="1"/>
+
+                        <div class="field-options">
+                            <a href="javascript:;"
+                               onclick="$(this).hide(); $('#cc').parent().removeClass('hidden'); $('#cc').focus();">CC</a>
+                            <a href="javascript:;"
+                               onclick="$(this).hide(); $('#bcc').parent().removeClass('hidden'); $('#bcc').focus();">BCC</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden">
+                        <label for="cc">{% trans 'CC:' %}</label>
+                        <input type="text" class="form-control" id="cc" tabindex="2"/>
+                    </div>
+
+                    <div class="form-group hidden">
+                        <label for="bcc">{% trans 'BCC:' %}</label>
+                        <input type="text" class="form-control" id="bcc" tabindex="2"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">{% trans 'Subject:' %}</label>
+                        <input type="text" class="form-control" id="subject" tabindex="1"/>
+                    </div>
+
+
+                    <div class="compose-message-editor">
+                        <textarea class="form-control wysihtml5"
+                                  data-stylesheet-url="{{ STATIC_URL }}/app/css/wysihtml5-color.css"
+                                  name="sample_wysiwyg" id="sample_wysiwyg"></textarea>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="mail-sidebar">
+
+            <!-- compose new email button -->
+            <div class="mail-sidebar-row hidden-xs">
+                <a href="{% url 'mail_compose' %}" class="btn btn-success btn-icon btn-block">
+                    {% trans 'Compose Mail' %}
+                    <i class="entypo-pencil"></i>
+                </a>
+            </div>
+
+            <!-- menu -->
+            <ul class="mail-menu">
+                <li class="active">
+                    <a href="#">
+                        <span class="badge badge-danger pull-right">6</span>
+                        {% trans 'Inbox' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-gray pull-right">1</span>
+                        {% trans 'Sent' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        {% trans 'Drafts' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-gray pull-right">1</span>
+                        {% trans 'Spam' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        {% trans 'Trash' %}
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mail-distancer"></div>
+
+            <h4>{% trans 'Tags' %}</h4>
+
+            <!-- menu -->
+            <ul class="mail-menu">
+                <li>
+                    <a href="#">
+                        <span class="badge badge-danger badge-roundless pull-right"></span>
+                        {% trans 'Business' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-info badge-roundless pull-right"></span>
+                        {% trans 'Sports' %}
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="badge badge-warning badge-roundless pull-right"></span>
+                        {% trans 'Friends' %}
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}/app/js/wysihtml5/bootstrap-wysihtml5.css">
+    <script src="{{ STATIC_URL }}/app/js/wysihtml5/wysihtml5-0.4.0pre.min.js"></script>
+    <script src="{{ STATIC_URL }}/app/js/wysihtml5/bootstrap-wysihtml5.js"></script>
+
+{% endblock %}
+
+{% block modal %}
+{% endblock %}
