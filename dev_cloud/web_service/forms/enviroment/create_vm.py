@@ -17,6 +17,9 @@
 #
 # @COPYRIGHT_end
 import ast
+from core.common.states import FAILED
+from core.utils import celery
+from core.utils.messager import get
 from virtual_controller.juju_core.technology_builder import JAVA, PHP, RUBY, NODEJS, PYTHON
 
 
@@ -85,6 +88,9 @@ class CreateVMForm(object):
     def get_ssh_key(self):
         return self.ssh_key
 
+    def generate_ssh(self, request):
+        self.set_ssh_key(self.__generate_ssh(request))
+
     def is_valid(self, request):
         """
         This method valid the given request and set object class with given properties if is OK.
@@ -104,6 +110,11 @@ class CreateVMForm(object):
                 or self.get_public_ip() is None \
                 or self.get_disk_space() is None:
             is_valid = False
+
+        if is_valid:
+            self.generate_ssh(request)
+
+        print self.get_ssh_key()
 
         return is_valid
 
@@ -131,3 +142,15 @@ class CreateVMForm(object):
             selected_applications = request.session.get(PYTHON, [])
 
         return selected_applications
+
+    def __generate_ssh(self, request):
+        username = request.DATA.get('username', None) or request.query_params.get('username', None)
+        password = request.DATA.get('password', None) or request.query_params.get('password', None)
+        credentials = 'username=' + username + '&password=' + password
+
+        key_name = "%s_%s_%s" % (username, self.get_workspace(), 'key')
+
+        private = get('virtual-machines/generate-ssh-key/?key_name=%s' % key_name, credentials=credentials).text
+
+        if private != FAILED:
+            return private

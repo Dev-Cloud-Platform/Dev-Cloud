@@ -115,6 +115,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             pickle_vm = jsonpickle.encode(virtual_machine_form)
             vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
             if vm_id != FAILED:
+                print virtual_machine_form.get_ssh_key()
                 virtual_machine = self.serializer_class.Meta.model.objects.create(
                     vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
                     public_ip=virtual_machine_form.get_public_ip(),
@@ -148,5 +149,19 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def add_ssh_key(self, request):
-        pass
+    @list_route(methods=['get'], url_path='generate-ssh-key')
+    def generate_ssh_key(self, request):
+        """
+        Generates ssh key pair. Public part of that Key is
+        stored in database with specified name, whereas content of the private Key
+        part is returned. Neither public, nor private part of the key is saved to
+        file.
+        @param request:
+        @return: Private part of the key.
+        """
+        key_name = request.DATA.get('key_name', None) or request.query_params.get('key_name', None)
+        if key_name:
+            user_id = api_permissions.UsersPermission.get_user(request).id
+            return Response(celery.generate_ssh_key.apply_async(args=(user_id, key_name)).get())
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

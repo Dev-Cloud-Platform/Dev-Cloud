@@ -26,6 +26,7 @@ DATA = 'data'
 CM_ERROR = 'cm_error'
 UNKNOWN_ERROR = 'Unknown error'
 PUBLIC_IP_LIMIT = 'public_lease_limit'
+SSH_ALREADY_EXIST = 'ssh_key_already_exist'
 
 vm_states = {
     0: _('init'),

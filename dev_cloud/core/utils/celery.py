@@ -24,6 +24,7 @@ from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 from core.utils.decorators import dev_cloud_task
 from virtual_controller.cc1_module.check_quota import Quota
+from virtual_controller.cc1_module.key import Key
 from virtual_controller.cc1_module.public_ip import PoolIP
 
 
@@ -34,6 +35,7 @@ REQUEST_IP = 'Request new IP'
 RELEASE_IP = 'Release IP'
 CHECK_RESOURCE = 'Check resource'
 CREATE_VM = 'Create new virtual machine'
+GENERATE_SSH = 'Generate new SSH key pair'
 
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
@@ -112,3 +114,19 @@ def get_virtual_machine_status(user_id, vm_id):
     """
     virtual_machine = VirtualMachine(user_id)
     return virtual_machine.get_vm_status(vm_id)
+
+
+@app.task(trail=True, name='core.utils.tasks.generate_ssh_key')
+@dev_cloud_task(GENERATE_SSH)
+def generate_ssh_key(user_id, name):
+    """
+    Generates ssh key pair. Public part of that Key is
+    stored in database with specified name, whereas content of the private Key
+    part is returned. Neither public, nor private part of the key is saved to
+    file.
+    @param user_id: id of caller.
+    @param name: Key's name.
+    @return: Private part of the key.
+    """
+    key = Key(user_id, name)
+    return key.generate()
