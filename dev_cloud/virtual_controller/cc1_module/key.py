@@ -67,7 +67,7 @@ class Key(object):
             return ast.literal_eval(private.text).get(DATA)
         elif private.status_code == 200 and ast.literal_eval(private.text).get(STATUS) == SSH_ALREADY_EXIST:
             timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            self.generate(self.get_name() + str(timestamp))
+            return self.generate(self.get_name() + str(timestamp))
         else:
             error(self.user_id, private)
             return FAILED
