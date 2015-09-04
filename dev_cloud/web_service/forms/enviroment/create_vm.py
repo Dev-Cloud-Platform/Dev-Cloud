@@ -38,7 +38,9 @@ class CreateVMForm(object):
 
     disk_space = ''
 
-    ssh_key = ''
+    ssh_private_key = ''
+
+    ssh_public_key = ''
 
     def __init__(self, request=None):
         """
@@ -82,14 +84,20 @@ class CreateVMForm(object):
     def get_disk_space(self):
         return self.disk_space
 
-    def set_ssh_key(self, ssh_key):
-        self.ssh_key = ssh_key
+    def set_ssh_private_key(self, private_key):
+        self.ssh_private_key = private_key
 
-    def get_ssh_key(self):
-        return self.ssh_key
+    def get_ssh_private_key(self):
+        return self.ssh_private_key
+
+    def set_ssh_public_key(self, public_key):
+        self.ssh_public_key = public_key
+
+    def get_ssh_public_key(self):
+        return self.ssh_public_key
 
     def generate_ssh(self, request):
-        self.set_ssh_key(self.__generate_ssh(request))
+        self.set_ssh_private_key(self.__generate_ssh(request))
 
     def is_valid(self, request):
         """
@@ -114,8 +122,6 @@ class CreateVMForm(object):
         if is_valid:
             self.generate_ssh(request)
 
-        print self.get_ssh_key()
-
         return is_valid
 
     @staticmethod
@@ -124,6 +130,7 @@ class CreateVMForm(object):
         Gets the applications on session and return a array.
         @return: List of applications.
         """
+        global selected_applications
         technology = request.POST['radio1']
 
         if technology == JAVA:
@@ -151,6 +158,8 @@ class CreateVMForm(object):
         key_name = "%s_%s_%s" % (username, self.get_workspace(), 'key')
 
         private = get('virtual-machines/generate-ssh-key/?key_name=%s' % key_name, credentials=credentials).text
+        self.set_ssh_public_key(
+            get('virtual-machines/get-ssh-key/?key_name=%s' % key_name, credentials=credentials).text)
 
         if private != FAILED:
             return private

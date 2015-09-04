@@ -121,12 +121,24 @@ def get_virtual_machine_status(user_id, vm_id):
 def generate_ssh_key(user_id, name):
     """
     Generates ssh key pair. Public part of that Key is
-    stored in database with specified name, whereas content of the private Key
-    part is returned. Neither public, nor private part of the key is saved to
-    file.
+    stored in CC1 database with specified name, whereas content of the private Key
+    part is returned and stored in DevCloud database.
+    Neither public, nor private part of the key is saved to file.
     @param user_id: id of caller.
     @param name: Key's name.
     @return: Private part of the key.
     """
     key = Key(user_id, name)
     return key.generate()
+
+
+@app.task(trail=True, name='core.utils.tasks.get_ssh_key')
+def get_ssh_key(user_id, name):
+    """
+    Get ssh key. The public part.
+    @param user_id:
+    @param name:
+    @return:
+    """
+    key = Key(user_id, name)
+    return key.get(name)

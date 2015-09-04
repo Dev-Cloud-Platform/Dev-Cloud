@@ -71,3 +71,20 @@ class Key(object):
         else:
             error(self.user_id, private)
             return FAILED
+
+    def get(self, name):
+        """
+        Returns caller's keys.
+        @param name: the key name.
+        @return: caller's Keys
+        """
+        if name is None:
+            name = self.get_name()
+
+        payload = copy.deepcopy(payload_org)
+        payload['name'] = name
+
+        ssh_key = requests.post(address_clm + 'user/key/get/', data=json.dumps(payload))
+
+        if ssh_key.status_code == 200 and ast.literal_eval(ssh_key.text).get(STATUS) == OK:
+            return ast.literal_eval(ssh_key.text).get(DATA).get(DATA)

@@ -50,7 +50,7 @@ class VirtualMachine(object):
     count = 1
     user_data = None
     ssh_key = None
-    ssh_username = None
+    ssh_username = 'root'
 
     def __init__(self, user_id, vm_property=None):
         """
@@ -83,7 +83,7 @@ class VirtualMachine(object):
         self.template_id = self.vm_property.get_template()
         self.iso_list = None
         self.disk_list = None
-        self.ssh_key = self.vm_property.get_ssh_key()
+        self.ssh_key = self.vm_property.get_ssh_public_key()
         # self.groups = MasterUser.get_groups()
         return poolIP
 
