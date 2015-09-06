@@ -16,9 +16,8 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.utils.translation import ugettext as _
 
-FAILED = _('failed')
+FAILED = 'failed'
 
 OK = 'ok'
 STATUS = 'status'
@@ -29,19 +28,19 @@ PUBLIC_IP_LIMIT = 'public_lease_limit'
 SSH_ALREADY_EXIST = 'ssh_key_already_exist'
 
 vm_states = {
-    0: _('init'),
-    1: _('running'),
-    2: _('closing'),
-    3: _('closed'),
-    4: _('saving'),
-    5: _('failed'),
-    6: _('saving failed'),
-    7: _('running ctx'),
-    8: _('restart'),
-    9: _('suspend'),
-    10: _('turned off'),
-    11: _('erased'),
-    12: _('erasing')
+    0: 'init',
+    1: 'running',
+    2: 'closing',
+    3: 'closed',
+    4: 'saving',
+    5: 'failed',
+    6: 'saving failed',
+    7: 'running ctx',
+    8: 'restart',
+    9: 'suspend',
+    10: 'turned off',
+    11: 'erased',
+    12: 'erasing'
 }
 
 user_active_states = {

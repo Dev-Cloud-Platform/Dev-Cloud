@@ -18,7 +18,9 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 from celery import Celery
+from celery.states import state
 import jsonpickle
+from core.common import states
 
 from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
@@ -26,16 +28,18 @@ from core.utils.decorators import dev_cloud_task
 from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.key import Key
 from virtual_controller.cc1_module.public_ip import PoolIP
+from django.utils.translation import ugettext as _
 
 
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
 
-REQUEST_IP = 'Request new IP'
-RELEASE_IP = 'Release IP'
-CHECK_RESOURCE = 'Check resource'
-CREATE_VM = 'Create new virtual machine'
-GENERATE_SSH = 'Generate new SSH key pair'
+REQUEST_IP = _('Request new IP')
+RELEASE_IP = _('Release IP')
+CHECK_RESOURCE = _('Check resource')
+CREATE_VM = _('Create new virtual machine')
+GENERATE_SSH = _('Generate new SSH key pair')
+INIT_VM = _('Initialize virtual machine')
 
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
@@ -136,9 +140,24 @@ def generate_ssh_key(user_id, name):
 def get_ssh_key(user_id, name):
     """
     Get ssh key. The public part.
-    @param user_id:
-    @param name:
-    @return:
+    @param user_id: id of caller.
+    @param name: Key's name.
+    @return: Public part of the key.
     """
     key = Key(user_id, name)
     return key.get(name)
+
+
+@app.task(trail=False, ignore_result=True, name='core.utils.tasks.init_virtual_machine')
+@dev_cloud_task(INIT_VM)
+def init_virtual_machine(user_id, vm_id):
+    """
+    Initialize given virtual machine with selected application stored in database.
+    @param user_id: id of caller.
+    @param vm_id: id of virtual machine.
+    """
+    status = get_virtual_machine_status(user_id, vm_id)
+    if status == states.vm_states.get('running ctx'):
+        print "lol"
+    else:
+        init_virtual_machine(user_id, vm_id)

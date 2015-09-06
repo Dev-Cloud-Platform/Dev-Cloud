@@ -127,6 +127,9 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                     InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
                                                          user_id=user_id, application_id=app.id,
                                                          virtual_machine_id=virtual_machine.pk)
+
+                celery.init_virtual_machine.apply_async(args=(user_id, vm_id))
+
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_417_EXPECTATION_FAILED)
