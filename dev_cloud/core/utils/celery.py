@@ -18,8 +18,8 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 from celery import Celery
-from celery.states import state
 import jsonpickle
+import time
 from core.common import states
 
 from core.settings.common import settings
@@ -156,8 +156,13 @@ def init_virtual_machine(user_id, vm_id):
     @param user_id: id of caller.
     @param vm_id: id of virtual machine.
     """
-    status = get_virtual_machine_status(user_id, vm_id)
-    if status == states.vm_states.get('running ctx'):
-        print "lol"
-    else:
-        init_virtual_machine(user_id, vm_id)
+    virtual_machine = VirtualMachine(user_id)
+    while virtual_machine.get_vm_status(vm_id) != \
+            [key for key, value in states.vm_states.iteritems() if value == 'running ctx'][0]:
+        print "test"
+        time.sleep(25)
+
+    print "done"
+
+
+
