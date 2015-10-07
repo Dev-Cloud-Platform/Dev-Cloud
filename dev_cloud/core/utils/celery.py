@@ -25,6 +25,7 @@ from core.common import states
 
 from core.settings.common import settings
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
+from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
 from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.key import Key
@@ -34,6 +35,7 @@ from django.utils.translation import ugettext as _
 
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
+from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 REQUEST_IP = _('Request new IP')
 RELEASE_IP = _('Release IP')
@@ -163,10 +165,8 @@ def init_virtual_machine(user_id, vm_id):
         time.sleep(25)
         # TODO: Create timeout
 
-    # ssh = paramiko.SSHClient()
-    # ssh.set_missing_host_key_policy(
-    # paramiko.AutoAddPolicy())
-    # ssh.connect('127.0.0.1', username='jesse', password='lol')
+    ssh = SSHConnector(virtual_machine.get_vm_private_ip, ROOT, )
+
 
     print "done"
 

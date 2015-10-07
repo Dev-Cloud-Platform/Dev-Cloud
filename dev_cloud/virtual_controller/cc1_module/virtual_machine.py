@@ -52,6 +52,8 @@ class VirtualMachine(object):
     ssh_key = None
     ssh_username = 'root'
 
+    vm_id = None
+
     def __init__(self, user_id, vm_property=None):
         """
         Constructor for VirtualMachine which assign basic properties.
@@ -119,7 +121,8 @@ class VirtualMachine(object):
         vm = requests.post(address_clm + 'user/vm/create/', data=json.dumps(payload))
 
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
-            return ast.literal_eval(vm.text).get(DATA)[0].get('vm_id')
+            self.set_vm_id(ast.literal_eval(vm.text).get(DATA)[0].get('vm_id'))
+            return self.get_vm_id()
         else:
             error(self.user_id, vm)
             if payload.get('public_ip_id') is not None:
@@ -165,8 +168,22 @@ class VirtualMachine(object):
     def edit(self):
         pass
 
-    def get_by_id(self):
-        pass
+    @classmethod
+    def get_by_id(cls, vm_id):
+        """
+
+        @param vm_id:
+        @return:
+        """
+        payload = copy.deepcopy(payload_org)
+        payload['vm_id'] = vm_id
+
+        vm = requests.post(address_clm + 'user/vm/get_by_id/', data=json.dumps(payload))
+        if vm.status_code == 200 and json.loads(vm.text).get(STATUS) == OK:
+            return json.loads(vm.text).get(DATA)
+        else:
+            log.error(None, _("CC1 - Problem with request: ") + vm.url)
+            return FAILED
 
     def get_list(self):
         pass
@@ -176,6 +193,20 @@ class VirtualMachine(object):
 
     def save_and_shutdown(self):
         pass
+
+    def set_vm_id(self, vm_id):
+        """
+        Sets given id of virtual machine.
+        @param vm_id: id of virtual machine.
+        """
+        self.vm_id = vm_id
+
+    def get_vm_id(self):
+        """
+        Gets id of virtual machine.
+        @return: Unique id of virtual machine located on CC1 infrastructure.
+        """
+        return self.vm_id
 
     @classmethod
     def get_vm_status(cls, vm_id):
@@ -197,12 +228,25 @@ class VirtualMachine(object):
                 'erased': 11,
                 'erasing': 12
         """
-        payload = copy.deepcopy(payload_org)
-        payload['vm_id'] = vm_id
+        virtual_machine = cls.get_by_id(vm_id)
 
-        vm = requests.post(address_clm + 'user/vm/get_by_id/', data=json.dumps(payload))
-        if vm.status_code == 200 and json.loads(vm.text).get(STATUS) == OK:
-            return json.loads(vm.text).get(DATA).get('state')
+        if virtual_machine != FAILED:
+            return virtual_machine.get('state')
         else:
-            log.error(None, _("CC1 - Problem with request: ") + vm.url)
-            return FAILED
+            return virtual_machine
+
+
+    @classmethod
+    def get_vm_private_ip(cls, vm_id):
+        """
+        Gets private IP address caller's VM.
+        @param vm_id: id of virtual machine.
+        @return: private ip address of virtual machine.
+        """
+        virtual_machine = cls.get_by_id(vm_id)
+
+        if virtual_machine != FAILED:
+            # Gets information about private IP
+            return virtual_machine.get('node')
+        else:
+            return virtual_machine

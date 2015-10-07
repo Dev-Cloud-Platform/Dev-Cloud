@@ -138,11 +138,24 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['get'], url_path='get-vm-status')
-    def get_virtual_machine(self, request):
+    def get_virtual_machine_status(self, request):
         """
         Returns requested caller's VM.
         @param request:
-        @return:
+        @return: number status of virtual machine:
+                'init': 0,
+                'running': 1,
+                'closing': 2,
+                'closed': 3,
+                'saving': 4,
+                'failed': 5,
+                'saving failed': 6,
+                'running ctx': 7,
+                'restart': 8,
+                'suspend': 9,
+                'turned off': 10,
+                'erased': 11,
+                'erasing': 12
         """
         vm_id = request.DATA.get('vm_id', None) or request.query_params.get('vm_id', None)
         if vm_id:

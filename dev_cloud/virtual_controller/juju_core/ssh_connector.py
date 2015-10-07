@@ -16,10 +16,32 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-import paramiko
+
+from fabric import tasks
+from fabric.api import env
+from fabric.api import run
+from fabric.network import disconnect_all
 
 
-class SSHConnector(paramiko.SSHClient):
-    def __init__(self):
-        super(SSHConnector, self).__init__()
-        self.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+class SSHConnector(object):
+
+
+    """
+    Class responsible for provide secure connection between dev cloud app and client virtual machine.
+    """
+
+    def __init__(self, host, user, key):
+        env.hosts = [host]
+        env.user = [user]
+        env.key = key
+
+    @classmethod
+    def call_remote_command(cls, command):
+        """
+        Executes remote command on virtual machine over ssh connection.
+        @param command: command to execute.
+        @return: result of command.
+        """
+        results_dict = tasks.execute(run(command))
+        disconnect_all()
+        return results_dict
