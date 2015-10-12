@@ -30,16 +30,16 @@ from common import *
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host
-EMAIL_HOST = environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_HOST = environ.get('EMAIL_HOST', config.EMAIL_HOST)
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-password
-EMAIL_HOST_PASSWORD = environ.get('EMAIL_HOST_PASSWORD', 'devcloudpassword')
+EMAIL_HOST_PASSWORD = environ.get('EMAIL_HOST_PASSWORD', config.EMAIL_HOST_PASSWORD)
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-host-user
-EMAIL_HOST_USER = environ.get('EMAIL_HOST_USER', 'devcloudplatform@gmail.comm')
+EMAIL_HOST_USER = environ.get('EMAIL_HOST_USER', config.EMAIL_HOST_USER)
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-port
-EMAIL_PORT = environ.get('EMAIL_PORT', 587)
+EMAIL_PORT = environ.get('EMAIL_PORT', config.EMAIL_PORT)
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
 EMAIL_SUBJECT_PREFIX = '[%s] ' % SITE_NAME

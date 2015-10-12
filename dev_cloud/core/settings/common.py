@@ -26,7 +26,7 @@ from os.path import abspath, basename, dirname, join, normpath, pardir
 from django.conf import LazySettings
 
 from djcelery import setup_loader
-
+from core.settings import config
 
 try:
     from config import LOG_LEVEL, LOG_DIR, SECRET_KEY, DEV_CLOUD_IP_ADDRESS, CELERY_IP_ADDRESS
@@ -67,15 +67,14 @@ ADMINS = (
     ('M4GiK', 'devcloudplatform@gmail.com'),
 )
 
+EMAIL = config.EMAIL
+EMAIL_USE_TLS = config.EMAIL_USE_TLS
+EMAIL_HOST = config.EMAIL_HOST
+EMAIL_PORT = config.EMAIL_PORT
+EMAIL_HOST_USER = config.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
+FROM_EMAIL = config.FROM_EMAIL
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL = 'devcloudplatform@gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'devcloudplatform@gmail.com'
-EMAIL_HOST_PASSWORD = 'devcloudpassword'
-FROM_EMAIL = 'devcloudplatform@gmail.com'
-
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 ########## END MANAGER CONFIGURATION
@@ -371,6 +370,10 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_IMPORTS = ('core.utils',)
+
+# Configuration for SSH tasks
+WAIT_TIME = 10 * 60
+LOOP_TIME = 25
 
 # See: http://celery.github.com/celery/django/
 setup_loader()

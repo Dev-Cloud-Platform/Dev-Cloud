@@ -17,16 +17,16 @@
 #
 # @COPYRIGHT_end
 from __future__ import absolute_import
+import ast
 from celery import Celery
 import jsonpickle
-import time
-import paramiko
 from core.common import states
 
-from core.settings.common import settings
+from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
+from database.models import Applications
 from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.key import Key
 from virtual_controller.cc1_module.public_ip import PoolIP
@@ -43,6 +43,7 @@ CHECK_RESOURCE = _('Check resource')
 CREATE_VM = _('Create new virtual machine')
 GENERATE_SSH = _('Generate new SSH key pair')
 INIT_VM = _('Initialize virtual machine')
+DESTROY_VM = _('Destroy virtual machine')
 
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
@@ -55,6 +56,7 @@ app.conf.update(
 # pickle the object when using Windows.
 app.config_from_object("django.conf:settings")
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
 
 # if __name__ == '__main__':
 # app.start()
@@ -153,22 +155,52 @@ def get_ssh_key(user_id, name):
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.init_virtual_machine')
 @dev_cloud_task(INIT_VM)
-def init_virtual_machine(user_id, vm_id):
+def init_virtual_machine(user_id, vm_serializer_data, applications):
     """
     Initialize given virtual machine with selected application stored in database.
     @param user_id: id of caller.
-    @param vm_id: id of virtual machine.
+    @param vm_serializer_data: serialized data contains information about virtual machines.
+    @param applications: list of applications.
+    @return:
     """
+    current_time = 0
+    virtual_machine = VirtualMachine(user_id)
+    while virtual_machine.get_vm_status(vm_serializer_data.data.get('vm_id')) != \
+            [key for key, value in states.vm_states.iteritems() if value == 'running ctx'][0]:
+        current_time += LOOP_TIME
+        is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
+        if is_timeout:
+            break
+
+    if not is_timeout:
+        ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.data.get('vm_id')), ROOT,
+                           vm_serializer_data.data.get('ssh_key'))
+
+        test = ''
+        for application in ast.literal_eval(applications):
+            app = Applications.objects.get(application_name=application)
+            test += ssh.call_remote_command(app.instalation_procedure)
+
+    print test
+
+
+@app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
+@dev_cloud_task(DESTROY_VM)
+def destroy_virtual_machine(user_id, vm_id):
+    """
+    Destroys the given virtual machine.
+    @param user_id: id of caller.
+    @param vm_id: id of virtual machine.
+    @return: OK if machine is properly destroyed or FAILED if not.
+    """
+    current_time = 0
     virtual_machine = VirtualMachine(user_id)
     while virtual_machine.get_vm_status(vm_id) != \
             [key for key, value in states.vm_states.iteritems() if value == 'running ctx'][0]:
-        time.sleep(25)
-        # TODO: Create timeout
+        current_time += LOOP_TIME
+        is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
+        if is_timeout:
+            break
 
-    ssh = SSHConnector(virtual_machine.get_vm_private_ip, ROOT, )
-
-
-    print "done"
-
-
-
+    virtual_machine = VirtualMachine(user_id)
+    return virtual_machine.destroy(vm_id)

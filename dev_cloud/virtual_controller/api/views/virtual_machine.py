@@ -106,34 +106,41 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                  If everything is OK return code 200 with VirtualMachinesSerializer serializer class,
                  if not return code 400 for bad request, or 417 if creation of virtual machine goes wrong.
         """
-
+        vm_id = None
         virtual_machine_form = CreateVMForm()
 
         if virtual_machine_form.is_valid(request):
-            # Here do request to CC1.
-            user_id = api_permissions.UsersPermission.get_user(request).id
-            pickle_vm = jsonpickle.encode(virtual_machine_form)
-            vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
-            if vm_id != FAILED:
-                virtual_machine = self.serializer_class.Meta.model.objects.create(
-                    vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
-                    public_ip=virtual_machine_form.get_public_ip(),
-                    ssh_key=virtual_machine_form.get_ssh_private_key(),
-                    template_instance_id=virtual_machine_form.get_template())
-                serializer = self.get_serializer(virtual_machine)
+            try:
+                # Here do request to CC1.
+                user_id = api_permissions.UsersPermission.get_user(request).id
+                pickle_vm = jsonpickle.encode(virtual_machine_form)
+                vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
+                if vm_id != FAILED:
+                    virtual_machine = self.serializer_class.Meta.model.objects.create(
+                        vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
+                        public_ip=virtual_machine_form.get_public_ip(),
+                        ssh_key=virtual_machine_form.get_ssh_private_key(),
+                        template_instance_id=virtual_machine_form.get_template())
+                    serializer = self.get_serializer(virtual_machine)
 
-                for application in ast.literal_eval(virtual_machine_form.get_applications()):
-                    app = Applications.objects.get(application_name=application)
-                    InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
-                                                         user_id=user_id, application_id=app.id,
-                                                         virtual_machine_id=virtual_machine.pk)
+                    for application in ast.literal_eval(virtual_machine_form.get_applications()):
+                        app = Applications.objects.get(application_name=application)
+                        InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
+                                                             user_id=user_id, application_id=app.id,
+                                                             virtual_machine_id=virtual_machine.pk)
 
-                celery.init_virtual_machine.apply_async(args=(user_id, vm_id))
+                    celery.init_virtual_machine.apply_async(
+                        args=(user_id, serializer, virtual_machine_form.get_applications()))
 
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(status=status.HTTP_417_EXPECTATION_FAILED)
-
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(status=status.HTTP_417_EXPECTATION_FAILED)
+            except Exception:
+                # Destroy created virtual machine:
+                if vm_id is not None:
+                    celery.destroy_virtual_machine.apply_async(
+                        args=(api_permissions.UsersPermission.get_user(request).id, vm_id))
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

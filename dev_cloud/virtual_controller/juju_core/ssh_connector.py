@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import time
 
 from fabric import tasks
 from fabric.api import env
 from fabric.api import run
 from fabric.network import disconnect_all
+from fabric.utils import abort
 
 
 class SSHConnector(object):
-
-
     """
     Class responsible for provide secure connection between dev cloud app and client virtual machine.
     """
@@ -43,5 +43,23 @@ class SSHConnector(object):
         @return: result of command.
         """
         results_dict = tasks.execute(run(command))
+        if results_dict.failed:
+            abort("Aborting remote command")
+
         disconnect_all()
         return results_dict
+
+    @staticmethod
+    def timeout(wait_time, loop_time, current_time):
+        """
+        Method to help with manipulate SSH timeout.
+        @param wait_time: total time to wait.
+        @param loop_time: time for sleep.
+        @param current_time: actual time.
+        @return: If actual time is greater then total time return false, if not return true.
+        """
+        if wait_time > current_time:
+            time.sleep(loop_time)
+            return False
+        else:
+            return True
