@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-	WSGIDaemonProcess dev_cloud python-path=/var/www/Dev-Cloud/dev_cloud:/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages
+	WSGIDaemonProcess dev_cloud python-path=/var/www/Dev-Cloud/dev_cloud:/home/devcloud/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages
 	WSGIProcessGroup dev_cloud
 	WSGIScriptAlias / /var/www/Dev-Cloud/dev_cloud/web_service/wsgi.py
 	# The ServerName directive sets the request scheme, hostname and port that
@@ -44,8 +44,8 @@
 			IndexOptions FancyIndexing
 	</Directory>
 
-	Alias /static/admin/ "/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media"
-	<Directory "/root/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media">
+	Alias /static/admin/ "/home/devcloud/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media"
+	<Directory "/home/devcloud/Workspace/TeamCity/buildAgent/work/c69145f6d40b2387/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media">
 			Order allow,deny
 			Options Indexes
 			Allow from all
