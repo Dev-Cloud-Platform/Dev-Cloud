@@ -20,6 +20,9 @@
 from __future__ import unicode_literals
 
 from os.path import join
+from PIL import Image, ImageOps
+import StringIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from django.db import models
 
@@ -119,6 +122,20 @@ class Users(models.Model):
             raise DevCloudException('user_get')
         return user
 
+    def save(self, *args, **kwargs):
+        if self.picture:
+            try:
+                image = Image.open(StringIO.StringIO(self.picture.read()))
+                image = ImageOps.fit(image, (140, 140), Image.ANTIALIAS)
+                output = StringIO.StringIO()
+                image.save(output, format='JPEG', quality=75)
+                output.seek(0)
+                self.picture = InMemoryUploadedFile(output, 'ImageField', self.picture.name, 'image/jpeg',
+                                                    output.len, None)
+            except Exception as e:
+                raise DevCloudException(e)
+        super(Users, self).save(*args, **kwargs)
+
     @staticmethod
     def superuser(user_id):
         """
@@ -144,7 +161,6 @@ class Users(models.Model):
     @staticmethod
     def save_picture(user, request):
         upload_picture = request.FILES['image']
-
         if user.picture is not None:
             user.picture.delete()
 

@@ -100,7 +100,7 @@ class EditUserForm(EditPasswordForm):
                 del self.cleaned_data['password2']
 
             user.save()
-        except:
-            raise DevCloudException('user_edit')
+        except Exception as e:
+            raise DevCloudException('user_edit ' + e)
 
         return self.cleaned_data
