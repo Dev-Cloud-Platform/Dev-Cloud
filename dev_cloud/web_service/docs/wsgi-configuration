@@ -1,7 +1,7 @@
 <VirtualHost *:80>
-	WSGIDaemonProcess dev_cloud python-path=/var/www/Dev-Cloud:/var/www/Dev-Cloud/dev_cloud/.pyenv/lib/python2.7
+	WSGIDaemonProcess dev_cloud python-path=/var/www/Dev-Cloud:/var/www/Dev-cloud/.pyenv/lib/python2.7
 	WSGIProcessGroup dev_cloud
-	WSGIScriptAlias / /var/www/Dev-Cloud/dev_cloud/web_service/wsgi.py
+	WSGIScriptAlias / /var/www/Dev-Cloud/web_service/wsgi.py
 	# The ServerName directive sets the request scheme, hostname and port that
 	# the server uses to identify itself. This is used when creating
 	# redirection URLs. In the context of virtual hosts, the ServerName
@@ -12,7 +12,7 @@
 	#ServerName www.example.com
 
 	# ServerAdmin webmaster@localhost
-	DocumentRoot /var/www/Dev-Cloud/dev_cloud/web_service
+	DocumentRoot /var/www/Dev-Cloud/web_service
 	<Directory /var/www/Dev-Clou/web_service>
 		WSGIProcessGroup dev_cloud
 		WSGIApplicationGroup %{GLOBAL}
@@ -20,32 +20,32 @@
 		Allow from all
 	</Directory>
 
-	Alias /assets "/var/www/Dev-Cloud/dev_cloud/web_service/assets"
-	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/assets">
+	Alias /assets "/var/www/Dev-Cloud/web_service/assets"
+	<Directory "/var/www/Dev-Cloud/web_service/assets">
 		Order allow,deny
 		Options Indexes
 		Allow from all
 		IndexOptions FancyIndexing
 	</Directory>
 
-	Alias /media/ "/var/www/Dev-Cloud/dev_cloud/web_service/media/"
-	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/media/">
+	Alias /media/ "/var/www/Dev-Cloud/web_service/media/"
+	<Directory "/var/www/Dev-Cloud/web_service/media/">
 			Order allow,deny
 			Options Indexes
 			Allow from all
 			IndexOptions FancyIndexing
 	</Directory>
 
-	Alias /static "/var/www/Dev-Cloud/dev_cloud/web_service/static"
-	<Directory "/var/www/Dev-Cloud/dev_cloud/web_service/assets">
+	Alias /static "/var/www/Dev-Cloud/web_service/static"
+	<Directory "/var/www/Dev-Cloud/web_service/assets">
 			Order allow,deny
 			Options Indexes
 			Allow from all
 			IndexOptions FancyIndexing
 	</Directory>
 
-	Alias /static/admin/ "/var/www/Dev-Cloud/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media"
-	<Directory "/var/www/Dev-Cloud/dev_cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media">
+	Alias /static/admin/ "/var/www/Dev-Cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media"
+	<Directory "/var/www/Dev-Cloud/.pyenv/lib/python2.7/site-packages/django/contrib/admin/media">
 			Order allow,deny
 			Options Indexes
 			Allow from all
