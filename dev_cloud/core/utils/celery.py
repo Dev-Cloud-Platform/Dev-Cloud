@@ -166,7 +166,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     is_timeout = False
     current_time = 0
     virtual_machine = VirtualMachine(user_id)
-    while virtual_machine.get_vm_status(vm_serializer_data.data.get('vm_id')) != \
+    while virtual_machine.get_vm_status(vm_serializer_data.get('vm_id')) != \
             [key for key, value in states.vm_states.iteritems() if value == 'running ctx'][0]:
         current_time += LOOP_TIME
         is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
@@ -174,8 +174,8 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
             break
 
     if not is_timeout:
-        ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.data.get('vm_id')), ROOT,
-                           vm_serializer_data.data.get('ssh_key'))
+        ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
+                           vm_serializer_data.get('ssh_key'))
 
         test = ''
         for application in ast.literal_eval(applications):

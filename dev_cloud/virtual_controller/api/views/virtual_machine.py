@@ -132,7 +132,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                                                              virtual_machine_id=virtual_machine.pk)
 
                     celery.init_virtual_machine.apply_async(
-                        args=(user_id, serializer, virtual_machine_form.get_applications()))
+                        args=(user_id, serializer.data, virtual_machine_form.get_applications()))
 
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
