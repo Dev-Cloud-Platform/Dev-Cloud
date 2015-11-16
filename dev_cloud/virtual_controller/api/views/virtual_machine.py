@@ -26,6 +26,8 @@ from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, FAILED
 
 from core.utils import celery
 from core.utils.decorators import manual_transaction
+from core.utils.exception import DevCloudException
+from core.utils.log import error
 from core.utils.python_object_encoder import SetEncoder
 from database.models.applications import Applications
 from database.models.installed_applications import InstalledApplications
@@ -106,6 +108,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                  If everything is OK return code 200 with VirtualMachinesSerializer serializer class,
                  if not return code 400 for bad request, or 417 if creation of virtual machine goes wrong.
         """
+        global user_id
         vm_id = None
         virtual_machine_form = CreateVMForm()
 
@@ -135,7 +138,8 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
                     return Response(status=status.HTTP_417_EXPECTATION_FAILED)
-            except Exception:
+            except Exception as ex:
+                error(user_id, ex)
                 # Destroy created virtual machine:
                 if vm_id is not None:
                     celery.destroy_virtual_machine.apply_async(
