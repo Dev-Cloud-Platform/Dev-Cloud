@@ -108,14 +108,13 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                  If everything is OK return code 200 with VirtualMachinesSerializer serializer class,
                  if not return code 400 for bad request, or 417 if creation of virtual machine goes wrong.
         """
-        user_id = None
+        user_id = api_permissions.UsersPermission.get_user(request).id
         vm_id = None
         virtual_machine_form = CreateVMForm()
 
         if virtual_machine_form.is_valid(request):
             try:
                 # Here do request to CC1.
-                user_id = api_permissions.UsersPermission.get_user(request).id
                 pickle_vm = jsonpickle.encode(virtual_machine_form)
                 vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
                 if vm_id != FAILED:

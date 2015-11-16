@@ -101,6 +101,6 @@ class EditUserForm(EditPasswordForm):
 
             user.save()
         except Exception as e:
-            raise DevCloudException('user_edit ' + e)
+            raise DevCloudException('user_edit ' + str(e))
 
         return self.cleaned_data
