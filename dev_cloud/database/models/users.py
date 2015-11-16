@@ -122,20 +122,6 @@ class Users(models.Model):
             raise DevCloudException('user_get')
         return user
 
-    def save(self, *args, **kwargs):
-        if self.picture:
-            try:
-                image = Image.open(StringIO.StringIO(self.picture.read()))
-                image = ImageOps.fit(image, (140, 140), Image.ANTIALIAS)
-                output = StringIO.StringIO()
-                image.save(output, format='JPEG', quality=75)
-                output.seek(0)
-                self.picture = InMemoryUploadedFile(output, 'ImageField', self.picture.name, 'image/jpeg',
-                                                    output.len, None)
-            except Exception as e:
-                raise DevCloudException(e)
-        super(Users, self).save(*args, **kwargs)
-
     @staticmethod
     def superuser(user_id):
         """
@@ -165,6 +151,19 @@ class Users(models.Model):
             user.picture.delete()
 
         user.picture.save(upload_picture.name, upload_picture)
+
+        if user.picture:
+            try:
+                image = Image.open(StringIO.StringIO(user.picture.read()))
+                image = ImageOps.fit(image, (140, 140), Image.ANTIALIAS)
+                output = StringIO.StringIO()
+                image.save(output, format='JPEG', quality=75)
+                output.seek(0)
+                user.picture = InMemoryUploadedFile(output, 'ImageField', user.picture.name, 'image/jpeg',
+                                                    output.len, None)
+                user.picture.save()
+            except Exception as e:
+                raise DevCloudException(e)
 
     @staticmethod
     def parse_user(user):
