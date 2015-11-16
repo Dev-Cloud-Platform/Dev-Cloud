@@ -161,7 +161,6 @@ class Users(models.Model):
                 output.seek(0)
                 user.picture = InMemoryUploadedFile(output, 'ImageField', user.picture.name, 'image/jpeg',
                                                     output.len, None)
-                user.picture.save()
             except Exception as e:
                 raise DevCloudException(e)
 

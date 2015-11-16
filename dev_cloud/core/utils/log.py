@@ -24,6 +24,7 @@ from core.settings import config
 
 # Set of active loggers - ones currently writing to logs.
 active_loggers = set([])
+logging.basicConfig()
 
 
 def get_logger(logger_id):
