@@ -71,8 +71,8 @@ def authenticate(username, password):
         try:
             user.last_activity = timezone.now()
             user.save()
-        except:
-            raise DevCloudException('user_edit')
+        except Exception as ex:
+            raise DevCloudException('user_edit' + ex)
     else:
         return user
 
