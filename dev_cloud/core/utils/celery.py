@@ -163,6 +163,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     @param applications: list of applications.
     @return:
     """
+    global is_timeout
     current_time = 0
     virtual_machine = VirtualMachine(user_id)
     while virtual_machine.get_vm_status(vm_serializer_data.data.get('vm_id')) != \
@@ -181,7 +182,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
             app = Applications.objects.get(application_name=application)
             test += ssh.call_remote_command(app.instalation_procedure)
 
-    print test
+        print test
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
