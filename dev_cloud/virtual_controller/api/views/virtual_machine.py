@@ -108,7 +108,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                  If everything is OK return code 200 with VirtualMachinesSerializer serializer class,
                  if not return code 400 for bad request, or 417 if creation of virtual machine goes wrong.
         """
-        global user_id
+        user_id = None
         vm_id = None
         virtual_machine_form = CreateVMForm()
 

@@ -163,7 +163,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     @param applications: list of applications.
     @return:
     """
-    global is_timeout
+    is_timeout = False
     current_time = 0
     virtual_machine = VirtualMachine(user_id)
     while virtual_machine.get_vm_status(vm_serializer_data.data.get('vm_id')) != \
