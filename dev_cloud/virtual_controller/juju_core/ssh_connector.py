@@ -31,7 +31,7 @@ class SSHConnector(object):
     """
 
     def __init__(self, host, user, key):
-        env.hosts = [host]
+        env.host_string = host
         env.user = [user]
         env.key = key
 
