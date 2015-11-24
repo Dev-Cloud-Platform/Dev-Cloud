@@ -24,7 +24,7 @@ from database.models.users import Users
 
 
 session_key = '_auth_user_id'
-ROOT = 'root'
+ROOT = 'devcloud'
 
 def login(request, user):
     """
