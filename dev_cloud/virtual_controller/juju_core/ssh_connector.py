@@ -32,7 +32,7 @@ class SSHConnector(object):
     """
 
     def __init__(self, host, user, key):
-        env.host_string = host
+        env.host_string = [user + '@' + host, user]
         env.user = [user]
         env.key = key
         env.password = VM_IMAGE_ROOT_PASSWORD
