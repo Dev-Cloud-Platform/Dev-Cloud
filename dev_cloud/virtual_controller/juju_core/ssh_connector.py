@@ -23,6 +23,7 @@ from fabric.api import env
 from fabric.network import disconnect_all
 from fabric.operations import sudo
 from fabric.utils import abort
+from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 
 
 class SSHConnector(object):
@@ -34,6 +35,7 @@ class SSHConnector(object):
         env.host_string = host
         env.user = [user]
         env.key = key
+        env.password = VM_IMAGE_ROOT_PASSWORD
 
     @classmethod
     def call_remote_command(cls, command):
