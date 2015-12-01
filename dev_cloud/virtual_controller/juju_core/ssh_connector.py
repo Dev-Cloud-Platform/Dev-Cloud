@@ -33,7 +33,7 @@ class SSHConnector(object):
 
     def __init__(self, host, user, key):
         env.host_string = user + '@' + host
-        env.user = [user]
+        env.user = user
         env.key = key
         env.password = VM_IMAGE_ROOT_PASSWORD
 
@@ -44,7 +44,7 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = tasks.execute(sudo(command, shell=False))
+        results_dict = tasks.execute(sudo('ls', shell=False))
         if results_dict.failed:
             abort("Aborting remote command")
 
