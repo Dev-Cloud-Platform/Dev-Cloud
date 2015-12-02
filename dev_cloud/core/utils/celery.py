@@ -24,6 +24,7 @@ from core.common import states
 
 from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
+from core.settings.config import SSH_KEY_PATH
 from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
 from database.models import Applications
@@ -175,7 +176,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
 
     if not is_timeout:
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
-                           vm_serializer_data.get('ssh_key'))
+                           SSH_KEY_PATH)
 
         test = ''
         for application in ast.literal_eval(applications):
