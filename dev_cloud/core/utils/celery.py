@@ -19,6 +19,9 @@
 from __future__ import absolute_import
 import ast
 from celery import Celery
+from fabric.decorators import hosts
+from fabric.operations import run
+from fabric.tasks import execute
 import jsonpickle
 from core.common import states
 
@@ -178,12 +181,27 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                            SSH_KEY_PATH)
 
-        test = ''
-        for application in ast.literal_eval(applications):
-            app = Applications.objects.get(application_name=application)
-            test += ssh.call_remote_command(app.instalation_procedure)
+        username = ROOT
+        host = virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id'))
+        host_string = "%s@%s" % (username, host)
 
-        print test
+        @hosts(host_string)
+        def my_fab_task():
+            run("ls")
+
+        try:
+            result = execute(my_fab_task)
+            if isinstance(result.get(host_string, None), BaseException):
+                raise result.get(host_string)
+        except Exception as e:
+            print "my_celery_task -- %s" % e.message
+
+            # test = ''
+            # for application in ast.literal_eval(applications):
+            #     app = Applications.objects.get(application_name=application)
+            #     test += ssh.call_remote_command(app.instalation_procedure)
+
+            # print test
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')

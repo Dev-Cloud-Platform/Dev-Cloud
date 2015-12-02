@@ -22,8 +22,7 @@ from fabric import tasks
 from fabric.api import env
 from fabric.decorators import hosts
 from fabric.network import disconnect_all
-from fabric.operations import sudo, run
-from fabric.tasks import execute
+from fabric.operations import sudo
 from fabric.utils import abort
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 
@@ -34,7 +33,7 @@ class SSHConnector(object):
     """
 
     def __init__(self, host, user, key):
-        env.host_string = '%s@%s' % (user, host)
+        env.host_string = "%s@%s" % (user, host)
         env.user = user
         env.key_filename = key
         env.password = VM_IMAGE_ROOT_PASSWORD
@@ -47,9 +46,9 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = execute(run("ls"))
-        # if results_dict.failed:
-        #     abort("Aborting remote command")
+        results_dict = tasks.execute(sudo(command))
+        if results_dict.failed:
+            abort("Aborting remote command")
 
         disconnect_all()
         return results_dict
