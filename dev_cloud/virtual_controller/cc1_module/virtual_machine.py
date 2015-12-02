@@ -246,6 +246,6 @@ class VirtualMachine(object):
 
         if virtual_machine != FAILED:
             # Gets information about private IP
-            return virtual_machine.get('leases').get('address')
+            return virtual_machine.get('leases')[0].get('address')
         else:
             return virtual_machine
