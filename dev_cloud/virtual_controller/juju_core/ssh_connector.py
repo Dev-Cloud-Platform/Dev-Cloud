@@ -44,7 +44,7 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = tasks.execute(sudo(command))
+        results_dict = tasks.execute(command)
         if results_dict.failed:
             abort("Aborting remote command")
 
