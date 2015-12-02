@@ -23,11 +23,12 @@ from fabric.decorators import hosts
 from fabric.operations import run
 from fabric.tasks import execute
 import jsonpickle
+import paramiko
 from core.common import states
 
 from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
-from core.settings.config import SSH_KEY_PATH
+from core.settings.config import SSH_KEY_PATH, VM_IMAGE_ROOT_PASSWORD
 from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
 from database.models import Applications
@@ -185,16 +186,10 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
         host = virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id'))
         host_string = "%s@%s" % (username, host)
 
-        @hosts(host_string)
-        def my_fab_task():
-            run("ls")
-
-        try:
-            result = execute(my_fab_task)
-            if isinstance(result.get(host_string, None), BaseException):
-                raise result.get(host_string)
-        except Exception as e:
-            print "my_celery_task -- %s" % e.message
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(host, username=username, password=VM_IMAGE_ROOT_PASSWORD)
+        ssh.exec_command("ls")
 
             # test = ''
             # for application in ast.literal_eval(applications):
