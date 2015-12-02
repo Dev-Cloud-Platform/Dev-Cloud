@@ -235,7 +235,6 @@ class VirtualMachine(object):
         else:
             return virtual_machine
 
-
     @classmethod
     def get_vm_private_ip(cls, vm_id):
         """
@@ -247,6 +246,6 @@ class VirtualMachine(object):
 
         if virtual_machine != FAILED:
             # Gets information about private IP
-            return virtual_machine.get('node')
+            return virtual_machine.get('leases').get('address')
         else:
             return virtual_machine

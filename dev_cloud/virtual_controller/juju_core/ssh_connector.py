@@ -20,7 +20,6 @@ import time
 
 from fabric import tasks
 from fabric.api import env
-from fabric.decorators import hosts
 from fabric.network import disconnect_all
 from fabric.operations import sudo
 from fabric.utils import abort

@@ -191,12 +191,12 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
         ssh.connect(host, username=username, password=VM_IMAGE_ROOT_PASSWORD)
         ssh.exec_command("ls")
 
-            # test = ''
-            # for application in ast.literal_eval(applications):
-            #     app = Applications.objects.get(application_name=application)
-            #     test += ssh.call_remote_command(app.instalation_procedure)
+        test = ''
+        for application in ast.literal_eval(applications):
+            app = Applications.objects.get(application_name=application)
+            test += ssh.call_remote_command(app.instalation_procedure)
 
-            # print test
+        print test
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
