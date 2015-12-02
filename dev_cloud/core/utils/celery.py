@@ -181,16 +181,6 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     if not is_timeout:
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                            SSH_KEY_PATH)
-
-        username = ROOT
-        host = virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id'))
-        host_string = "%s@%s" % (username, host)
-
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(host, username=username, password=VM_IMAGE_ROOT_PASSWORD)
-        ssh.exec_command("ls")
-
         test = ''
         for application in ast.literal_eval(applications):
             app = Applications.objects.get(application_name=application)
