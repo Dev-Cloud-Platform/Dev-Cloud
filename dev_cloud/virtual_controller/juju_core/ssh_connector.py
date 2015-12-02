@@ -39,7 +39,6 @@ class SSHConnector(object):
         env.password = VM_IMAGE_ROOT_PASSWORD
 
     @classmethod
-    @hosts(env.host_string)
     def call_remote_command(cls, command):
         """
         Executes remote command on virtual machine over ssh connection.
