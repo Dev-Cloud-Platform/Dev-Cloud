@@ -40,6 +40,7 @@ from django.utils.translation import ugettext as _
 
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
+from virtual_controller.juju_core.juju_installation_procedure import init_juju_on_vm
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 REQUEST_IP = _('Request new IP')
@@ -181,12 +182,13 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     if not is_timeout:
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                            SSH_KEY_PATH)
-        test = ''
-        for application in ast.literal_eval(applications):
-            app = Applications.objects.get(application_name=application)
-            test += ssh.call_remote_command(app.instalation_procedure)
-
-        print test
+        ssh.exec_task(init_juju_on_vm())
+        # test = ''
+        # for application in ast.literal_eval(applications):
+        #     app = Applications.objects.get(application_name=application)
+        #     test += ssh.call_remote_command(app.instalation_procedure)
+        #
+        # print test
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')

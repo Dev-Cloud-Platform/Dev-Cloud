@@ -18,9 +18,8 @@
 # @COPYRIGHT_end
 import time
 
-from fabric.api import env
+from fabric.api import execute, run, env
 from fabric.network import disconnect_all
-from fabric.operations import run
 from fabric.utils import abort
 
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
@@ -47,6 +46,20 @@ class SSHConnector(object):
         results_dict = run(command)
         if results_dict.failed:
             abort("Aborting remote command")
+
+        disconnect_all()
+        return results_dict
+
+    @classmethod
+    def exec_task(cls, task):
+        """
+        Executes task on virtual machine over ssh connection.
+        @param task: task name
+        @return: result of task.
+        """
+        results_dict = execute(task)
+        if results_dict.failed:
+            abort("Aborting task")
 
         disconnect_all()
         return results_dict
