@@ -182,7 +182,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     if not is_timeout:
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                            SSH_KEY_PATH)
-        ssh.exec_task(init_juju_on_vm())
+        ssh.exec_task(init_juju_on_vm)
         # test = ''
         # for application in ast.literal_eval(applications):
         #     app = Applications.objects.get(application_name=application)
