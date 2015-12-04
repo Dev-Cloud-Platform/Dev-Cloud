@@ -1,0 +1,37 @@
+{% extends "app/task/base.html" %}
+{% load i18n %}
+{% load custom_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Tasks" %}{% endblock %}
+
+
+{% block content %}
+
+    <ol class="breadcrumb bc-3">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Tasks" %}</strong>
+        </li>
+    </ol>
+
+    <h2>{% trans "List of tasks" %}</h2>
+    <br/>
+    <div id="task_timeline">
+        <!-- Generate content -->
+    </div>
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}/app/js/vertical-timeline/css/component.css">
+
+    <script>
+        (function updateTasksTimeline() {
+            ajaxGet('/main/app/utils/refresh_tasks', function (content) {
+                //onSuccess
+                jQuery("#task_timeline").html(content);
+                setTimeout(updateTasksTimeline, 30000);
+            });
+        })();
+
+    </script>
+{% endblock %}

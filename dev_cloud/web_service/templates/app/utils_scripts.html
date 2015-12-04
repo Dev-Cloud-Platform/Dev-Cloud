@@ -22,11 +22,11 @@
         }
     }
 
-    (function update() {
-        ajaxGet('/main/app/utils/refresh_tasks', function (content) {
+    (function updateTasksNotifier() {
+        ajaxGet('/main/app/utils/refresh_tasks_notifier', function (content) {
             //onSuccess
             jQuery("#task_notifier").html(content);
-            setTimeout(update, 30000);
+            setTimeout(updateTasksNotifier, 30000);
         });
     })();
 

@@ -104,10 +104,11 @@ def members(request, template_name='app/members.html'):
 
 @django_view
 @user_permission
-def tasks(request, task_id=None, template_name='app/tasks.html'):
+def tasks(request, task_id=None, template_name='app/task/tasks.html'):
     """
     Shows all tasks of user.
     @param request:
+    @param task_id:
     @param template_name:
     @return:
     """
@@ -136,7 +137,40 @@ def tasks(request, task_id=None, template_name='app/tasks.html'):
 
 @ajax
 @user_permission
-def refresh_tasks(request, template_name='app/refresh_tasks.html'):
+def refresh_tasks(request, template_name='app/task/refresh_tasks_timeline.html'):
+    """
+    Shows all tasks of user. Automatically refreshed.
+    @param request:
+    @param task_id:
+    @param template_name:
+    @return:
+    """
+    tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
+    paginator = Paginator(tasks_list, POSTS_PER_PAGE)
+
+    page = None
+
+    # if task_id is not None:
+    #     page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
+
+    if request.GET.get('page') is not None:
+        page = request.GET.get('page')
+
+    try:
+        tasks_on_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        tasks_on_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        tasks_on_page = paginator.page(paginator.num_pages)
+
+    return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
+
+
+@ajax
+@user_permission
+def refresh_tasks_notifier(request, template_name='app/task/refresh_tasks_notifier.html'):
     """
     Shows pending task. Automatically refreshed.
     @param request:
