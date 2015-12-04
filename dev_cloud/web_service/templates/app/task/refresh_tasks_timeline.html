@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load custom_tags %}
+{#{% load humanize %} |naturaltime#}
 
 <ul class="cbp_tmtimeline">
     {% for task in tasks %}
@@ -9,12 +10,16 @@
                 <span>{{ task.create_time|date:'d-m-Y' }}</span></time>
 
             {% if task.is_processing == True %}
-                <div class="cbp_tmicon bg-secondary">
+                <div class="cbp_tmicon bg-warning">
                     <i class="entypo-clock"></i>
                 </div>
-            {% else %}
+            {% elif task.is_succeeded == True %}
                 <div class="cbp_tmicon bg-info">
                     <i class="entypo-check"></i>
+                </div>
+            {% elif task.is_succeeded == False %}
+                <div class="cbp_tmicon bg-secondary">
+                    <i class="entypo-cancel"></i>
                 </div>
             {% endif %}
 
