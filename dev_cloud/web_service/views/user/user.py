@@ -35,6 +35,7 @@ from core.utils.auth import session_key, update_session
 from core.utils.decorators import django_view, lock_screen
 from core.utils.decorators import user_permission
 from database.models import Users, VirtualMachines, Tasks
+from database.models.tasks import POSTS_PER_PAGE
 from web_service.forms.user.edit_user import EditUserForm
 from web_service.forms.user.unlock import UnlockForm
 
@@ -103,7 +104,7 @@ def members(request, template_name='app/members.html'):
 
 @django_view
 @user_permission
-def tasks(request, template_name='app/tasks.html'):
+def tasks(request, task_id=None, template_name='app/tasks.html'):
     """
     Shows all tasks of user.
     @param request:
@@ -111,9 +112,15 @@ def tasks(request, template_name='app/tasks.html'):
     @return:
     """
     tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
-    paginator = Paginator(tasks_list, 25)  # Show 25 tasks per page
+    paginator = Paginator(tasks_list, POSTS_PER_PAGE)
 
-    page = request.GET.get('page')
+    page = None
+
+    if task_id is not None:
+        page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
+
+    if request.GET.get('page') is not None:
+        page = request.GET.get('page')
 
     try:
         tasks_on_page = paginator.page(page)

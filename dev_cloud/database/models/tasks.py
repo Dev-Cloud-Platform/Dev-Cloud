@@ -21,13 +21,32 @@ from __future__ import unicode_literals
 from django.db import models
 from database.models import Users
 
+POSTS_PER_PAGE = 25  # Show 25 tasks per page
+
+
+class TaskManager(models.Manager):
+    def get_page(self, user, task_id):
+        page = None
+
+        try:
+            create_time = self.filter(user__id=user).filter(id=task_id)
+            page = self.filter(user__id=user).filter(
+                create_time__gt=create_time[0].create_time).count() / POSTS_PER_PAGE + 1
+        except IndexError:
+            pass
+
+        return page
+
 
 class Tasks(models.Model):
     id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=255)
     is_processing = models.IntegerField(blank=True)
     create_time = models.DateTimeField(blank=True, null=True)
+    is_read = models.IntegerField(blank=True)
+    is_succeeded = models.IntegerField(blank=True)
     user = models.ForeignKey(Users)
+    objects = TaskManager()
 
     class Meta:
         managed = False

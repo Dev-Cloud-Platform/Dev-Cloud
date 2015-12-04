@@ -39,6 +39,7 @@ main_patterns = patterns('web_service.views.user.user',
                          url(r'^app/$', user_permission(app_view), name='app_main'),
                          url(r'^app/mailbox/', include(mail_patterns)),
                          url(r'^app/task/$', user_permission(tasks), name='tasks'),
+                         url(r'^app/task/(?P<task_id>\w+)/$', user_permission(tasks), name='tasks'),
                          url(r'^app/utils/refresh_tasks/$', user_permission(refresh_tasks), name='refresh_tasks'),
                          url(r'^app/members/$', user_permission(members), name='members'),
                          url(r'^lock_screen/$', lock_screen, name='lock_screen'))

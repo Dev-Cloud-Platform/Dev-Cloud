@@ -276,14 +276,24 @@ class dev_cloud_task(object):
             except Exception:
                 error(None, _("DataBase - Problem with create new task"))
 
-            ret = function(*args)
+            try:
+                ret = function(*args)
 
-            if self.task:
-                try:
-                    self.task.is_processing = False
-                    self.task.save()
-                except Exception:
-                    error(None, _("DataBase - Problem with update a task"))
+                if self.task:
+                    try:
+                        self.task.is_processing = False
+                        self.task.is_succeeded = True
+                        self.task.save()
+                    except Exception:
+                        error(None, _("DataBase - Problem with update a task"))
+            except Exception:
+                if self.task:
+                    try:
+                        self.task.is_processing = False
+                        self.task.is_succeeded = False
+                        self.task.save()
+                    except Exception:
+                        error(None, _("DataBase - Problem with update a task"))
 
             return ret
 

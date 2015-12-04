@@ -20,7 +20,7 @@
 
             {% for task in pending_tasks %}
                 <li>
-                    <a href="#">
+                    <a href="{% url 'tasks' %}{{ task.id }}">
 				<span class="task">
 					<span class="desc">{{ task.task_name }}</span>
 					<span class="percent"><img src="/static/app/images/ajax-loader-small.gif"/></span>
