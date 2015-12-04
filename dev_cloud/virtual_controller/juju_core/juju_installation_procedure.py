@@ -18,6 +18,8 @@
 # @COPYRIGHT_end
 from fabric.api import run, runs_once, sudo, task
 import sys
+from core.utils.auth import ROOT
+from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 
 @task
@@ -26,7 +28,6 @@ def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
-    print sudo('w', stderr=sys.stdout)
-    # run('juju generate-config', shell=False)
-    # run('juju switch local', shell=False)
-    # sudo('juju bootstrap', shell=False, user='devcloud')
+    SSHConnector.check_status(run('juju generate-config', shell=False, stderr=sys.stdout))
+    SSHConnector.check_status(run('juju switch local', shell=False, stderr=sys.stdout))
+    SSHConnector.check_status(sudo('juju bootstrap', shell=False, user=ROOT, stderr=sys.stdout))

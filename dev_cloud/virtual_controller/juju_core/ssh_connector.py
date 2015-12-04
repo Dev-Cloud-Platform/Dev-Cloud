@@ -18,11 +18,12 @@
 # @COPYRIGHT_end
 import time
 
-from fabric.api import execute, run, env
+from fabric.api import execute, sudo, env
 from fabric.network import disconnect_all
+import sys
 
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
-from core.utils.exception import DevCloudException
+from core.utils.auth import ROOT
 
 
 class SSHConnector(object):
@@ -43,10 +44,7 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = run(command, shell=False, warn_only=True)
-
-        if results_dict.failed:
-            raise Exception
+        results_dict = cls.check_status(sudo(command, shell=False, warn_only=True, user=ROOT, stderr=sys.stdout))
         disconnect_all()
         return results_dict
 
@@ -75,3 +73,15 @@ class SSHConnector(object):
             return False
         else:
             return True
+
+    @staticmethod
+    def check_status(result):
+        """
+        Check result.
+        @param result:
+        @return:
+        """
+        if result.failed:
+            raise Exception
+
+        return result

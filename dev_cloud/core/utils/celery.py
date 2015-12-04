@@ -170,28 +170,27 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
     @param applications: list of applications.
     @return:
     """
-    try:
-        is_timeout = False
-        current_time = 0
-        virtual_machine = VirtualMachine(user_id)
-        while virtual_machine.get_vm_status(vm_serializer_data.get('vm_id')) != \
-                [key for key, value in states.vm_states.iteritems() if value == 'running ctx'][0]:
-            current_time += LOOP_TIME
-            is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
-            if is_timeout:
-                break
+    is_timeout = False
+    current_time = 0
+    virtual_machine = VirtualMachine(user_id)
+    while virtual_machine.get_vm_status(vm_serializer_data.get('vm_id')) != \
+            [key for key, value in states.vm_states.iteritems() if value == 'running ctx'][0]:
+        current_time += LOOP_TIME
+        is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
+        if is_timeout:
+            break
 
-        if not is_timeout:
-            ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
-                               SSH_KEY_PATH)
+    if not is_timeout:
+        ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
+                           SSH_KEY_PATH)
 
-            ssh.exec_task(init_juju_on_vm)
+        ssh.exec_task(init_juju_on_vm)
 
-            for application in ast.literal_eval(applications):
-                app = Applications.objects.get(application_name=application)
-                ssh.call_remote_command(app.instalation_procedure)
-    except Exception:
-        raise DevCloudException('init_vm')
+        for application in ast.literal_eval(applications):
+            app = Applications.objects.get(application_name=application)
+            ssh.call_remote_command(app.instalation_procedure)
+    else:
+        raise Exception
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
