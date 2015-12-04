@@ -28,6 +28,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 
 import re
+from django_ajax.decorators import ajax
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key, update_session
@@ -124,6 +125,21 @@ def tasks(request, template_name='app/tasks.html'):
         tasks_on_page = paginator.page(paginator.num_pages)
 
     return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
+
+
+@ajax
+@user_permission
+def refresh_tasks(request, template_name='app/refresh_tasks.html'):
+    """
+    Shows pending task. Automatically refreshed.
+    @param request:
+    @param template_name:
+    @return:
+    """
+    tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key]), is_processing=True).order_by(
+        '-create_time')
+    return render_to_response(template_name, dict({'pending_tasks': tasks_list}),
+                              context_instance=RequestContext(request))
 
 
 @django_view

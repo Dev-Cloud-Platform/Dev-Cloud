@@ -127,14 +127,14 @@
                     </li>
                 </ul>
             </li>
-        {% ifequal request.session.user.is_superuser True %}
-            <li class="{{ user_activation }}">
-                <a href="{% url 'user_activation' %}">
-                    <i class="entypo-user-add"></i>
-                    <span>{% trans "User activation" %}</span>
-                </a>
-            </li>
-        {% endifequal %}
+            {% ifequal request.session.user.is_superuser True %}
+                <li class="{{ user_activation }}">
+                    <a href="{% url 'user_activation' %}">
+                        <i class="entypo-user-add"></i>
+                        <span>{% trans "User activation" %}</span>
+                    </a>
+                </li>
+            {% endifequal %}
             <li class="{{ members }}">
                 <a href="{% url 'members' %}">
                     <i class="entypo-users"></i>
@@ -168,6 +168,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="
 
+
                                     {% if request.session.user.picture != '' %}{{ MEDIA_URL }}{{ request.session.user.picture }}{% else %}{{ STATIC_URL }}app/images/no-photo.png{% endif %}"
                                  alt="" class="img-circle" width="44"/>
                             {{ request.session.user.first }} {{ request.session.user.last }}
@@ -196,7 +197,7 @@
                             <li>
                                 <a href="#">
                                     <i class="entypo-clipboard"></i>
-                                    {% trans "Tasks" %}
+                                    {% trans "Terms" %}
                                 </a>
                             </li>
                         </ul>
@@ -229,13 +230,13 @@
                                         <a href="#">
                                             <i class="entypo-user-add pull-right"></i>
 
-				<span class="line">
-					<strong>New user registered</strong>
-				</span>
+                                            <span class="line">
+                                                <strong>New user registered</strong>
+                                            </span>
 
-				<span class="line small">
-					30 seconds ago
-				</span>
+                                            <span class="line small">
+                                                30 seconds ago
+                                            </span>
                                         </a>
                                     </li>
 
@@ -243,13 +244,13 @@
                                         <a href="#">
                                             <i class="entypo-heart pull-right"></i>
 
-				<span class="line">
-					<strong>Someone special liked this</strong>
-				</span>
+                                            <span class="line">
+                                                <strong>Someone special liked this</strong>
+                                            </span>
 
-				<span class="line small">
-					2 minutes ago
-				</span>
+                                            <span class="line small">
+                                                2 minutes ago
+                                            </span>
                                         </a>
                                     </li>
 
@@ -257,13 +258,13 @@
                                         <a href="#">
                                             <i class="entypo-user pull-right"></i>
 
-				<span class="line">
-					<strong>Privacy settings have been changed</strong>
-				</span>
+                                                <span class="line">
+                                                    <strong>Privacy settings have been changed</strong>
+                                                </span>
 
-				<span class="line small">
-					3 hours ago
-				</span>
+                                                <span class="line small">
+                                                    3 hours ago
+                                                </span>
                                         </a>
                                     </li>
 
@@ -271,13 +272,13 @@
                                         <a href="#">
                                             <i class="entypo-cancel-circled pull-right"></i>
 
-				<span class="line">
-					John cancelled the event
-				</span>
+                                            <span class="line">
+                                                John cancelled the event
+                                            </span>
 
-				<span class="line small">
-					9 hours ago
-				</span>
+                                            <span class="line small">
+                                                9 hours ago
+                                            </span>
                                         </a>
                                     </li>
 
@@ -285,13 +286,13 @@
                                         <a href="#">
                                             <i class="entypo-info pull-right"></i>
 
-				<span class="line">
-					The server is status is stable
-				</span>
+                                            <span class="line">
+                                                The server is status is stable
+                                            </span>
 
-				<span class="line small">
-					yesterday at 10:30am
-				</span>
+                                            <span class="line small">
+                                                yesterday at 10:30am
+                                            </span>
                                         </a>
                                     </li>
 
@@ -299,13 +300,13 @@
                                         <a href="#">
                                             <i class="entypo-rss pull-right"></i>
 
-				<span class="line">
-					New comments waiting approval
-				</span>
+                                            <span class="line">
+                                                New comments waiting approval
+                                            </span>
 
-				<span class="line small">
-					last week
-				</span>
+                                            <span class="line small">
+                                                last week
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -332,69 +333,73 @@
                                 <ul class="dropdown-menu-list scroller">
                                     <li class="active">
                                         <a href="#">
-				<span class="image pull-right">
-					<img src="{{ STATIC_URL }}app/images/thumb-1.png" alt="" class="img-circle"/>
-				</span>
+                                            <span class="image pull-right">
+                                                <img src="{{ STATIC_URL }}app/images/thumb-1.png" alt=""
+                                                     class="img-circle"/>
+                                            </span>
 
-				<span class="line">
-					<strong>Luc Chartier</strong>
-					- yesterday
-				</span>
+                                            <span class="line">
+                                                <strong>Luc Chartier</strong>
+                                                - yesterday
+                                            </span>
 
-				<span class="line desc small">
-					This ain’t our first item, it is the best of the rest.
-				</span>
+                                            <span class="line desc small">
+                                                This ain’t our first item, it is the best of the rest.
+                                            </span>
                                         </a>
                                     </li>
 
                                     <li class="active">
                                         <a href="#">
-				<span class="image pull-right">
-					<img src="{{ STATIC_URL }}app/images/thumb-2.png" alt="" class="img-circle"/>
-				</span>
+                                            <span class="image pull-right">
+                                                <img src="{{ STATIC_URL }}app/images/thumb-2.png" alt=""
+                                                     class="img-circle"/>
+                                            </span>
 
-				<span class="line">
-					<strong>Salma Nyberg</strong>
-					- 2 days ago
-				</span>
+                                            <span class="line">
+                                                <strong>Salma Nyberg</strong>
+                                                - 2 days ago
+                                            </span>
 
-				<span class="line desc small">
-					Oh he decisively impression attachment friendship so if everything.
-				</span>
+                                            <span class="line desc small">
+                                                Oh he decisively impression attachment friendship so if everything.
+                                            </span>
                                         </a>
                                     </li>
 
                                     <li>
                                         <a href="#">
-				<span class="image pull-right">
-					<img src="{{ STATIC_URL }}app/images/thumb-3.png" alt="" class="img-circle"/>
-				</span>
+                                            <span class="image pull-right">
+                                                <img src="{{ STATIC_URL }}app/images/thumb-3.png" alt=""
+                                                     class="img-circle"/>
+                                            </span>
 
-				<span class="line">
-					Hayden Cartwright
-					- a week ago
-				</span>
+                                            <span class="line">
+                                                Hayden Cartwright
+                                                - a week ago
+                                            </span>
 
-				<span class="line desc small">
-					Whose her enjoy chief new young. Felicity if ye required likewise so doubtful.
-				</span>
+                                            <span class="line desc small">
+                                                Whose her enjoy chief new young. Felicity if ye required likewise so doubtful.
+                                            </span>
                                         </a>
                                     </li>
 
                                     <li>
                                         <a href="#">
-				<span class="image pull-right">
-					<img src="{{ STATIC_URL }}app/images/thumb-4.png" alt="" class="img-circle"/>
-				</span>
+                                            <span class="image pull-right">
+                                                <img src="{{ STATIC_URL }}app/images/thumb-4.png" alt=""
+                                                     class="img-circle"/>
+                                            </span>
 
-				<span class="line">
-					Sandra Eberhardt
-					- 16 days ago
-				</span>
+                                            <span class="line">
+                                                Sandra Eberhardt
+                                                - 16 days ago
+                                            </span>
 
-				<span class="line desc small">
-					On so attention necessary at by provision otherwise existence direction.
-				</span>
+                                            <span class="line desc small">
+                                                On so attention necessary at by provision otherwise existence direction.
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -408,113 +413,8 @@
                     </li>
 
                     <!-- Task Notifications -->
-                    <li class="notifications dropdown">
-
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
-                           data-close-others="true">
-                            <i class="entypo-list"></i>
-                            <span class="badge badge-warning">1</span>
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li class="top">
-                                <p>You have 6 pending tasks</p>
-                            </li>
-
-                            <li>
-                                <ul class="dropdown-menu-list scroller">
-                                    <li>
-                                        <a href="#">
-				<span class="task">
-					<span class="desc">Procurement</span>
-					<span class="percent">27%</span>
-				</span>
-
-				<span class="progress">
-					<span style="width: 27%;" class="progress-bar progress-bar-success">
-						<span class="sr-only">27% Complete</span>
-					</span>
-				</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-				<span class="task">
-					<span class="desc">App Development</span>
-					<span class="percent">83%</span>
-				</span>
-
-				<span class="progress progress-striped">
-					<span style="width: 83%;" class="progress-bar progress-bar-danger">
-						<span class="sr-only">83% Complete</span>
-					</span>
-				</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-				<span class="task">
-					<span class="desc">HTML Slicing</span>
-					<span class="percent">91%</span>
-				</span>
-
-				<span class="progress">
-					<span style="width: 91%;" class="progress-bar progress-bar-success">
-						<span class="sr-only">91% Complete</span>
-					</span>
-				</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-				<span class="task">
-					<span class="desc">Database Repair</span>
-					<span class="percent">12%</span>
-				</span>
-
-				<span class="progress progress-striped">
-					<span style="width: 12%;" class="progress-bar progress-bar-warning">
-						<span class="sr-only">12% Complete</span>
-					</span>
-				</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-				<span class="task">
-					<span class="desc">Backup Create Progress</span>
-					<span class="percent">54%</span>
-				</span>
-
-				<span class="progress progress-striped">
-					<span style="width: 54%;" class="progress-bar progress-bar-info">
-						<span class="sr-only">54% Complete</span>
-					</span>
-				</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-				<span class="task">
-					<span class="desc">Upgrade Progress</span>
-					<span class="percent">17%</span>
-				</span>
-
-				<span class="progress progress-striped">
-					<span style="width: 17%;" class="progress-bar progress-bar-important">
-						<span class="sr-only">17% Complete</span>
-					</span>
-				</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="external">
-                                <a href="{% url 'tasks' %}">{% trans "See all tasks" %}</a>
-                            </li>
-                        </ul>
-
+                    <li id="task_notifier" class="notifications dropdown">
+                        <!-- Generate content -->
                     </li>
 
                 </ul>
@@ -591,31 +491,7 @@
     {% endblock %}
 
     {% include "app/bottom_scripts.html" %}
-
-    <script>
-        jQuery('#lock_screen').attr('href','{% url 'lock_screen' %}?next=' + window.location.pathname);
-
-        var idleTime = 0;
-        jQuery(document).ready(function () {
-            //Increment the idle time counter every minute.
-            var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
-
-            //Zero the idle timer on mouse movement.
-            jQuery(this).mousemove(function (e) {
-                idleTime = 0;
-            });
-            jQuery(this).keypress(function (e) {
-                idleTime = 0;
-            });
-        });
-
-        function timerIncrement() {
-            idleTime = idleTime + 1;
-            if (idleTime > 19) { // 20 minutes
-                location.replace("{% url 'lock_screen' %}?next=" + window.location.pathname);
-            }
-        }
-    </script>
+    {% include "app/utils_scripts.html" %}
 
 {% endblock %}
 </body>
