@@ -42,7 +42,7 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = run(command)
+        results_dict = run(command, shell=False)
         disconnect_all()
         return results_dict
 
