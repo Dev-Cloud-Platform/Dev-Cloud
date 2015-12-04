@@ -284,6 +284,7 @@ class dev_cloud_task(object):
                         self.task.is_processing = False
                         self.task.is_succeeded = True
                         self.task.save()
+                        return ret
                     except Exception:
                         error(None, _("DataBase - Problem with update a task"))
             except Exception:
@@ -292,10 +293,9 @@ class dev_cloud_task(object):
                         self.task.is_processing = False
                         self.task.is_succeeded = False
                         self.task.save()
+                        return ret
                     except Exception:
                         error(None, _("DataBase - Problem with update a task"))
-
-            return ret
 
         return wrapped_function
 
