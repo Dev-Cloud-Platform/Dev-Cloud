@@ -45,11 +45,11 @@ class SSHConnector(object):
         """
         results_dict = run(command, shell=False)
 
-        if results_dict.return_code == 0:
+        if results_dict.succeeded:
+            disconnect_all()
+            return results_dict
+        else:
             raise DevCloudException('ssh_run_command')
-
-        disconnect_all()
-        return results_dict
 
     @classmethod
     def exec_task(cls, task):
