@@ -137,7 +137,7 @@ def tasks(request, task_id=None, template_name='app/task/tasks.html'):
 
 @ajax
 @user_permission
-def refresh_tasks(request, template_name='app/task/refresh_tasks_timeline.html'):
+def refresh_tasks(request, task_id=None, template_name='app/task/refresh_tasks_timeline.html'):
     """
     Shows all tasks of user. Automatically refreshed.
     @param request:
@@ -150,8 +150,8 @@ def refresh_tasks(request, template_name='app/task/refresh_tasks_timeline.html')
 
     page = None
 
-    # if task_id is not None:
-    #     page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
+    if task_id is not None:
+        page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
 
     if request.GET.get('page') is not None:
         page = request.GET.get('page')
