@@ -18,10 +18,11 @@
 # @COPYRIGHT_end
 import time
 
-from fabric.api import execute, sudo, env
+from fabric.api import execute, run, env
 from fabric.network import disconnect_all
 
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
+from core.utils.exception import DevCloudException
 
 
 class SSHConnector(object):
@@ -42,7 +43,11 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = sudo(command, shell=False)
+        results_dict = run(command, shell=False)
+
+        if results_dict.return_code == 0:
+            raise DevCloudException('ssh_run_command')
+
         disconnect_all()
         return results_dict
 
