@@ -16,14 +16,16 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from fabric.api import sudo, task
+from fabric.api import run, task, runs_once
 
 
 @task
+@runs_once
 def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
-    sudo('juju generate-config', shell=False)
-    sudo('juju switch local', shell=False)
-    sudo('juju bootstrap', shell=False)
+    run('w')
+    # run('juju generate-config', shell=False)
+    # run('juju switch local', shell=False)
+    # run('juju bootstrap', shell=False)
