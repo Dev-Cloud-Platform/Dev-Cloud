@@ -25,7 +25,7 @@ def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
-    run('w')
+    print run('w')
     # run('juju generate-config', shell=False)
     # run('juju switch local', shell=False)
     # run('juju bootstrap', shell=False)
