@@ -32,8 +32,9 @@ class DevCloudException(Exception):
 
 class RestErrorException(Exception):
     """
-        Exception thrown when REST call returns with an error.
+    Exception thrown when REST call returns with an error.
     """
+
     def __init__(self, value):
         Exception.__init__(self, value)
         self.value = value

@@ -43,13 +43,12 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = run(command, shell=False)
+        results_dict = run(command, shell=False, warn_only=True)
 
-        if results_dict.succeeded:
-            disconnect_all()
-            return results_dict
-        else:
-            raise DevCloudException('ssh_run_command')
+        if results_dict.failed:
+            raise Exception
+        disconnect_all()
+        return results_dict
 
     @classmethod
     def exec_task(cls, task):

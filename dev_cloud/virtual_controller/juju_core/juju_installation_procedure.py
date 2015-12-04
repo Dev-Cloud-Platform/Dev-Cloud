@@ -17,6 +17,7 @@
 #
 # @COPYRIGHT_end
 from fabric.api import run, runs_once, sudo, task
+import sys
 
 
 @task
@@ -25,7 +26,7 @@ def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
-    print sudo('w')
+    print sudo('w', stderr=sys.stdout)
     # run('juju generate-config', shell=False)
     # run('juju switch local', shell=False)
-    # run('juju bootstrap', shell=False)
+    # sudo('juju bootstrap', shell=False, user='devcloud')
