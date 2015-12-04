@@ -18,7 +18,7 @@
 # @COPYRIGHT_end
 import time
 
-from fabric.api import execute, run, env
+from fabric.api import execute, sudo, env
 from fabric.network import disconnect_all
 
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
@@ -42,7 +42,7 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = run(command, shell=False)
+        results_dict = sudo(command, shell=False)
         disconnect_all()
         return results_dict
 
