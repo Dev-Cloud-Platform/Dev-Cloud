@@ -28,6 +28,8 @@ def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
-    SSHConnector.check_status(sudo('juju generate-config', warn_only=True, stderr=sys.stdout))
-    SSHConnector.check_status(sudo('juju switch local', warn_only=True, stderr=sys.stdout))
-    SSHConnector.check_status(sudo('juju bootstrap', warn_only=True, stderr=sys.stdout))
+    SSHConnector.check_status(
+        run('juju generate-config', warn_only=True, pty=False, stderr=sys.stdout, combine_stderr=True))
+    SSHConnector.check_status(
+        run('juju switch local', warn_only=True, pty=False, stderr=sys.stdout, combine_stderr=True))
+    SSHConnector.check_status(run('juju bootstrap', warn_only=True, pty=False, stderr=sys.stdout, combine_stderr=True))
