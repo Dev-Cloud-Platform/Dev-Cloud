@@ -20,7 +20,7 @@ import logging
 import datetime
 
 from django.contrib.messages import success
-from django.db import transaction
+from django.db import transaction, DatabaseError
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.utils.http import urlquote
@@ -273,7 +273,7 @@ class dev_cloud_task(object):
             try:
                 self.task = Tasks.objects.create(task_name=self.task_name, is_processing=True,
                                                  create_time=datetime.datetime.now(), user_id=args[0])
-            except Exception:
+            except DatabaseError:
                 error(None, _("DataBase - Problem with create new task"))
 
             try:
@@ -285,7 +285,7 @@ class dev_cloud_task(object):
                         self.task.is_succeeded = True
                         self.task.save()
                         return ret
-                    except Exception:
+                    except DatabaseError:
                         error(None, _("DataBase - Problem with update a task"))
             except Exception:
                 if self.task:
@@ -294,7 +294,7 @@ class dev_cloud_task(object):
                         self.task.is_succeeded = False
                         self.task.save()
                         return ret
-                    except Exception:
+                    except DatabaseError:
                         error(None, _("DataBase - Problem with update a task"))
 
         return wrapped_function
