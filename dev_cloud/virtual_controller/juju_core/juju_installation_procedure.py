@@ -16,9 +16,8 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from fabric.api import run, runs_once, sudo, task
+from fabric.api import run, runs_once, task
 import sys
-from core.utils.auth import ROOT
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 
