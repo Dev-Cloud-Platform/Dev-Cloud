@@ -194,7 +194,9 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
         ssh.do_add_host(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                         VM_IMAGE_ROOT_PASSWORD)
         ssh.do_connect()
+        ssh.do_run('ifconfig')
         ssh.do_run('juju generate-config && juju switch local && juju bootstrap')
+        ssh.do_close()
     else:
         raise Exception
 
