@@ -270,6 +270,8 @@ class dev_cloud_task(object):
         """
 
         def wrapped_function(*args):
+            ret = None
+
             try:
                 self.task = Tasks.objects.create(task_name=self.task_name, is_processing=True,
                                                  create_time=datetime.datetime.now(), user_id=args[0])
@@ -284,7 +286,6 @@ class dev_cloud_task(object):
                         self.task.is_processing = False
                         self.task.is_succeeded = True
                         self.task.save()
-                        return ret
                     except DatabaseError:
                         error(None, _("DataBase - Problem with update a task"))
             except Exception:
@@ -293,9 +294,10 @@ class dev_cloud_task(object):
                         self.task.is_processing = False
                         self.task.is_succeeded = False
                         self.task.save()
-                        return ret
                     except DatabaseError:
                         error(None, _("DataBase - Problem with update a task"))
+            finally:
+                return ret
 
         return wrapped_function
 
