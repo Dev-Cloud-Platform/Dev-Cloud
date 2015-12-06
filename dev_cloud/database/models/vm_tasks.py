@@ -16,17 +16,22 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from __future__ import unicode_literals
 
+from django.db import models
 
-# Import order is very important
-
-from applications import Applications
-from installed_applications import InstalledApplications
-from roles import Roles
-from template_instances import TemplateInstances
-from users import Users
-from users_roles import UsersInRoles
 from tasks import Tasks
-from notifications import Notifications
 from virtual_machines import VirtualMachines
-from vm_tasks import VmTasks
+
+TASK_ID = 'task_id'
+
+
+class VmTasks(models.Model):
+    id = models.AutoField(primary_key=True)
+    vm = models.ForeignKey(VirtualMachines)
+    task = models.ForeignKey(Tasks)
+
+    class Meta:
+        managed = False
+        db_table = 'Vm_tasks'
+        # app_label = 'database'

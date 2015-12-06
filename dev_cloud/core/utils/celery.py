@@ -19,6 +19,8 @@
 from __future__ import absolute_import
 import ast
 from celery import Celery
+from django.db import DatabaseError
+from django.middleware import transaction
 from fabric.decorators import hosts
 from fabric.operations import run
 from fabric.tasks import execute
@@ -32,7 +34,9 @@ from core.settings.config import SSH_KEY_PATH, VM_IMAGE_ROOT_PASSWORD
 from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
 from core.utils.exception import DevCloudException
-from database.models import Applications
+from core.utils.log import error
+from database.models import Applications, InstalledApplications, VirtualMachines
+from database.models.vm_tasks import TASK_ID, VmTasks
 from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.key import Key
 from virtual_controller.cc1_module.public_ip import PoolIP
@@ -72,7 +76,7 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 @app.task(trail=True, name='core.utils.tasks.request')
 @dev_cloud_task(REQUEST_IP)
-def request(user_id):
+def request(user_id, *args):
     """
     Method to obtain public IP form CC1.
     @return: Obtained IP.
@@ -84,7 +88,7 @@ def request(user_id):
 
 @app.task(trail=True, name='core.utils.tasks.release')
 @dev_cloud_task(RELEASE_IP)
-def release(user_id, ip_address):
+def release(user_id, ip_address, *args):
     """
     Method to release public IP form CC1.
     @return: Status about removed ip address.
@@ -95,7 +99,7 @@ def release(user_id, ip_address):
 
 @app.task(trail=True, name='core.utils.tasks.check_resource')
 @dev_cloud_task(CHECK_RESOURCE)
-def check_resource(user_id, template_id):
+def check_resource(user_id, template_id, *args):
     """
     Method to check available resource to create new virtual machine.
     @param user_id: id of caller.
@@ -108,21 +112,43 @@ def check_resource(user_id, template_id):
     return quota.get_status()
 
 
+@transaction.atomic
 @app.task(trail=True, name='core.utils.tasks.create_virtual_machine')
 @dev_cloud_task(CREATE_VM)
-def create_virtual_machine(user_id, vm_property):
+def create_virtual_machine(user_id, vm_property, *args):
     """
     Creates new instance of virtual machine on CC1, making a request.
     @param user_id: id of caller.
     @param vm_property: instance of virtual machine form with properties.
     @return: id of virtual machine.
     """
-    virtual_machine = VirtualMachine(user_id, jsonpickle.decode(vm_property))
-    return virtual_machine.create()
+    virtual_machine_form = jsonpickle.decode(vm_property)
+    virtual_machine = VirtualMachine(user_id, virtual_machine_form)
+    vm_id = virtual_machine.create()
+
+    if vm_id:
+        try:
+            virtual_machine = VirtualMachines.objects.create(
+                vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
+                public_ip=virtual_machine_form.get_public_ip(),
+                ssh_key=virtual_machine_form.get_ssh_private_key(),
+                template_instance_id=virtual_machine_form.get_template())
+
+            for application in ast.literal_eval(virtual_machine_form.get_applications()):
+                app = Applications.objects.get(application_name=application)
+                InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
+                                                     user_id=user_id, application_id=app.id,
+                                                     virtual_machine_id=virtual_machine.pk)
+
+            VmTasks.objects.create(vm_id=virtual_machine.id, task_id=args[0].get(TASK_ID))
+        except Exception, ex:
+            error(args[0], _("DataBase - Problem with create virtual machine") + str(ex))
+
+    return vm_id
 
 
 @app.task(trail=True, name='core.utils.tasks.get_virtual_machine_status')
-def get_virtual_machine_status(user_id, vm_id):
+def get_virtual_machine_status(user_id, vm_id, *args):
     """
     Gets requested caller's virtual machine.
     @param user_id: id of caller.
@@ -135,7 +161,7 @@ def get_virtual_machine_status(user_id, vm_id):
 
 @app.task(trail=True, name='core.utils.tasks.generate_ssh_key')
 @dev_cloud_task(GENERATE_SSH)
-def generate_ssh_key(user_id, name):
+def generate_ssh_key(user_id, name, *args):
     """
     Generates ssh key pair. Public part of that Key is
     stored in CC1 database with specified name, whereas content of the private Key
@@ -163,7 +189,7 @@ def get_ssh_key(user_id, name):
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.init_virtual_machine')
 @dev_cloud_task(INIT_VM)
-def init_virtual_machine(user_id, vm_serializer_data, applications):
+def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
     """
     Initialize given virtual machine with selected application stored in database.
     @param user_id: id of caller.
@@ -203,7 +229,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications):
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
 @dev_cloud_task(DESTROY_VM)
-def destroy_virtual_machine(user_id, vm_id):
+def destroy_virtual_machine(user_id, vm_id, *args):
     """
     Destroys the given virtual machine.
     @param user_id: id of caller.

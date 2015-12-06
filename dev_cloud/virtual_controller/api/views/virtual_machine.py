@@ -118,19 +118,8 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                 pickle_vm = jsonpickle.encode(virtual_machine_form)
                 vm_id = celery.create_virtual_machine.apply_async(args=(user_id, pickle_vm)).get()
                 if vm_id != FAILED:
-                    virtual_machine = self.serializer_class.Meta.model.objects.create(
-                        vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
-                        public_ip=virtual_machine_form.get_public_ip(),
-                        ssh_key=virtual_machine_form.get_ssh_private_key(),
-                        template_instance_id=virtual_machine_form.get_template())
+                    virtual_machine = self.serializer_class.Meta.model.objects.get(vm_id=vm_id)
                     serializer = self.get_serializer(virtual_machine)
-
-                    for application in ast.literal_eval(virtual_machine_form.get_applications()):
-                        app = Applications.objects.get(application_name=application)
-                        InstalledApplications.objects.create(workspace=virtual_machine_form.get_workspace(),
-                                                             user_id=user_id, application_id=app.id,
-                                                             virtual_machine_id=virtual_machine.pk)
-
                     celery.init_virtual_machine.apply_async(
                         args=(user_id, serializer.data, virtual_machine_form.get_applications()))
 

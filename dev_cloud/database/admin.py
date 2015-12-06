@@ -19,6 +19,7 @@
 
 from django.contrib import admin
 
+from models.vm_tasks import VmTasks
 from models.applications import Applications
 from models.installed_applications import InstalledApplications
 from models.roles import Roles
@@ -42,6 +43,7 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('create_time',)
     date_hierarchy = 'create_time'
 
+
 admin.site.register(Applications, ApplicationAdmin)
 admin.site.register(InstalledApplications)
 admin.site.register(Roles)
@@ -51,3 +53,4 @@ admin.site.register(UsersInRoles)
 admin.site.register(Tasks)
 admin.site.register(Notifications)
 admin.site.register(VirtualMachines)
+admin.site.register(VmTasks)

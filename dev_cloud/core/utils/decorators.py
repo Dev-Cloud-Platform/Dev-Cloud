@@ -29,6 +29,7 @@ from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
 from database.models import Users, Tasks
+from database.models.vm_tasks import TASK_ID
 from messages_codes import auth_error_text
 
 from core.utils.log import error
@@ -275,8 +276,10 @@ class dev_cloud_task(object):
             try:
                 self.task = Tasks.objects.create(task_name=self.task_name, is_processing=True,
                                                  create_time=datetime.datetime.now(), user_id=args[0])
+                context = {TASK_ID: self.task.id}
+                args = args + (context,)
             except DatabaseError:
-                error(None, _("DataBase - Problem with create new task"))
+                error(args[0], _("DataBase - Problem with create new task"))
 
             try:
                 ret = function(*args)
@@ -287,7 +290,7 @@ class dev_cloud_task(object):
                         self.task.is_succeeded = True
                         self.task.save()
                     except DatabaseError:
-                        error(None, _("DataBase - Problem with update a task"))
+                        error(args[0], _("DataBase - Problem with update a task"))
             except Exception:
                 if self.task:
                     try:
@@ -295,7 +298,7 @@ class dev_cloud_task(object):
                         self.task.is_succeeded = False
                         self.task.save()
                     except DatabaseError:
-                        error(None, _("DataBase - Problem with update a task"))
+                        error(args[0], _("DataBase - Problem with update a task"))
             finally:
                 return ret
 
