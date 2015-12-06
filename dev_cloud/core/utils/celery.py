@@ -213,7 +213,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         #     app = Applications.objects.get(application_name=application)
         #     ssh.call_remote_command(app.instalation_procedure)
         ssh = RunCommand()
-        ssh.do_add_host(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
+        ssh.do_add_host("%s,%s,%s", virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                         VM_IMAGE_ROOT_PASSWORD)
         ssh.do_connect()
         ssh.do_run('ifconfig')
