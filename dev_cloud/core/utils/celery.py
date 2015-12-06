@@ -18,34 +18,30 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 import ast
-from celery import Celery
-from django.db import DatabaseError
-from django.middleware import transaction
-from fabric.decorators import hosts
-from fabric.operations import run
-from fabric.tasks import execute
-import jsonpickle
-import paramiko
-from core.common import states
 
+from celery import Celery
+from django.db import transaction
+import jsonpickle
+
+from django.utils.translation import ugettext as _
+
+from core.common import states
 from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
-from core.settings.config import SSH_KEY_PATH, VM_IMAGE_ROOT_PASSWORD
+from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
-from core.utils.exception import DevCloudException
 from core.utils.log import error
 from database.models import Applications, InstalledApplications, VirtualMachines
 from database.models.vm_tasks import TASK_ID, VmTasks
 from virtual_controller.cc1_module.check_quota import Quota
 from virtual_controller.cc1_module.key import Key
 from virtual_controller.cc1_module.public_ip import PoolIP
-from django.utils.translation import ugettext as _
+
 
 
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
-from virtual_controller.juju_core.juju_installation_procedure import init_juju_on_vm
 from virtual_controller.juju_core.run_cmd import RunCommand
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
