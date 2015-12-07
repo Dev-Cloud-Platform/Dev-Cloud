@@ -20,6 +20,7 @@ django_filter>=0.9.2
 requests>=2.5.1
 redis>=2.10.3
 jsonpickle>=0.9.2
+fexpect>=0.2
 PIL>=1.1.7
 pillow==3.0.0
 
