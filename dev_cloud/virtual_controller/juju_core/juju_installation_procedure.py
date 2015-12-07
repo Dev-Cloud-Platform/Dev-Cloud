@@ -49,7 +49,7 @@ def init_juju_on_vm():
     # )
 
     SSHConnector.check_status(
-        run('echo ' + VM_IMAGE_ROOT_PASSWORD + ' | -S juju bootstrap',
+        run('juju bootstrap > ' + VM_IMAGE_ROOT_PASSWORD,
             warn_only=True,
             stderr=sys.stderr,
             combine_stderr=True)
