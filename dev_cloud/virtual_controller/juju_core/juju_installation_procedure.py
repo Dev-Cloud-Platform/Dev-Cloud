@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from fabric.api import run, runs_once, task
+from fabric.api import run, runs_once, task, sudo
 import sys
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
@@ -30,10 +30,18 @@ def init_juju_on_vm():
     Exec procedure on remote server to initialize juju environment.
     """
     SSHConnector.check_status(
-        run('juju generate-config && juju switch local && juju bootstrap',
+        run('juju generate-config && juju switch local',
             warn_only=True,
             stderr=sys.stderr,
             combine_stderr=True)
+    )
+
+    SSHConnector.check_status(
+        sudo('juju bootstrap',
+             shell=False,
+             warn_only=True,
+             stderr=sys.stderr,
+             combine_stderr=True)
     )
 
     # SSHConnector.check_status(
