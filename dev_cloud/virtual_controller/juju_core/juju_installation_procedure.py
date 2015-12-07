@@ -20,6 +20,8 @@
 import sys
 
 from fabric.api import run, task, sudo
+from core.settings.config import VM_IMAGE_ROOT_PASSWORD
+
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 sys.stderr = open('/dev/null')
@@ -38,16 +40,17 @@ def init_juju_on_vm():
             combine_stderr=True)
     )
 
-    SSHConnector.check_status(
-        sudo('chmod 777 /home/devcloud/.juju/ -R',
-             shell=True,
-             warn_only=True,
-             stderr=sys.stderr,
-             combine_stderr=True)
-    )
+    # SSHConnector.check_status(
+    #     sudo('chmod 777 /home/devcloud/.juju/ -R',
+    #          shell=True,
+    #          warn_only=True,
+    #          stderr=sys.stderr,
+    #          combine_stderr=True)
+    # )
 
     SSHConnector.check_status(
-        run('juju bootstrap',
+        run('echo %s | juju bootstrap',
+            VM_IMAGE_ROOT_PASSWORD,
             warn_only=True,
             stderr=sys.stderr,
             combine_stderr=True)
