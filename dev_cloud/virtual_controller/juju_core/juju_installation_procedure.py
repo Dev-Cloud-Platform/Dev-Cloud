@@ -20,19 +20,19 @@ from fabric.api import run, runs_once, task
 import sys
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
+sys.stderr = open('/dev/null')
+sys.stderr = sys.__stderr__
+
 
 @task
-@runs_once
 def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
     SSHConnector.check_status(
         run('juju generate-config && juju switch local && juju bootstrap',
-            shell=True,
             warn_only=True,
-            pty=False,
-            stderr=sys.stdout,
+            stderr=sys.stderr,
             combine_stderr=True)
     )
 

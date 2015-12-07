@@ -34,9 +34,11 @@ class SSHConnector(object):
     def __init__(self, host, user, key):
         env.host_string = "%s@%s" % (user, host)
         env.user = user
+        env.sudo_user = user
         env.key_filename = key
         env.password = VM_IMAGE_ROOT_PASSWORD
         env.forward_agent = True
+        env.use_shell = False
 
     @classmethod
     def call_remote_command(cls, command):
