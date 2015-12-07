@@ -49,10 +49,9 @@ def init_juju_on_vm():
     #          combine_stderr=True)
     # )
 
-    with settings(prompts={'[sudo] password for devcloud:': VM_IMAGE_ROOT_PASSWORD}):
-        SSHConnector.check_status(
-            run('juju bootstrap',
-                warn_only=True,
-                stderr=sys.stderr,
-                combine_stderr=True)
-        )
+    SSHConnector.check_status(
+        run('juju bootstrap',
+            warn_only=True,
+            stderr=sys.stderr,
+            combine_stderr=True)
+    )

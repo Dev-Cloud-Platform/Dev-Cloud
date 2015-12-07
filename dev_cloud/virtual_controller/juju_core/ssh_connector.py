@@ -39,6 +39,7 @@ class SSHConnector(object):
         env.password = VM_IMAGE_ROOT_PASSWORD
         env.forward_agent = True
         env.use_shell = False
+        env.prompts = {'[sudo] password for devcloud:': VM_IMAGE_ROOT_PASSWORD}
 
     @classmethod
     def call_remote_command(cls, command):
