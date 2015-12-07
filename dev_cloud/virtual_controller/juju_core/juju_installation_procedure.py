@@ -40,6 +40,7 @@ def init_juju_on_vm():
 
     SSHConnector.check_status(
         sudo('chmod 777 /home/devcloud/.juju/ -R',
+             shell=True,
              warn_only=True,
              stderr=sys.stderr,
              combine_stderr=True)
