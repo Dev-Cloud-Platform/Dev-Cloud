@@ -108,7 +108,6 @@ def check_resource(user_id, template_id, *args):
     return quota.get_status()
 
 
-@transaction.atomic
 @app.task(trail=True, name='core.utils.tasks.create_virtual_machine')
 @dev_cloud_task(CREATE_VM)
 def create_virtual_machine(user_id, vm_property, *args):

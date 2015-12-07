@@ -127,7 +127,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
                 else:
                     return Response(status=status.HTTP_417_EXPECTATION_FAILED)
             except Exception as ex:
-                error(user_id, ex)
+                error(user_id, str(ex))
                 # Destroy created virtual machine:
                 if vm_id is not None:
                     celery.destroy_virtual_machine.apply_async(
