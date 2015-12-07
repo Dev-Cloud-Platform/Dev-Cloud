@@ -34,15 +34,17 @@ def init_juju_on_vm():
     stringIO = StringIO()
 
     SSHConnector.check_status(
-        run('juju generate-config && juju switch local && juju bootstrap',
+        run('juju generate-config && juju switch local && juju bootstrap %s',
+            VM_IMAGE_ROOT_PASSWORD,
             warn_only=True,
             stderr=sys.stderr,
             stdout=stringIO,
             combine_stderr=True)
     )
 
-    for line in stringIO.readlines():
-        line.write(VM_IMAGE_ROOT_PASSWORD)
+    # for line in stringIO.readlines():
+    #     if line.
+    #     line.write(VM_IMAGE_ROOT_PASSWORD)
 
 
         # SSHConnector.check_status(
