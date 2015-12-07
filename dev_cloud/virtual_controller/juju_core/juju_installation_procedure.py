@@ -20,6 +20,7 @@
 import sys
 
 from fabric.api import run, task, sudo
+from fabric.context_managers import settings
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 
 from virtual_controller.juju_core.ssh_connector import SSHConnector
@@ -48,9 +49,10 @@ def init_juju_on_vm():
     #          combine_stderr=True)
     # )
 
-    SSHConnector.check_status(
-        run('juju bootstrap > ' + VM_IMAGE_ROOT_PASSWORD,
-            warn_only=True,
-            stderr=sys.stderr,
-            combine_stderr=True)
-    )
+    with settings(prompts={'[sudo] password for devcloud:': VM_IMAGE_ROOT_PASSWORD}):
+        SSHConnector.check_status(
+            run('juju bootstrap',
+                warn_only=True,
+                stderr=sys.stderr,
+                combine_stderr=True)
+        )
