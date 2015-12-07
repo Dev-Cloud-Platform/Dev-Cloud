@@ -80,7 +80,7 @@ class SSHConnector(object):
     @staticmethod
     def check_status(result):
         """
-        Check result.
+        Check result and pass authorization privileges.
         @param result:
         @return:
         """

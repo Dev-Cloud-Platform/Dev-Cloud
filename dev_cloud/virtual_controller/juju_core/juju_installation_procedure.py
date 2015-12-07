@@ -16,8 +16,10 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from StringIO import StringIO
 from fabric.api import run, runs_once, task, sudo
 import sys
+from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 sys.stderr = open('/dev/null')
@@ -29,20 +31,27 @@ def init_juju_on_vm():
     """
     Exec procedure on remote server to initialize juju environment.
     """
+    stringIO = StringIO()
+
     SSHConnector.check_status(
-        run('juju generate-config && juju switch local',
+        run('juju generate-config && juju switch local && juju bootstrap',
             warn_only=True,
             stderr=sys.stderr,
+            stdout=stringIO,
             combine_stderr=True)
     )
 
-    SSHConnector.check_status(
-        sudo('juju bootstrap',
-             shell=False,
-             warn_only=True,
-             stderr=sys.stderr,
-             combine_stderr=True)
-    )
+    for line in stringIO.readlines():
+        line.write(VM_IMAGE_ROOT_PASSWORD)
+
+
+        # SSHConnector.check_status(
+        #     sudo('juju bootstrap',
+        #          shell=False,
+        #          warn_only=True,
+        #          stderr=sys.stderr,
+        #          combine_stderr=True)
+        # )
 
     # SSHConnector.check_status(
     #     run('juju switch local', warn_only=True, pty=False, stderr=sys.stdout, combine_stderr=True))
