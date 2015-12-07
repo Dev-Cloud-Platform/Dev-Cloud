@@ -1,0 +1,20 @@
+machine:
+  python:
+    version: 2.7.9
+  services:
+    - mysql
+    - redis
+  environment:
+    DB_NAME: Dev_Cloud_db
+    DB_USER: root
+dependencies:
+  post:
+    - pip install -r /requirements/prod.txt
+general:
+  build_dir: ./web/
+test:
+  override:
+    - coverage run manage.py prod test
+  post:
+    - coverage report > $CIRCLE_ARTIFACTS/coverage.txt
+    - "pyflakes . > $CIRCLE_ARTIFACTS/pyflakes.txt || :"
