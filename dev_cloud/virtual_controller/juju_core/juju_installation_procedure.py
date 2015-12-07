@@ -46,7 +46,7 @@ def init_juju_on_vm():
     )
 
     SSHConnector.check_status(
-        run('juju bootstrap ',
+        run('juju bootstrap',
             warn_only=True,
             stderr=sys.stderr,
             combine_stderr=True)

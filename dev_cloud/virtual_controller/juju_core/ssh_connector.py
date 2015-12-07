@@ -18,7 +18,7 @@
 # @COPYRIGHT_end
 import time
 
-from fabric.api import execute, sudo, env
+from fabric.api import execute, run, env
 from fabric.network import disconnect_all
 import sys
 
@@ -47,8 +47,12 @@ class SSHConnector(object):
         @param command: command to execute.
         @return: result of command.
         """
-        results_dict = cls.check_status(sudo(command, shell=False, warn_only=True, user=ROOT, stderr=sys.stdout))
-        disconnect_all()
+        results_dict = cls.check_status(
+            run(command,
+                warn_only=True,
+                stderr=sys.stderr,
+                combine_stderr=True))
+
         return results_dict
 
     @classmethod
@@ -59,7 +63,7 @@ class SSHConnector(object):
         @return: result of task.
         """
         results_dict = execute(task)
-        disconnect_all()
+
         return results_dict
 
     @staticmethod
@@ -88,3 +92,7 @@ class SSHConnector(object):
             raise Exception
 
         return result
+
+    @classmethod
+    def close_connection(cls):
+        disconnect_all()

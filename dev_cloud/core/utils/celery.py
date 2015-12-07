@@ -206,16 +206,16 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
     if not is_timeout:
         # ssh = RunRemoteCommand(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')),
         #                        ROOT, SSH_KEY_PATH, VM_IMAGE_ROOT_PASSWORD)
-        # ssh.run(init_juju_on_vm)
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                            SSH_KEY_PATH)
 
         ssh.exec_task(init_juju_on_vm)
-        #
-        # for application in ast.literal_eval(applications):
-        #     app = Applications.objects.get(application_name=application)
-        #     ssh.call_remote_command(app.instalation_procedure)
 
+        for application in ast.literal_eval(applications):
+            app = Applications.objects.get(application_name=application)
+            ssh.call_remote_command(app.instalation_procedure)
+
+        ssh.close_connection()
     else:
         raise Exception
 
