@@ -20,15 +20,13 @@ from __future__ import absolute_import
 import ast
 
 from celery import Celery
-from django.db import transaction
 import jsonpickle
-
 from django.utils.translation import ugettext as _
 
 from core.common import states
 from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
-from core.settings.config import VM_IMAGE_ROOT_PASSWORD, SSH_KEY_PATH
+from core.settings.config import SSH_KEY_PATH
 from core.utils.auth import ROOT
 from core.utils.decorators import dev_cloud_task
 from core.utils.log import error
@@ -43,7 +41,6 @@ from virtual_controller.cc1_module.public_ip import PoolIP
 # os.environ.setdefault('CELERY_CONFIG_MODULE', "core.settings.%s" % args)
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
 from virtual_controller.juju_core.juju_installation_procedure import init_juju_on_vm
-from virtual_controller.juju_core.run_cmd import RunRemoteCommand
 from virtual_controller.juju_core.ssh_connector import SSHConnector
 
 REQUEST_IP = _('Request new IP')
@@ -218,6 +215,13 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         ssh.close_connection()
     else:
         raise Exception
+
+    try:
+        VmTasks.objects.create(
+            vm_id=VirtualMachines.objects.get(vm_id=virtual_machine.get_vm_status(vm_serializer_data.get('vm_id'))).id,
+            task_id=args[0].get(TASK_ID))
+    except Exception, ex:
+        error(args[0], _("Database - Problem with initialize virtual machine") + str(ex))
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
