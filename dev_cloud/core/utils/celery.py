@@ -218,7 +218,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
 
     try:
         VmTasks.objects.create(
-            vm_id=VirtualMachines.objects.get(vm_id=virtual_machine.get_vm_status(vm_serializer_data.get('vm_id'))).id,
+            vm_id=VirtualMachines.objects.get(vm_id=vm_serializer_data.get('vm_id')).id,
             task_id=args[0].get(TASK_ID))
     except Exception, ex:
         error(args[0], _("Database - Problem with initialize virtual machine") + str(ex))
