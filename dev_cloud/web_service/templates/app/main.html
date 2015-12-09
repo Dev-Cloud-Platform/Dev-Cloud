@@ -37,11 +37,12 @@
             <div class="col-sm-3">
 
                 <div class="tile-stats tile-aqua">
-                    <div class="icon"><i class="entypo-mail"></i></div>
+                    <div class="icon"><i class="entypo-attention"></i></div>
                     <div class="num" data-start="0" data-end="23" data-postfix="" data-duration="1500" data-delay="1200">0</div>
 
-                    <h3>New Messages</h3>
-                    <p>messages per day.</p>
+                    <h3>{% trans "Done tasks" %}</h3>
+
+                    <p>{% trans "by Dev Cloud servis." %}</p>
                 </div>
 
             </div>
@@ -49,11 +50,14 @@
             <div class="col-sm-3">
 
                 <div class="tile-stats tile-blue">
-                    <div class="icon"><i class="entypo-rss"></i></div>
-                    <div class="num" data-start="0" data-end="52" data-postfix="" data-duration="1500" data-delay="1800">0</div>
+                    <div class="icon"><i class="entypo-list"></i></div>
+                    <div class="num" data-start="0" data-end="{{ pending_task }}" data-postfix="" data-duration="1500"
+                         data-delay="1800">0
+                    </div>
 
-                    <h3>Subscribers</h3>
-                    <p>on our site right now.</p>
+                    <h3>{% trans "Pending tasks" %}</h3>
+
+                    <p>{% trans "on Redis Server right now." %}</p>
                 </div>
 
             </div>

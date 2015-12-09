@@ -74,12 +74,14 @@ def app_view(request, template_name='app/main.html'):
     """
     users_amount = Users.objects.count()
     virtual_machines = VirtualMachines.objects.count()
-    # pending_task =
-    # done_task =
+    done_task = Tasks.objects.filter(is_succeeded=True).count()
+    pending_task = Tasks.objects.filter(is_processing=True).count()
 
     return render_to_response(template_name,
                               dict({'users_amount': users_amount,
-                                    'virtual_machines': virtual_machines}.items()
+                                    'virtual_machines': virtual_machines,
+                                    'done_task': done_task,
+                                    'pending_task': pending_task}.items()
                                    + generate_active('dashboard').items()),
                               context_instance=RequestContext(request))
 
