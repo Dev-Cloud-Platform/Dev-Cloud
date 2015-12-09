@@ -22,11 +22,19 @@
         }
     }
 
+    (function updateNotificationNotifier() {
+        ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
+            //onSuccess
+            jQuery("#notification_notifier").html(content);
+            setTimeout(updateNotificationNotifier, 20000);
+        });
+    })();
+
     (function updateTasksNotifier() {
         ajaxGet('/main/app/utils/refresh_tasks_notifier', function (content) {
             //onSuccess
             jQuery("#task_notifier").html(content);
-            setTimeout(updateTasksNotifier, 30000);
+            setTimeout(updateTasksNotifier, 20000);
         });
     })();
 

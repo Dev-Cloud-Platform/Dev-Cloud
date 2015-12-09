@@ -1,10 +1,14 @@
 {% load i18n %}
 {% load custom_tags %}
-{#{% load humanize %} |naturaltime#}
+
 
 <ul class="cbp_tmtimeline">
     {% for task in tasks %}
+        {% if task.id == scroll_to_task|to_int %}
+            <li id="scroll_here">
+                {% else %}
         <li>
+        {% endif %}
             <time class="cbp_tmtime" datetime="{{ task.create_time }}">
                 <span>{{ task.create_time|time:'H:i' }}</span>
                 <span>{{ task.create_time|date:'d-m-Y' }}</span></time>

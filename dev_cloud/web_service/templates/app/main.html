@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load form_tags %}
+{% load humanize %}
 
 {% block title %}{{ block.super }} | Dashboard{% endblock %}
 
@@ -60,5 +61,147 @@
 
         <br />
     {% endif %}
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="tile-block" id="todo_tasks">
+
+                <div class="tile-header">
+                    <i class="entypo-attention"></i>
+
+                    <a href="#">
+                        {% trans "Notifications" %}
+                        <span>{% trans "Notification list" %}</span>
+                    </a>
+                </div>
+
+                <div class="tile-content">
+
+                    <ul class="todo-list">
+                        {% for notification in  request.session.notifications %}
+                            <li>
+                                <div class="checkbox checkbox-replace color-white">
+                                    <input type="checkbox"/>
+                                    <label class="popover-notification"
+                                           data-toggle="popover"
+                                           data-trigger="hover"
+                                           data-placement="right"
+                                           data-original-title="{% trans "Detailed information" %}"
+                                           data-content="{{ notification.2 }}">
+                                        {{ notification.1 }}
+                                        <a href="">»</a>
+                                        <span style="float: right;">{{ notification.4|naturaltime }}</span>
+                                    </label>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        {#                        <li>#}
+                        {#                            <div class="checkbox checkbox-replace color-white">#}
+                        {#                                <input type="checkbox" />#}
+                        {#                                <label>Website Design</label>#}
+                        {#                            </div>#}
+                        {#                        </li>#}
+                        {##}
+                        {#                        <li>#}
+                        {#                            <div class="checkbox checkbox-replace color-white">#}
+                        {#                                <input type="checkbox" id="task-2" checked />#}
+                        {#                                <label>Slicing</label>#}
+                        {#                            </div>#}
+                        {#                        </li>#}
+                        {##}
+                        {#                        <li>#}
+                        {#                            <div class="checkbox checkbox-replace color-white">#}
+                        {#                                <input type="checkbox" id="task-3" />#}
+                        {#                                <label>WordPress Integration</label>#}
+                        {#                            </div>#}
+                        {#                        </li>#}
+                        {##}
+                        {#                        <li>#}
+                        {#                            <div class="checkbox checkbox-replace color-white">#}
+                        {#                                <input type="checkbox" id="task-4" />#}
+                        {#                                <label>SEO Optimize</label>#}
+                        {#                            </div>#}
+                        {#                        </li>#}
+                        {##}
+                        {#                        <li>#}
+                        {#                            <div class="checkbox checkbox-replace color-white">#}
+                        {#                                <input type="checkbox" id="task-5" checked="" />#}
+                        {#                                <label>Minify &amp; Compress</label>#}
+                        {#                            </div>#}
+                        {#                        </li>#}
+                    </ul>
+
+                </div>
+
+                <div class="tile-footer text-right">
+                    <a href="#">{% trans "Mark all Read" %}</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-primary panel-table">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h3>{% trans "Events" %}</h3>
+                        <span>{% trans "This month's event calendar" %}</span>
+                    </div>
+
+                    <div class="panel-options">
+                        <a href="#sample-modal" data-toggle="modal" data-target="#sample-modal-dialog-1" class="bg"><i
+                                class="entypo-cog"></i></a>
+                        <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                        <a href="#" data-rel="reload"><i class="entypo-arrows-ccw"></i></a>
+                        <a href="#" data-rel="close"><i class="entypo-cancel"></i></a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div id="calendar" class="calendar-widget">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        jQuery(document).ready(function ($) {
+            // Popovers and tooltips
+            $('[data-toggle="popover"]').each(function (i, el) {
+                var $this = $(el),
+                        placement = attrDefault($this, 'placement', 'right'),
+                        trigger = attrDefault($this, 'trigger', 'click'),
+                        popover_class = $this.hasClass('popover-secondary') ? 'popover-secondary' : ($this.hasClass('popover-primary') ? 'popover-primary' : ($this.hasClass('popover-default') ? 'popover-default' : ''));
+
+                $this.popover({
+                    placement: placement,
+                    trigger: trigger,
+                    container: "body",
+                    html: true
+                });
+
+                $this.on('shown.bs.popover', function (ev) {
+                    var $popover = $this.next();
+
+                    $popover.addClass(popover_class);
+                });
+            });
+
+            $("#calendar").fullCalendar({
+                header: {
+                    left: '',
+                    center: 'title',
+                    right: '',
+                },
+
+                firstDay: 1,
+                height: 300,
+            });
+        });
+    </script>
+
+    <script src="{{ STATIC_URL }}app/js/fullcalendar/fullcalendar.min.js"></script>
 
 {%  endblock %}

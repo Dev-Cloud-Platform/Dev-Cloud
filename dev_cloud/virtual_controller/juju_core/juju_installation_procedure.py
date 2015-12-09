@@ -39,10 +39,6 @@ def init_juju_on_vm():
             combine_stderr=True)
     )
 
-    # prompts = []
-    # prompts += expect('[sudo] password for devcloud:', VM_IMAGE_ROOT_PASSWORD)
-
-    # with expecting(prompts):
     SSHConnector.check_status(
         run('echo ' + VM_IMAGE_ROOT_PASSWORD + ' | sudo -S apt-get update && juju bootstrap',
             warn_only=True,

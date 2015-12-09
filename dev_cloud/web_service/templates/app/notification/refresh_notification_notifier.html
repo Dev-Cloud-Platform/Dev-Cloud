@@ -1,0 +1,68 @@
+{% load i18n %}
+{% load form_tags %}
+{% load humanize %}
+
+
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+   data-close-others="true">
+    <i class="entypo-attention"></i>
+    {% if new_notifications|length >= 1 %}
+        <span class="badge badge-info">{{ new_notifications|length }}</span>
+    {% endif %}
+</a>
+
+<ul class="dropdown-menu">
+
+    <li class="top">
+        <p class="small">
+            <a href="#" class="pull-right">{% trans "Mark all Read" %}</a>
+            You have <strong>{{ new_notifications|length }}</strong> new notifications.
+        </p>
+    </li>
+
+    <li>
+        <ul class="dropdown-menu-list scroller">
+
+            {% for notification in new_notifications %}
+
+                {% if notification.notification.category == 1 %}
+                    <li class="unread notification-success">
+                        {% elif notification.notification.category == 2 %}
+                    <li class="unread notification-danger">
+                        {% else %}
+                    <li class="unread notification-info">
+                {% endif %}
+
+            {% if notification.notification.category == 1 or notification.notification.category == 2 %}
+                <a href="{% url 'tasks' %}{{ notification.notify_task_id }}">
+            {% else %}
+                <a href="#">
+            {% endif %}
+
+            {% if notification.notification.category == 1 %}
+                <i class="entypo-check pull-right"></i>
+            {% elif notification.notification.category == 2 %}
+                <i class="entypo-cancel pull-right"></i>
+            {% else %}
+                <i class="entypo-info pull-right"></i>
+            {% endif %}
+
+            <span class="line">
+                            <strong>{{ notification.notification.notification_name }}</strong>
+                        </span>
+
+            <span class="line small">
+                            {{ notification.notification.create_time|naturaltime }}
+                        </span>
+            </a>
+
+            </li>
+            {% endfor %}
+
+        </ul>
+    </li>
+
+    <li class="external">
+        <a href="{% url 'app_main' %}">{% trans "View all notifications" %}</a>
+    </li>
+</ul>

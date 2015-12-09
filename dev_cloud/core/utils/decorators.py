@@ -23,17 +23,19 @@ from django.contrib.messages import success
 from django.db import transaction, DatabaseError
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
+
 from django.utils.http import urlquote
+
+from django.utils.translation import ugettext as _
 
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
 from database.models import Users, Tasks
+from database.models.notifications import Notifications
 from database.models.vm_tasks import TASK_ID
 from messages_codes import auth_error_text
-
 from core.utils.log import error
-from django.utils.translation import ugettext as _
 
 
 @transaction.atomic
@@ -56,17 +58,16 @@ def check_status(view_func):
         @param kwds:
         @return:
         """
-        resp = {'test': 'test2'}
-
         try:
-            processing_tasks = Tasks.objects.filter(user_id=int(request.session[session_key]),
-                                                    is_processing=True).order_by('-create_time')
+            notifications = Notifications.objects.filter(user_id=int(request.session[session_key]),
+                                                         is_read=False).order_by('-create_time')
         except:
-            processing_tasks = None
+            notifications = None
 
-        request.session['resp'] = resp
-
-        # TODO: Add data about notifications and tasks.
+        if notifications:
+            request.session['notifications'] = list(
+                notifications.values_list('id', 'notification_name', 'notification_information', 'is_read',
+                                          'create_time'))
 
         return view_func(request, *args, **kwds)
 
@@ -231,6 +232,7 @@ def manual_transaction(function):
         Atomic blocks can be nested. In this case, when an inner block completes successfully, its effects can still be
         rolled back if an exception is raised in the outer block at a later point.
     """
+
     def wrap(*args, **kwargs):
         transaction.set_autocommit(False)
         try:
@@ -291,7 +293,20 @@ class dev_cloud_task(object):
                         self.task.save()
                     except DatabaseError:
                         error(args[0], _("DataBase - Problem with update a task"))
-            except Exception:
+
+                    try:
+                        Notifications.objects.create(
+                            notification_name="Successfully finished #Task_" + str(self.task.id),
+                            notification_information="Finished " + self.task_name,
+                            category=1,
+                            is_read=False,
+                            create_time=datetime.datetime.now(),
+                            user_id=args[0]
+                        )
+                    except DatabaseError:
+                        error(args[0], _("DataBase - Problem with create a notifications"))
+            except Exception, ex:
+                error(args[0], str(ex))
                 if self.task:
                     try:
                         self.task.is_processing = False
@@ -299,9 +314,19 @@ class dev_cloud_task(object):
                         self.task.save()
                     except DatabaseError:
                         error(args[0], _("DataBase - Problem with update a task"))
+
+                    try:
+                        Notifications.objects.create(
+                            notification_name="Failure finished #Task_" + str(self.task.id),
+                            notification_information="Failure of " + self.task_name + ". Reason " + str(ex),
+                            category=2,
+                            is_read=False,
+                            create_time=datetime.datetime.now(),
+                            user_id=args[0]
+                        )
+                    except DatabaseError:
+                        error(args[0], _("DataBase - Problem with create a notifications"))
             finally:
                 return ret
 
         return wrapped_function
-
-

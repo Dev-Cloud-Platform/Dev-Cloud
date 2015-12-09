@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+from datetime import datetime
 import json
 import pickle
 
@@ -24,4 +25,6 @@ class SetEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (list, dict, str, unicode, int, float, bool, type(None))):
             return json.JSONEncoder.default(self, obj)
+        if isinstance(obj, datetime):
+            return obj.isoformat()
         return {'_python_object': pickle.dumps(obj)}

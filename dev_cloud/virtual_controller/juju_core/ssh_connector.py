@@ -17,13 +17,11 @@
 #
 # @COPYRIGHT_end
 import time
+import sys
 
 from fabric.api import execute, run, env
 from fabric.network import disconnect_all
-import sys
-
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
-from core.utils.auth import ROOT
 
 
 class SSHConnector(object):
@@ -39,7 +37,7 @@ class SSHConnector(object):
         env.password = VM_IMAGE_ROOT_PASSWORD
         env.forward_agent = True
         env.use_shell = False
-        env.prompts = {'[sudo] password for devcloud:': VM_IMAGE_ROOT_PASSWORD}
+        env.prompts = {'[sudo] password for ' + user + ':': VM_IMAGE_ROOT_PASSWORD}
 
     @classmethod
     def call_remote_command(cls, command):

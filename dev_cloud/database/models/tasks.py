@@ -52,3 +52,21 @@ class Tasks(models.Model):
         managed = False
         db_table = 'Tasks'
         # app_label = 'database'
+
+    @property
+    def dict(self):
+        """
+        @returns{dict} this User's data
+        \n fields:
+        @dictkey{id, int} id of this Task
+        @dictkey{task_name, string} task name
+        @dictkey{is_processing, int} status of processing this task
+        @dictkey{create_time, datetime.datetim} create's date
+        @dictkey{is_read, int} status about read this task
+        @dictkey{is_succeeded, int} the status of the successful completion Task
+        @dictkey{user, int} user id FK
+        """
+        d = {'id': self.id, 'task_name': self.task_name, 'is_processing': self.is_processing or 0,
+             'create_time': self.create_time, 'is_read': self.is_read or '',
+             'is_succeeded': self.is_succeeded or '', 'user': self.activation_key or ''}
+        return d

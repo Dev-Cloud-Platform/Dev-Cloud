@@ -35,6 +35,7 @@ from core.utils.auth import session_key, update_session
 from core.utils.decorators import django_view, lock_screen
 from core.utils.decorators import user_permission
 from database.models import Users, VirtualMachines, Tasks
+from database.models.notifications import Notifications
 from database.models.tasks import POSTS_PER_PAGE
 from web_service.forms.user.edit_user import EditUserForm
 from web_service.forms.user.unlock import UnlockForm
@@ -73,6 +74,8 @@ def app_view(request, template_name='app/main.html'):
     """
     users_amount = Users.objects.count()
     virtual_machines = VirtualMachines.objects.count()
+    # pending_task =
+    # done_task =
 
     return render_to_response(template_name,
                               dict({'users_amount': users_amount,
@@ -102,6 +105,62 @@ def members(request, template_name='app/members.html'):
                               context_instance=RequestContext(request))
 
 
+@ajax
+@user_permission
+def refresh_notification(request, task_id=None, template_name='app/task/refresh_notification_list.html'):
+    """
+    Shows all tasks of user. Automatically refreshed.
+    @param request:
+    @param task_id:
+    @param template_name:
+    @return:
+    """
+    # tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
+    # paginator = Paginator(tasks_list, POSTS_PER_PAGE)
+    #
+    # page = None
+    #
+    # if task_id is not None:
+    #     page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
+    #
+    # if request.GET.get('page') is not None:
+    #     page = request.GET.get('page')
+    #
+    # try:
+    #     tasks_on_page = paginator.page(page)
+    # except PageNotAnInteger:
+    #     # If page is not an integer, deliver first page.
+    #     tasks_on_page = paginator.page(1)
+    # except EmptyPage:
+    #     # If page is out of range (e.g. 9999), deliver last page of results.
+    #     tasks_on_page = paginator.page(paginator.num_pages)
+    #
+    # return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
+
+
+@ajax
+@user_permission
+def refresh_notification_notifier(request, template_name='app/notification/refresh_notification_notifier.html'):
+    """
+    Shows pending task. Automatically refreshed.
+    @param request:
+    @param template_name:
+    @return:
+    """
+    notification_list = Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
+        '-create_time')[0:5]
+
+    my_dict = []
+    for notification in notification_list:
+        if notification.category == 1 or notification.category == 2:
+            notify_task_id = re.search(r'(\d+)', notification.notification_name).group(1)
+            my_dict.append({'notification': notification, 'notify_task_id': notify_task_id})
+        else:
+            my_dict.append({'notification': notification})
+    return render_to_response(template_name, dict({'new_notifications': my_dict}),
+                              context_instance=RequestContext(request))
+
+
 @django_view
 @user_permission
 def tasks(request, task_id=None, template_name='app/task/tasks.html'):
@@ -116,12 +175,15 @@ def tasks(request, task_id=None, template_name='app/task/tasks.html'):
     paginator = Paginator(tasks_list, POSTS_PER_PAGE)
 
     page = None
+    scroll_to_task = None
 
     if task_id is not None:
         page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
+        scroll_to_task = task_id
 
     if request.GET.get('page') is not None:
         page = request.GET.get('page')
+        scroll_to_task = None
 
     try:
         tasks_on_page = paginator.page(page)
@@ -132,7 +194,8 @@ def tasks(request, task_id=None, template_name='app/task/tasks.html'):
         # If page is out of range (e.g. 9999), deliver last page of results.
         tasks_on_page = paginator.page(paginator.num_pages)
 
-    return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
+    return render_to_response(template_name, dict({'tasks': tasks_on_page, 'scroll_to_task': scroll_to_task}),
+                              context_instance=RequestContext(request))
 
 
 @ajax
@@ -149,12 +212,15 @@ def refresh_tasks(request, task_id=None, template_name='app/task/refresh_tasks_t
     paginator = Paginator(tasks_list, POSTS_PER_PAGE)
 
     page = None
+    scroll_to_task = None
 
     if task_id is not None:
         page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
+        scroll_to_task = task_id
 
     if request.GET.get('page') is not None:
         page = request.GET.get('page')
+        scroll_to_task = None
 
     try:
         tasks_on_page = paginator.page(page)
@@ -165,7 +231,8 @@ def refresh_tasks(request, task_id=None, template_name='app/task/refresh_tasks_t
         # If page is out of range (e.g. 9999), deliver last page of results.
         tasks_on_page = paginator.page(paginator.num_pages)
 
-    return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
+    return render_to_response(template_name, dict({'tasks': tasks_on_page, 'scroll_to_task': scroll_to_task}),
+                              context_instance=RequestContext(request))
 
 
 @ajax
