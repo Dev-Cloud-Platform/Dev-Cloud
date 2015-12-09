@@ -26,8 +26,25 @@
 
     <script>
         var task_id = window.location.pathname.replace(/\D/g, '');
+        var page = location.search.split('page=')[1];
+        var url_paramenter = null;
+
+        if (page != null) {
+            if (task_id != '') {
+                url_paramenter = task_id + '/?page=' + page;
+            } else {
+                url_paramenter = '?page=' + page;
+            }
+        } else {
+            if (task_id != '') {
+                url_paramenter = task_id;
+            } else {
+                url_paramenter = '';
+            }
+        }
+
         (function updateTasksTimeline() {
-            ajaxGet('/main/app/utils/refresh_tasks/' + task_id, function (content) {
+            ajaxGet('/main/app/utils/refresh_tasks/' + url_paramenter, function (content) {
                 //onSuccess
                 jQuery("#task_timeline").html(content);
                 setTimeout(updateTasksTimeline, 30000);
@@ -35,40 +52,42 @@
         })();
 
         jQuery(document).ready(function () {
-            var bodyRect = document.body.getBoundingClientRect(),
-                    elemRect = document.getElementById("scroll_here").getBoundingClientRect(),
-                    offset = elemRect.top - bodyRect.top;
-            var h = offset - 3 * elemRect.height; //get height
+            if (jQuery("#scroll_here").length > 0) {
+                function scrollDown(x) {
+                    //elapsed
+                    var e;
+                    //duration in milli seconds
+                    var d = 2000;
+                    //b as in begin, where to start (you could get this dynamically)
+                    var b = 0;
+                    //start time, when the animation starts
+                    var s = (new Date()).getTime(); //start time
+                    //the magic
+                    var t = setInterval(function () {
+                        //calculate elapse time
+                        e = (new Date()).getTime() - s;
+                        //check if elapse time is less than duration
+                        if (e < d) {
+                            //animate using an easing equation
+                            window.scrollTo(0, ease(e, b, x, d));
+                        } else {
+                            //animation is complete, stop interval timer
+                            clearInterval(t);
+                            t = null;
+                        }
+                    }, 4);
+                }
 
-            scrollTo(h);
+                function ease(t, b, c, d) {
+                    return Math.round(-c * Math.cos(t / d * (Math.PI / 2)) + c + b);
+                }
 
-            function scrollTo(x) {
-                //elapsed
-                var e;
-                //duration in milli seconds
-                var d = 2000;
-                //b as in begin, where to start (you could get this dynamically)
-                var b = 0;
-                //start time, when the animation starts
-                var s = (new Date()).getTime(); //start time
-                //the magic
-                var t = setInterval(function () {
-                    //calculate elapse time
-                    e = (new Date()).getTime() - s;
-                    //check if elapse time is less than duration
-                    if (e < d) {
-                        //animate using an easing equation
-                        window.scrollTo(0, ease(e, b, x, d));
-                    } else {
-                        //animation is complete, stop interval timer
-                        clearInterval(t);
-                        t = null;
-                    }
-                }, 4);
-            }
+                var bodyRect = document.body.getBoundingClientRect(),
+                        elemRect = document.getElementById("scroll_here").getBoundingClientRect(),
+                        offset = elemRect.top - bodyRect.top;
+                var h = offset - 3 * elemRect.height; //get height
 
-            function ease(t, b, c, d) {
-                return Math.round(-c * Math.cos(t / d * (Math.PI / 2)) + c + b);
+                scrollDown(h);
             }
         });
 

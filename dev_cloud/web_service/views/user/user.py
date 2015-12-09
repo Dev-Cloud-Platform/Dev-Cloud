@@ -212,7 +212,7 @@ def refresh_tasks(request, task_id=None, template_name='app/task/refresh_tasks_t
     paginator = Paginator(tasks_list, POSTS_PER_PAGE)
 
     page = None
-    scroll_to_task = None
+    scroll_to_task = 0
 
     if task_id is not None:
         page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
@@ -220,7 +220,7 @@ def refresh_tasks(request, task_id=None, template_name='app/task/refresh_tasks_t
 
     if request.GET.get('page') is not None:
         page = request.GET.get('page')
-        scroll_to_task = None
+        scroll_to_task = 0
 
     try:
         tasks_on_page = paginator.page(page)
