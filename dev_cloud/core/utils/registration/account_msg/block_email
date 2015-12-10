@@ -2,9 +2,9 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans "You are unblocked!" %}
+    {% trans "You are blocked!" %}
 {% endblock %}
 
 {% block content %}
-    {% trans "Your account has been unblocked by an administrator." %}
+    {% trans "Your account has been blocked by an administrator." %}
 {% endblock %}

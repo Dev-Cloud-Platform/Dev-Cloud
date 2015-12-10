@@ -28,6 +28,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.common import log
 from core.settings import common
+from core.utils.log import error, debug
 from core.utils.exception import DevCloudException
 from database.models import Users
 
@@ -52,8 +53,7 @@ def email_error(f):
         try:
             return f(request, *args, **kwds)
         except SMTPRecipientsRefused, e:
-            error = "%s %s" % (f.__name__, str(e))
-            log.error(0, error)
+            error(0, "%s %s" % (f.__name__, str(e)))
             raise
 
     return wrap
@@ -69,7 +69,7 @@ def send(to_address, html_content, subject):
     Sends email via STMP server.
     """
     from_address = common.EMAIL
-    log.debug(0, '%s%s%s%s%s%s%s' % (
+    debug(0, '%s%s%s%s%s%s%s' % (
         "send_email(from='", from_address, "', to='", to_address, "', subject='", subject, "')"))
 
     txt_content = strip_tags(html_content)
@@ -169,15 +169,18 @@ def send_block_email(user, block, dev_cloud_data):
     @parameter{dev_cloud_data,dict}, \n fields:
     @dictkey{site_name,string}
     """
-    dev_cloud_dict = {}
+    dev_cloud_dict = {'site': dev_cloud_data['site_domain'],
+                      'site_name': dev_cloud_data['site_name']}
     if block:
-        send(user.email,
-             render_from_template_to_string('account_msg/block_email', dev_cloud_dict),
-             _("User account blocked on %s") % dev_cloud_data['site_name'])
+        subject = render_from_template_to_string('account_msg/block_email_subject', dev_cloud_dict)
+        subject = ''.join(subject.splitlines())
+        message = render_from_template_to_string('account_msg/block_email', dev_cloud_dict)
+        send(user.email, message, subject)
     else:
-        send(user.email,
-             render_from_template_to_string('account_msg/unblock_email', dev_cloud_dict),
-             _("User account unblocked on %s") % dev_cloud_data['site_name'])
+        subject = render_from_template_to_string('account_msg/unblock_email_subject', dev_cloud_dict)
+        subject = ''.join(subject.splitlines())
+        message = render_from_template_to_string('account_msg/unblock_email', dev_cloud_dict)
+        send(user.email, message, subject)
 
 
 def send_contact_message(subject, msg):
@@ -206,7 +209,7 @@ def render_from_template_to_string(template_filename, dev_cloud_dict={}):
     try:
         template = loader.get_template(template_filename)
     except Exception, e:
-        log.error(0, "Cannot load template. Error: %s" % str(e))
+        error(0, "Cannot load template. Error: %s" % str(e))
         raise DevCloudException('template_create')
 
     return template.render(Context(dev_cloud_dict))

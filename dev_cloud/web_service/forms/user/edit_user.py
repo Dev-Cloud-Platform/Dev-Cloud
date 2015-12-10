@@ -96,6 +96,8 @@ class EditUserForm(EditPasswordForm):
                     was_blocked = True
 
                 user.is_active = self.cleaned_data['active']
+                print "LLLLLLLLLLLLLLLLLLLLLLLL"
+                print user.is_active
                 if user.is_active == 2:
                     if was_blocked:
                         mail.send_block_email(user, False, config.DEV_CLOUD_DATA)

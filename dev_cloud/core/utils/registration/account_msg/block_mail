@@ -1,3 +1,0 @@
-{% load i18n %}
-
-{% trans "Your account has been blocked by an administrator." %}

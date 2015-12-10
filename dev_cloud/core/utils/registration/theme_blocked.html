@@ -1,0 +1,225 @@
+{% load i18n %}
+
+<html lang="en">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>
+        Dev Cloud
+    </title>
+    <style type="text/css">
+        a:hover {
+            text-decoration: none !important;
+        }
+
+        .header h1 {
+            color: #222D3A;
+            font: bold 54px Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 55px;
+            letter-spacing: -3px;
+        }
+
+        .header p {
+            color: #222D3A;
+            font: normal 17px Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 18px;
+            font-style: italic;
+        }
+
+        .header h3 {
+            color: #222D3A;
+            font: normal 18px Courier, 'Monaco', monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 18px;
+        }
+
+        .header .subscribe p {
+            font-size: 10px;
+            line-height: 18px;
+            color: #222D3A;
+            margin: 0;
+            padding: 0;
+            font-family: 'Monaco', monospace;
+            text-transform: uppercase;
+            font-style: normal;
+            word-spacing: -1px;
+        }
+
+        .header .subscribe p a {
+            color: #222D3A;
+        }
+
+        .content h2 {
+            color: #222D3A;
+            font-weight: bold;
+            line-height: 31px;
+            font-size: 31px;
+            font-family: Helvetica, Arial, sans-serif;
+            letter-spacing: -1px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .content p {
+            color: #222D3A;
+            font-weight: normal;
+            margin: 0;
+            padding: 0;
+            line-height: 20px;
+            font-size: 14px;
+            font-family: Courier, 'Monaco', monospace;
+        }
+
+        .content a {
+            color: #222D3A;
+        }
+
+        .content a.more {
+            color: #222D3A;
+            background: #222D3A;
+            text-decoration: none;
+            line-height: 16px;
+            padding: 2px 0;
+        }
+
+        .footer p {
+            font-size: 11px;
+            line-height: 18px;
+            color: #222D3A;
+            margin: 0;
+            padding: 0;
+            font-family: Courier, 'Monaco', monospace;
+            letter-spacing: -1px;
+        }
+
+        .footer p a {
+            color: #222D3A;
+        }
+
+        .footer a.send {
+            color: #222D3A;
+            background: #222D3A;
+            text-decoration: none;
+            line-height: 16px;
+            padding: 2px 0
+        }
+
+        a {
+            color: #222D3A;
+        }
+
+        .case {
+            background-color: #d9656e);
+        }
+    </style>
+    <!--[if gte mso 9]>
+	<style type="text/css">
+     .body{background: #222D3A;
+	 .case { background:none;}
+     </style>
+	   <![endif]-->
+</head>
+<body style="margin: 0; padding: 0;" class="body">
+<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%">
+    <tr>
+        <td align="center" style="padding: 5px 0 50px; background: #d9656e;color:#FFF" class="case">
+            <!--[if gte mso 9]>
+	            <td align="center" style="padding: 5px 0 50px; background: none;color:#FFF">
+	         <![endif]-->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="600"
+                   style="font-family: Courier, 'Monaco', monospace;" class="header">
+                <tr>
+                    <td align="left" style="padding: 0 0 26px;" valign="bottom" width="383">
+                        <h1 style="color: #FFF; font: bold 54px Helvetica, Arial,sans-serif; margin: 0; padding: 0; line-height: 55px;letter-spacing: -3px;">
+                            Dev Cloud Team/</h1>
+
+                        <p style="color: #FFF; font: normal 17px Helvetica, Arial,sans-serif; margin: 0; padding: 0; line-height: 18px; font-style: italic;">
+                            Application Platform as a Service</p>
+                    </td>
+                    <td align="right" style="padding: 5px 0 30px;" width="217" valign="top">
+
+                    </td>
+                </tr>
+            </table>
+            <!-- header-->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="600"
+                   style="font-family: Courier, 'Monaco', monospace; ">
+
+                <tr>
+                    <td width="135" style="font-size: 1px; font-family: Courier, 'Monaco', monospace;padding: 25px 0 0;"
+                        align="left" valign="top"></td>
+                    <td width="465" valign="top" align="left" style="font-family: Courier, 'Monaco', monospace;"
+                        class="content">
+                        <table cellpadding="0" cellspacing="0" border="0"
+                               style="color: #FFF; font: normal 11px Courier, 'Monaco', monospace; margin: 0; padding: 0;"
+                               width="465">
+                            <tr>
+                                <td style="padding: 20px 0 25px;" align="left">
+                                    <h2 style="color:#FFF; font-weight: bold; line-height: 31px; font-size: 31px; font-family: Helvetica, Arial,sans-serif; letter-spacing: -1px;  margin: 0; padding: 0;">
+                                        {% block title %}{% trans "Welcome to" %} {{ site_name }}!{% endblock %}</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0px 0 25px;" valign="top">
+                                    <p style="color:#FFF; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 14px;font-family: Courier, 'Monaco', monospace; ">
+                                        {% block content %}
+                                        {% endblock %}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0px 0 25px;" valign="top">
+                                    <p style="color:#FFF; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 14px;font-family: Courier, 'Monaco', monospace; ">
+                                        {% trans "Thank you," %} </br>
+                                        {% trans "The Dev Cloud Team" %}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+
+                            </tr>
+
+                        </table>
+                    </td>
+
+                </tr>
+
+            </table>
+            <!-- body -->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="600"
+                   style="font-family: Courier, 'Monaco', monospace; line-height: 10px;" class="footer">
+
+                <tr>
+                    <td align="left" style="height:20px; font-size: 1px; line-height: 1px; background:#FFF" height="20"
+                        valign="top" colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0; line-height: 1;" width="135" valign="top">
+
+                    </td>
+                    <td style="padding: 0 0 10px 0px; font-size: 11px; color:#FFF; margin: 0; font-family: Courier, 'Monaco', monospace; "
+                        valign="top" align="left" width="465" colspan="2">
+                        <table cellpadding="0" cellspacing="0" border="0" align="left" width="406"
+                               style="font-family: Courier, 'Monaco', monospace; line-height: 10px;">
+                            <tr>
+                                <td style="padding: 17px 0 0 0"><p
+                                        style="font-size: 11px;  line-height: 18px; color:#FFF; margin: 0; padding: 0;font-family: Courier, 'Monaco', monospace; letter-spacing: -1px"> {% trans "Dev Cloud Team support system. This message was sent automatically" %}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!-- footer-->
+
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+
+

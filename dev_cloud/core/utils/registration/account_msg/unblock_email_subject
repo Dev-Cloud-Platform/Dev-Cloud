@@ -1,0 +1,2 @@
+{% load i18n %}
+{{ site_name }} - {% trans "your account has been unblocked" %}
