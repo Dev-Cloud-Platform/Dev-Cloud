@@ -185,6 +185,24 @@ def mark_read_all_notifier(request):
                      '-create_time')[0:5])
 
 
+@ajax()
+@user_permission
+def mark_read_notification(request, notification_id):
+    """
+    Marks given notification as read.
+    @param request:
+    @param notification_id: id of notification.
+    @return:
+    """
+    try:
+        notification = Notifications.objects.get(user_id=int(request.session[session_key]), id=int(notification_id))
+        if not notification.is_read:
+            notification.is_read = True
+            notification.save()
+    except Exception:
+        pass
+
+
 @django_view
 @user_permission
 def tasks(request, task_id=None, template_name='app/task/tasks.html'):

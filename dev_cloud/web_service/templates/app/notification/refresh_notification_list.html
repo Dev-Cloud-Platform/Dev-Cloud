@@ -5,7 +5,7 @@
 
 {% for notification in  notification_list %}
     <li>
-        <div class="checkbox checkbox-replace color-white">
+        <div id="{{ notification.id }}" class="checkbox checkbox-replace color-white">
             <input type="checkbox"/>
             <label class="popover-notification"
                    data-toggle="popover"

@@ -93,7 +93,8 @@
                     <ul id="notification_list" class="todo-list">
                         {% for notification in  request.session.notifications %}
                             <li>
-                                <div class="checkbox checkbox-replace color-white">
+                                <div onclick="read_notification(this);" id="{{ notification.0 }}"
+                                     class="checkbox checkbox-replace color-white">
                                     <input type="checkbox"/>
                                     <label class="popover-notification"
                                            data-toggle="popover"
@@ -102,7 +103,7 @@
                                            data-original-title="{% trans "Detailed information" %}"
                                            data-content="{{ notification.2 }}">
                                         {{ notification.1 }}
-                                        <span style="float: right;">{{ notification.4|naturaltime }}</span>
+                                        <span style="float: right;">{{ notification.3|naturaltime }}</span>
                                     </label>
                                 </div>
                             </li>
@@ -203,7 +204,24 @@
                 firstDay: 1,
                 height: 300,
             });
+
         });
+
+        function read_notification(element) {
+            ajaxGet('/main/app/utils/mark_read_notification/' + jQuery(element).attr('id'), function (content) {
+                //onSuccess
+                setTimeout(function () {
+                    var notification_element = jQuery(element);
+                    notification_element.fadeOut("slow", function () {
+                        ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
+                            //onSuccess
+                            jQuery("#notification_notifier").html(content);
+                        });
+                        notification_element.remove();
+                    });
+                }, 700);
+            });
+        }
     </script>
 
     <script src="{{ STATIC_URL }}app/js/fullcalendar/fullcalendar.min.js"></script>

@@ -68,8 +68,7 @@ def check_status(view_func):
 
         if notifications:
             request.session['notifications'] = list(
-                notifications.values_list('id', 'notification_name', 'notification_information', 'is_read',
-                                          'create_time'))
+                notifications.values_list('id', 'notification_name', 'notification_information', 'create_time'))
 
         return view_func(request, *args, **kwds)
 
