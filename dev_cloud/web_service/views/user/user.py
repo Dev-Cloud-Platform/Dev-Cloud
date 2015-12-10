@@ -109,42 +109,25 @@ def members(request, template_name='app/members.html'):
 
 @ajax
 @user_permission
-def refresh_notification(request, task_id=None, template_name='app/task/refresh_notification_list.html'):
+def refresh_notification(request, template_name='app/notification/refresh_notification_list.html'):
     """
-    Shows all tasks of user. Automatically refreshed.
+    Shows all not read notifications of user. Automatically refreshed.
     @param request:
-    @param task_id:
     @param template_name:
     @return:
     """
-    # tasks_list = Tasks.objects.filter(user_id=int(request.session[session_key])).order_by('-create_time')
-    # paginator = Paginator(tasks_list, POSTS_PER_PAGE)
-    #
-    # page = None
-    #
-    # if task_id is not None:
-    #     page = Tasks.objects.get_page(int(request.session[session_key]), task_id)
-    #
-    # if request.GET.get('page') is not None:
-    #     page = request.GET.get('page')
-    #
-    # try:
-    #     tasks_on_page = paginator.page(page)
-    # except PageNotAnInteger:
-    #     # If page is not an integer, deliver first page.
-    #     tasks_on_page = paginator.page(1)
-    # except EmptyPage:
-    #     # If page is out of range (e.g. 9999), deliver last page of results.
-    #     tasks_on_page = paginator.page(paginator.num_pages)
-    #
-    # return render_to_response(template_name, dict({'tasks': tasks_on_page}), context_instance=RequestContext(request))
+    notification_list = Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
+        '-create_time')
+
+    return render_to_response(template_name, dict({'notification_list': notification_list}),
+                              context_instance=RequestContext(request))
 
 
 @ajax
 @user_permission
 def refresh_notification_notifier(request, template_name='app/notification/refresh_notification_notifier.html'):
     """
-    Shows pending task. Automatically refreshed.
+    Shows last five notification. Automatically refreshed.
     @param request:
     @param template_name:
     @return:
@@ -161,6 +144,38 @@ def refresh_notification_notifier(request, template_name='app/notification/refre
             my_dict.append({'notification': notification})
     return render_to_response(template_name, dict({'new_notifications': my_dict}),
                               context_instance=RequestContext(request))
+
+
+@ajax()
+@user_permission
+def mark_read_all(request):
+    """
+    Marks all notification to read.
+    @param request:
+    @return:
+    """
+    notification_list = Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
+        '-create_time')
+
+    for notification in notification_list:
+        notification.is_read = True
+        notification.save()
+
+
+@ajax()
+@user_permission
+def mark_read_all_notifier(request):
+    """
+    Marks last five notifications to read.
+    @param request:
+    @return:
+    """
+    notification_list = Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
+        '-create_time')[0:5]
+
+    for notification in notification_list:
+        notification.is_read = True
+        notification.save()
 
 
 @django_view

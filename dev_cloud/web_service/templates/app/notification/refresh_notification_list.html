@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load form_tags %}
+{% load humanize %}
+
+
+{% for notification in  notification_list %}
+    <li>
+        <div class="checkbox checkbox-replace color-white">
+            <input type="checkbox"/>
+            <label class="popover-notification"
+                   data-toggle="popover"
+                   data-trigger="hover"
+                   data-placement="right"
+                   data-original-title="{% trans "Detailed information" %}"
+                   data-content="{{ notification.notification_information }}">
+                {{ notification.notification_name }}
+                <span style="float: right;">{{ notification.create_time|naturaltime }}</span>
+            </label>
+        </div>
+    </li>
+{% endfor %}

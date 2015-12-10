@@ -14,9 +14,12 @@
 
                 <div class="tile-stats tile-red">
                     <div class="icon"><i class="entypo-users"></i></div>
-                    <div class="num" data-start="0" data-end="{{ users_amount }}" data-postfix="" data-duration="1500" data-delay="0">0</div>
+                    <div class="num" data-start="0" data-end="{{ users_amount }}" data-postfix="" data-duration="1500"
+                         data-delay="0">0
+                    </div>
 
                     <h3>{% trans "Registered users" %}</h3>
+
                     <p>{% trans "so far in our blog, and our website." %}</p>
                 </div>
 
@@ -26,9 +29,12 @@
 
                 <div class="tile-stats tile-green">
                     <div class="icon"><i class="entypo-chart-bar"></i></div>
-                    <div class="num" data-start="0" data-end="{{ virtual_machines }}" data-postfix="" data-duration="1500" data-delay="600">0</div>
+                    <div class="num" data-start="0" data-end="{{ virtual_machines }}" data-postfix=""
+                         data-duration="1500" data-delay="600">0
+                    </div>
 
                     <h3>{% trans "Virtual machines" %}</h3>
+
                     <p>{% trans "up to running." %}</p>
                 </div>
 
@@ -38,7 +44,9 @@
 
                 <div class="tile-stats tile-aqua">
                     <div class="icon"><i class="entypo-attention"></i></div>
-                    <div class="num" data-start="0" data-end="23" data-postfix="" data-duration="1500" data-delay="1200">0</div>
+                    <div class="num" data-start="0" data-end="23" data-postfix="" data-duration="1500"
+                         data-delay="1200">0
+                    </div>
 
                     <h3>{% trans "Done tasks" %}</h3>
 
@@ -63,7 +71,7 @@
             </div>
         </div>
 
-        <br />
+        <br/>
     {% endif %}
 
     <div class="row">
@@ -82,7 +90,7 @@
 
                 <div class="tile-content">
 
-                    <ul class="todo-list">
+                    <ul id="notification_list" class="todo-list">
                         {% for notification in  request.session.notifications %}
                             <li>
                                 <div class="checkbox checkbox-replace color-white">
@@ -94,52 +102,17 @@
                                            data-original-title="{% trans "Detailed information" %}"
                                            data-content="{{ notification.2 }}">
                                         {{ notification.1 }}
-                                        <a href="">»</a>
                                         <span style="float: right;">{{ notification.4|naturaltime }}</span>
                                     </label>
                                 </div>
                             </li>
                         {% endfor %}
-                        {#                        <li>#}
-                        {#                            <div class="checkbox checkbox-replace color-white">#}
-                        {#                                <input type="checkbox" />#}
-                        {#                                <label>Website Design</label>#}
-                        {#                            </div>#}
-                        {#                        </li>#}
-                        {##}
-                        {#                        <li>#}
-                        {#                            <div class="checkbox checkbox-replace color-white">#}
-                        {#                                <input type="checkbox" id="task-2" checked />#}
-                        {#                                <label>Slicing</label>#}
-                        {#                            </div>#}
-                        {#                        </li>#}
-                        {##}
-                        {#                        <li>#}
-                        {#                            <div class="checkbox checkbox-replace color-white">#}
-                        {#                                <input type="checkbox" id="task-3" />#}
-                        {#                                <label>WordPress Integration</label>#}
-                        {#                            </div>#}
-                        {#                        </li>#}
-                        {##}
-                        {#                        <li>#}
-                        {#                            <div class="checkbox checkbox-replace color-white">#}
-                        {#                                <input type="checkbox" id="task-4" />#}
-                        {#                                <label>SEO Optimize</label>#}
-                        {#                            </div>#}
-                        {#                        </li>#}
-                        {##}
-                        {#                        <li>#}
-                        {#                            <div class="checkbox checkbox-replace color-white">#}
-                        {#                                <input type="checkbox" id="task-5" checked="" />#}
-                        {#                                <label>Minify &amp; Compress</label>#}
-                        {#                            </div>#}
-                        {#                        </li>#}
                     </ul>
 
                 </div>
 
                 <div class="tile-footer text-right">
-                    <a href="#">{% trans "Mark all Read" %}</a>
+                    <a id="read_all_list" href="#">{% trans "Mark all Read" %}</a>
                 </div>
 
             </div>
@@ -172,6 +145,26 @@
 
     <script>
         jQuery(document).ready(function ($) {
+
+            jQuery("#read_all_list").click(function () {
+                jQuery('div.checkbox.checkbox-replace.color-white').each(function (index) {
+                    var notification_element = jQuery(this);
+                    notification_element.addClass("checked");
+                    ajaxGet('{% url 'mark_read_all' %}', function (content) {
+                        //onSuccess
+                        setTimeout(function () {
+                            notification_element.fadeOut("slow", function () {
+                                ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
+                                    //onSuccess
+                                    jQuery("#notification_notifier").html(content);
+                                });
+                                notification_element.remove();
+                            });
+                        }, 1500);
+                    });
+                });
+            });
+
             // Popovers and tooltips
             $('[data-toggle="popover"]').each(function (i, el) {
                 var $this = $(el),
@@ -208,4 +201,4 @@
 
     <script src="{{ STATIC_URL }}app/js/fullcalendar/fullcalendar.min.js"></script>
 
-{%  endblock %}
+{% endblock %}
