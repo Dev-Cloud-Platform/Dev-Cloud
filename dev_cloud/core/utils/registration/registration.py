@@ -21,19 +21,24 @@ import random
 import re
 from smtplib import SMTPRecipientsRefused
 import string
+import datetime
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from django.db import DatabaseError
+from django.utils.translation import ugettext as _
+
 from core.settings import config
-from core.common.states import user_active_states, registration_states
+from core.common.states import user_active_states, registration_states, notification_category
 from core.settings import common
 from core.utils.exception import DevCloudException
 from core.utils.registration import mail
-from database.models import Users
-
+from database.models import Users, Notifications
+from core.utils.log import error
 
 SHA1_RE = re.compile('^[A-Z0-9]{40}$')
+
 
 def registration(first, last, login, email, new_password, dev_cloud_data):
     """
@@ -92,13 +97,14 @@ def registration(first, last, login, email, new_password, dev_cloud_data):
 
     return {'user': user.dict, 'registration_state': reg_state}
 
+
 def register(**kwargs):
     """
     Method turns keyword arguments (which describe user) into a dictionary and registers the user
     @param kwargs:
     @return:
     """
-    if ('recaptcha' in kwargs):
+    if 'recaptcha' in kwargs:
         kwargs.pop('recaptcha')
     kwargs['dev_cloud_data'] = config.DEV_CLOUD_DATA
 
@@ -131,9 +137,31 @@ def activate(activation_key):
         if common.MAILER_ACTIVE and reg_state == registration_states['admin_confirmation']:
             try:
                 mail.send_admin_registration_notification(user.dict, config.DEV_CLOUD_DATA)
+                notify_all_superusers(user)
             except SMTPRecipientsRefused:
                 pass
 
         return {'user': user.dict, 'registration_state': reg_state}
 
     return False
+
+
+def notify_all_superusers(user):
+    """
+    Notify all super user about new registered user.
+    @param user: registered user.
+    """
+    if user:
+        try:
+            superusers = Users.objects.filter(is_superuser=True)
+            for superuser in superusers:
+                Notifications.objects.create(
+                    notification_name="New user " + user.login + " registered",
+                    notification_information="Registered as" + user.name + " " + user.lastname,
+                    category=notification_category['registered_new_user'],
+                    is_read=False,
+                    create_time=datetime.datetime.now(),
+                    user_id=superuser.id
+                )
+        except DatabaseError:
+            error(user.id, _("DataBase - Problem with create a notifications"))

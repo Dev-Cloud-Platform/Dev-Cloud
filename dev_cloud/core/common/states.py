@@ -63,3 +63,9 @@ image_access = {
     'public': 1,
     'group': 2
 }
+
+notification_category = {
+    'successfully_task': 1,
+    'failure_task': 2,
+    'registered_new_user': 3
+}

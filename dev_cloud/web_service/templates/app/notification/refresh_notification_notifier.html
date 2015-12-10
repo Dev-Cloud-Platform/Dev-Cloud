@@ -35,6 +35,8 @@
 
             {% if notification.notification.category == 1 or notification.notification.category == 2 %}
                 <a href="{% url 'tasks' %}{{ notification.notify_task_id }}">
+            {% elif notification.notification.category == 3 %}
+                <a href="{% url 'user_activation' %}">
             {% else %}
                 <a href="#">
             {% endif %}
@@ -43,6 +45,8 @@
                 <i class="entypo-check pull-right"></i>
             {% elif notification.notification.category == 2 %}
                 <i class="entypo-cancel pull-right"></i>
+            {% elif notification.notification.category == 3 %}
+                <i class="entypo-user-add pull-right"></i>
             {% else %}
                 <i class="entypo-info pull-right"></i>
             {% endif %}

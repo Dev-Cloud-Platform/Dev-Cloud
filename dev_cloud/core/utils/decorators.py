@@ -27,6 +27,7 @@ from django.http.response import Http404
 from django.utils.http import urlquote
 
 from django.utils.translation import ugettext as _
+from core.common.states import notification_category
 
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
@@ -297,9 +298,9 @@ class dev_cloud_task(object):
 
                     try:
                         Notifications.objects.create(
-                            notification_name="Successfully finished #Task_" + str(self.task.id),
+                            notification_name=_("Successfully finished #Task_") + str(self.task.id),
                             notification_information="Finished " + self.task_name,
-                            category=1,
+                            category=notification_category['successfully_task'],
                             is_read=False,
                             create_time=datetime.datetime.now(),
                             user_id=args[0]
@@ -318,9 +319,9 @@ class dev_cloud_task(object):
 
                     try:
                         Notifications.objects.create(
-                            notification_name="Failure finished #Task_" + str(self.task.id),
-                            notification_information="Failure of " + self.task_name + ". Reason " + str(ex),
-                            category=2,
+                            notification_name=_("Failure finished #Task_") + str(self.task.id),
+                            notification_information=_("Failure of ") + self.task_name + _(". Reason ") + str(ex),
+                            category=notification_category['failure_task'],
                             is_read=False,
                             create_time=datetime.datetime.now(),
                             user_id=args[0]
