@@ -17,8 +17,10 @@
 #
 # @COPYRIGHT_end
 import hashlib
+from core.settings import config
 
 from core.utils.exception import DevCloudException
+from core.utils.registration import mail
 from database.models import Users
 
 from registration import forms
@@ -89,7 +91,18 @@ class EditUserForm(EditPasswordForm):
             user.email = self.cleaned_data['email']
 
             if len(self.cleaned_data['active']):
+                was_blocked = False
+                if user.is_active == 3:
+                    was_blocked = True
+
                 user.is_active = self.cleaned_data['active']
+                if user.is_active == 2:
+                    if was_blocked:
+                        mail.send_block_email(user, False, config.DEV_CLOUD_DATA)
+                    else:
+                        mail.send_activation_confirmation_email(user, config.DEV_CLOUD_DATA)
+                if user.is_active == 3:
+                    mail.send_block_email(user, True, config.DEV_CLOUD_DATA)
 
             if self.request.FILES.get('image', None) is not None:
                 user.save_picture(user, self.request)
