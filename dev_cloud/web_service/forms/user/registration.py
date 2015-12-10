@@ -54,7 +54,6 @@ class RegistrationForm(PasswordForm):
         model = Users
         fields = ('login', 'first', 'last', 'email', 'new_password', 'password2')
 
-
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields.keyOrder = ['login', 'first', 'last', 'email', 'new_password', 'password2']
@@ -102,5 +101,3 @@ class RegistrationForm(PasswordForm):
             user.save()
 
         return user
-
-

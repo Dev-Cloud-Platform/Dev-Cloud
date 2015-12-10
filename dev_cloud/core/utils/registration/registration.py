@@ -157,7 +157,7 @@ def notify_all_superusers(user):
             for superuser in superusers:
                 Notifications.objects.create(
                     notification_name="New user " + user.login + " registered",
-                    notification_information="Registered as" + user.name + " " + user.lastname,
+                    notification_information="Registered as " + user.name + " " + user.lastname,
                     category=notification_category['registered_new_user'],
                     is_read=False,
                     create_time=datetime.datetime.now(),
