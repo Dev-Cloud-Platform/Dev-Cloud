@@ -18,15 +18,14 @@
 # @COPYRIGHT_end
 
 from smtplib import SMTPRecipientsRefused
-from django.conf import settings
 
+from django.conf import settings
 from django.core.mail import get_connection
 from django.core.mail.message import EmailMultiAlternatives
 from django.template import loader, Context
 from django.utils.html import strip_tags
 from django.utils.translation import ugettext_lazy as _
 
-from core.common import log
 from core.settings import common
 from core.utils.log import error, debug
 from core.utils.exception import DevCloudException

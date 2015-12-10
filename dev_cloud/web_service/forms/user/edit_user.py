@@ -92,18 +92,17 @@ class EditUserForm(EditPasswordForm):
 
             if len(self.cleaned_data['active']):
                 was_blocked = False
-                if user.is_active == 3:
+                if user.is_active == '3':
                     was_blocked = True
 
                 user.is_active = self.cleaned_data['active']
-                print "LLLLLLLLLLLLLLLLLLLLLLLL"
-                print user.is_active
-                if user.is_active == 2:
+
+                if user.is_active == '2':
                     if was_blocked:
                         mail.send_block_email(user, False, config.DEV_CLOUD_DATA)
                     else:
                         mail.send_activation_confirmation_email(user, config.DEV_CLOUD_DATA)
-                if user.is_active == 3:
+                if user.is_active == '3':
                     mail.send_block_email(user, True, config.DEV_CLOUD_DATA)
 
             if self.request.FILES.get('image', None) is not None:
