@@ -147,21 +147,28 @@
         jQuery(document).ready(function ($) {
 
             jQuery("#read_all_list").click(function () {
-                jQuery('div.checkbox.checkbox-replace.color-white').each(function (index) {
-                    var notification_element = jQuery(this);
-                    notification_element.addClass("checked");
-                    ajaxGet('{% url 'mark_read_all' %}', function (content) {
-                        //onSuccess
-                        setTimeout(function () {
-                            notification_element.fadeOut("slow", function () {
-                                ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
-                                    //onSuccess
-                                    jQuery("#notification_notifier").html(content);
-                                });
-                                notification_element.remove();
+                show_loading_bar({
+                    pct: 78,
+                    finish: function (pct) {
+                        jQuery('div.checkbox.checkbox-replace.color-white').each(function (index) {
+                            var notification_element = jQuery(this);
+                            notification_element.addClass("checked");
+                            ajaxGet('{% url 'mark_read_all' %}', function (content) {
+                                //onSuccess
+                                setTimeout(function () {
+                                    notification_element.fadeOut("slow", function () {
+                                        ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
+                                            //onSuccess
+                                            jQuery("#notification_notifier").html(content);
+                                        });
+                                        notification_element.remove();
+                                    });
+                                }, 1500);
                             });
-                        }, 1500);
-                    });
+                        });
+                        toastr.info('{% trans "Read all" %}')
+                        hide_loading_bar();
+                    }
                 });
             });
 

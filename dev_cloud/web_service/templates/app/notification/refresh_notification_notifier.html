@@ -15,7 +15,7 @@
 
     <li class="top">
         <p class="small">
-            <a id="mark_read_all_notifier" href="#" class="pull-right">{% trans "Mark all Read" %}</a>
+            <a href="#" class="mark_read_all_notifier pull-right">{% trans "Mark all Read" %}</a>
             You have <strong>{{ new_notifications|length }}</strong> new notifications.
         </p>
     </li>
@@ -70,3 +70,17 @@
         <a href="{% url 'app_main' %}">{% trans "View all notifications" %}</a>
     </li>
 </ul>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery("#notification_notifier a.mark_read_all_notifier").click(function () {
+            ajaxGet('{% url 'mark_read_all_notifier' %}', function (content) {
+                //onSuccess
+                ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
+                    //onSuccess
+                    jQuery("#notification_notifier").html(content);
+                });
+            });
+        });
+    });
+</script>

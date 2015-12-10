@@ -92,7 +92,7 @@ class EditUserForm(EditPasswordForm):
 
             if len(self.cleaned_data['active']):
                 was_blocked = False
-                if user.is_active == '3':
+                if user.is_active == 3:
                     was_blocked = True
 
                 user.is_active = self.cleaned_data['active']

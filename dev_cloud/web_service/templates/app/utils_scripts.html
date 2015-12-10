@@ -30,18 +30,6 @@
         });
     })();
 
-    jQuery(document).ready(function () {
-        jQuery("#mark_read_all_notifier").click(function () {
-            ajaxGet('{% url 'mark_read_all_notifier' %}', function (content) {
-                //onSuccess
-                ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {
-                    //onSuccess
-                    jQuery("#notification_notifier").html(content);
-                });
-            });
-        });
-    });
-
     (function updateTasksNotifier() {
         ajaxGet('/main/app/utils/refresh_tasks_notifier', function (content) {
             //onSuccess
