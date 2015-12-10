@@ -58,6 +58,7 @@ def check_status(view_func):
         @param kwds:
         @return:
         """
+
         try:
             notifications = Notifications.objects.filter(user_id=int(request.session[session_key]),
                                                          is_read=False).order_by('-create_time')

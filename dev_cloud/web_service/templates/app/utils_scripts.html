@@ -31,7 +31,7 @@
     })();
 
     jQuery(document).ready(function () {
-        jQuery("a#mark_read_all_notifier").click(function () {
+        jQuery("#mark_read_all_notifier").click(function () {
             ajaxGet('{% url 'mark_read_all_notifier' %}', function (content) {
                 //onSuccess
                 ajaxGet('/main/app/utils/refresh_notification_notifier', function (content) {

@@ -63,6 +63,19 @@ def generate_active(selected_item):
     return dict
 
 
+def mark_as_read(request, notification_list):
+    """
+    Marks as read given list of notifications.
+    @param request: request from context
+    @param notification_list: list of Notifications records.
+    """
+    for notification in notification_list:
+        notification.is_read = True
+        notification.save()
+
+    request.session['notifications'] = None
+
+
 @django_view
 @user_permission
 def app_view(request, template_name='app/main.html'):
@@ -154,12 +167,9 @@ def mark_read_all(request):
     @param request:
     @return:
     """
-    notification_list = Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
-        '-create_time')
-
-    for notification in notification_list:
-        notification.is_read = True
-        notification.save()
+    mark_as_read(request,
+                 Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
+                     '-create_time'))
 
 
 @ajax()
@@ -170,12 +180,9 @@ def mark_read_all_notifier(request):
     @param request:
     @return:
     """
-    notification_list = Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
-        '-create_time')[0:5]
-
-    for notification in notification_list:
-        notification.is_read = True
-        notification.save()
+    mark_as_read(request,
+                 Notifications.objects.filter(user_id=int(request.session[session_key]), is_read=False).order_by(
+                     '-create_time')[0:5])
 
 
 @django_view
