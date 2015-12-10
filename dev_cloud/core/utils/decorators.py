@@ -16,27 +16,70 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
+import json
 import logging
 import datetime
 
 from django.contrib.messages import success
 from django.db import transaction, DatabaseError
+from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
-
 from django.utils.http import urlquote
-
 from django.utils.translation import ugettext as _
-from core.common.states import notification_category
 
+from core.common.states import notification_category
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
+from core.utils.python_object_encoder import SetEncoder
 from database.models import Users, Tasks
+from database.models.installed_applications import InstalledApplications
 from database.models.notifications import Notifications
 from database.models.vm_tasks import TASK_ID
 from messages_codes import auth_error_text
 from core.utils.log import error
+
+
+def update_notifications(request):
+    """
+    Updates request session with new notifications.
+    @param request:
+    """
+    try:
+        notifications = Notifications.objects.filter(user_id=int(request.session[session_key]),
+                                                     is_read=False).order_by('-create_time')
+    except:
+        notifications = None
+
+    if notifications:
+        request.session['notifications'] = list(
+            notifications.values_list('id', 'notification_name', 'notification_information', 'create_time'))
+
+
+def update_environment(request):
+    """
+    Updates request session with actual information about user virtual enviroment.
+    @param request:
+    """
+    vm_dict = []
+
+    try:
+        virtual_machines = InstalledApplications.objects.filter(user_id=int(request.session[session_key])).values(
+            'virtual_machine').distinct()
+        environments = InstalledApplications.objects.filter(virtual_machine__in=virtual_machines)
+        for virtual_machine in virtual_machines:
+            for environment in environments:
+                if int(virtual_machine.get('virtual_machine')) == environment.virtual_machine_id:
+                    vm_dict.append(model_to_dict(environment))
+                    break
+    except:
+        environments = None
+
+    if environments:
+        request.session['environments'] = vm_dict
+    else:
+        request.session['environments'] = None
 
 
 @transaction.atomic
@@ -59,16 +102,8 @@ def check_status(view_func):
         @param kwds:
         @return:
         """
-
-        try:
-            notifications = Notifications.objects.filter(user_id=int(request.session[session_key]),
-                                                         is_read=False).order_by('-create_time')
-        except:
-            notifications = None
-
-        if notifications:
-            request.session['notifications'] = list(
-                notifications.values_list('id', 'notification_name', 'notification_information', 'create_time'))
+        update_notifications(request)
+        update_environment(request)
 
         return view_func(request, *args, **kwds)
 

@@ -9,7 +9,7 @@ machine:
     DB_USER: root
 dependencies:
   post:
-    - pip install -r dev_cloud/requirements/prod.txt
+    - pip install -r ~/Dev\ Cloud/dev_cloud/requirements/prod.txt
 general:
   build_dir: ./web/
 test:

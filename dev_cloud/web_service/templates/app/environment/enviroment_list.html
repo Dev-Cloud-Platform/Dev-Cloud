@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load form_tags %}
+
+{% if request.session.environments|length >= 1 %}
+    <li class="{% if manage_env == 'active' %}opened active{% endif %}">
+        <a href="{% url 'app_main' %}">
+            <i class="entypo-rocket"></i>
+            <span>{% trans "Manage environments" %}</span>
+        </a>
+        <ul>
+
+            {% for environment in request.session.environments %}
+                <li class="{{ manage_env }}">
+                    <a href="{% url 'app_main' %}">
+                        <span>{{ environment.workspace }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </li>
+{% endif %}

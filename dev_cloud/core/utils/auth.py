@@ -22,9 +22,9 @@ from core.common.states import user_active_states
 from core.utils.exception import DevCloudException
 from database.models.users import Users
 
-
 session_key = '_auth_user_id'
 ROOT = 'devcloud'
+
 
 def login(request, user):
     """
