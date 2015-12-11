@@ -24,7 +24,6 @@ from django.views.decorators.cache import never_cache
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
-
 from django_ajax.decorators import ajax
 
 from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR, vm_states
@@ -35,6 +34,7 @@ from core.utils.messager import get
 from database.models.installed_applications import InstalledApplications
 from database.models.template_instances import TemplateInstances
 from database.models.virtual_machines import VirtualMachines
+from database.models.vm_tasks import VmTasks
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.forms.enviroment.create_vm import CreateVMForm
@@ -73,11 +73,14 @@ def view_environment(request, vm_id, template_name='app/environment/view_environ
     workspace_name = instaled_apps[0].workspace
     virtual_machine = VirtualMachines.objects.get(id=instaled_apps[0].virtual_machine.id)
     used_template = TemplateInstances.objects.get(template_id=virtual_machine.template_instance.template_id)
+    vm_tasks = VmTasks.objects.filter(vm__id=instaled_apps[0].virtual_machine.id)
 
     return render_to_response(template_name,
                               dict({'selected_vm': selected_vm, 'workspace_name': workspace_name,
                                     'virtual_machine': virtual_machine,
-                                    'used_template': used_template}.items() + generate_active(
+                                    'used_template': used_template,
+                                    'instaled_apps': instaled_apps,
+                                    'vm_tasks': vm_tasks}.items() + generate_active(
                                   'manage_env').items()),
                               context_instance=RequestContext(request))
 
@@ -100,6 +103,22 @@ def get_vm_status(request, vm_id, template_name='app/environment/get_vm_status.h
                                   context_instance=RequestContext(request))
     except Exception, ex:
         error(int(request.session[session_key]), str(ex))
+
+
+@ajax
+@vm_permission
+def refresh_vm_tasks(request, vm_id, template_name='app/environment/refresh_vm_tasks.html'):
+    """
+    Refresh virtual machine tasks'.
+    @param request:
+    @param vm_id: virtual machine id.
+    @param template_name: template to render.
+    @return: view to render.
+    """
+    vm_tasks = VmTasks.objects.filter(vm__id=vm_id)
+
+    return render_to_response(template_name, dict({'vm_tasks': vm_tasks}.items()),
+                              context_instance=RequestContext(request))
 
 
 @django_view
@@ -142,9 +161,9 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
                                   + '&workspace=%s' % create_vm.get_workspace()
                                   + '&public_ip=%s' % create_vm.get_public_ip()
                                   + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
-        print str(vm.get('id'))
+
         return HttpResponseRedirect(
-            reverse('view_environment', args={'vm_id': str(vm.get('id'))}, kwargs={'vm_id': str(vm.get('id'))}))
+            reverse('view_environment', args=[str(vm.get('id'))], kwargs={'vm_id': str(vm.get('id'))}))
 
     request.session[JAVA] = []
     request.session[PHP] = []

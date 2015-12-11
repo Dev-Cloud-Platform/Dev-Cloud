@@ -27,24 +27,24 @@
     <script>
         var task_id = window.location.pathname.replace(/\D/g, '');
         var page = location.search.split('page=')[1];
-        var url_paramenter = null;
+        var url_parameter = null;
 
         if (page != null) {
             if (task_id != '') {
-                url_paramenter = task_id + '/?page=' + page;
+                url_parameter = task_id + '/?page=' + page;
             } else {
-                url_paramenter = '?page=' + page;
+                url_parameter = '?page=' + page;
             }
         } else {
             if (task_id != '') {
-                url_paramenter = task_id;
+                url_parameter = task_id;
             } else {
-                url_paramenter = '';
+                url_parameter = '';
             }
         }
 
         (function updateTasksTimeline() {
-            ajaxGet('/main/app/utils/refresh_tasks/' + url_paramenter, function (content) {
+            ajaxGet('/main/app/utils/refresh_tasks/' + url_parameter, function (content) {
                 //onSuccess
                 jQuery("#task_timeline").html(content);
                 setTimeout(updateTasksTimeline, 30000);

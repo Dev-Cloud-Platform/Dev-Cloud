@@ -129,7 +129,7 @@ class VirtualMachine(object):
                 poolIP.remove()
             return FAILED
 
-    def destroy(self, vm_ids):
+    def destroy(self, vm_id):
         """
         This function only destroys VM.
 
@@ -149,10 +149,10 @@ class VirtualMachine(object):
                          .          .           |------------->rm
                          .          .          update_resources
 
-        @param vm_ids: list of virtual machines' ids.
-        @return:  Status OK if everything goes fine, another way failed status.
+        @param vm_id: id of virtual machine'.
+        @return: Status OK if everything goes fine, another way failed status.
         """
-        vm_ids_array = [vm_ids]
+        vm_ids_array = [vm_id]
         payload = copy.deepcopy(payload_org)
         payload['vm_ids'] = vm_ids_array
         vm = requests.post(address_clm + 'user/vm/destroy/', data=json.dumps(payload))
@@ -240,6 +240,21 @@ class VirtualMachine(object):
     def get_vm_private_ip(cls, vm_id):
         """
         Gets private IP address caller's VM.
+        @param vm_id: id of virtual machine.
+        @return: private ip address of virtual machine.
+        """
+        virtual_machine = cls.get_by_id(vm_id)
+        print virtual_machine
+        if virtual_machine != FAILED:
+            # Gets information about private IP
+            return virtual_machine.get('leases')[0].get('address')
+        else:
+            return virtual_machine
+
+    @classmethod
+    def get_vm_public_ip(cls, vm_id):
+        """
+        Gets public IP address caller's VM.
         @param vm_id: id of virtual machine.
         @return: private ip address of virtual machine.
         """

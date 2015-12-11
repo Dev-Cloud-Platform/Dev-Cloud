@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load custom_tags %}
+{% load humanize %}
+
+<ul class="cbp_tmtimeline">
+    {% for task in vm_tasks %}
+        <li>
+            <time class="text-center" datetime="{{ task.task.create_time|naturaltime }}">
+                <small style="line-height: 38px">{{ task.task.create_time|naturaltime }}</small>
+            </time>
+
+            {% if task.task.is_processing == True %}
+                <div class="cbp_tmicon bg-warning">
+                    <i class="entypo-clock"></i>
+                </div>
+            {% elif task.task.is_succeeded == True %}
+                <div class="cbp_tmicon bg-info">
+                    <i class="entypo-check"></i>
+                </div>
+            {% elif task.task.is_succeeded == False %}
+                <div class="cbp_tmicon bg-secondary">
+                    <i class="entypo-cancel"></i>
+                </div>
+            {% endif %}
+
+            <div class="cbp_tmlabel">
+                <h2><a>{{ task.task.task_name }}</a></h2>
+                <blockquote>
+                    <p>ID: <strong>#Task_{{ task.task.id }}</strong></p>
+                </blockquote>
+                {% if task.task.is_processing == True %}
+                    <br/>
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="100"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+</ul>

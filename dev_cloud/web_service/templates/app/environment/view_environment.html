@@ -1,6 +1,7 @@
 {% extends "app/environment/base.html" %}
 {% load i18n %}
 {% load custom_tags %}
+{% load humanize %}
 
 {% block title %}{{ block.super }} | {% trans "Environment" %}{% endblock %}
 
@@ -33,7 +34,7 @@
 
             </div>
 
-            <div class="col-sm-7">
+            <div class="col-sm-8">
 
                 <ul class="profile-info-sections">
                     <li>
@@ -47,8 +48,8 @@
                     </li>
 
                     <li>
-                        <div class="profile-stat">
-                            <h4>{% trans 'Used template: ' %}{{ used_template.template_name }}</h4>
+                        <div class="profile-stat ">
+                            <h5>{% trans 'Used template: ' %}{{ used_template.template_name }}</h5>
                             <span>
                                 <a>
                                     <i class="entypo-gauge"></i>
@@ -66,16 +67,40 @@
                         </div>
                     </li>
 
+                    <li>
+                        <div class="profile-stat">
+                            <h5>{% trans "Connection" %}</h5>
+                            <span>
+                                <a>
+                                    <i class="entypo-key"></i>
+                                    {% trans "Get ssh key" %}
+                                </a> <br/>
+                                <a>
+                                    <i class="entypo-monitor"></i>
+                                    {% trans "VNC" %}
+                                </a><br/>
+                                <a>
+                                    <i class="entypo-globe"></i>
+                                    {% if virtual_machine.public_ip != 'False' %}
+                                        {{ virtual_machine.public_ip }}
+                                    {% else %}
+                                        {% trans "No public IP" %}
+                                    {% endif %}
+                                </a>
+                            </span>
+                        </div>
+                    </li>
+
                 </ul>
 
             </div>
 
-            <div class="col-sm-3">
+            <div class="col-sm-2">
 
                 <div class="profile-buttons">
                     <a href="{% url 'destroy_vm' virtual_machine.id %}" class="btn btn-danger">
                         <i class="entypo-cancel"></i>
-                        {% trans 'Destroy Virtual Machine' %}
+                        {% trans 'Destroy' %}
                     </a>
                 </div>
             </div>
@@ -86,29 +111,24 @@
 
             <div class="row">
 
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-10">
+                    <div class="col-sm-2 notes text-center">
+                        <br/>
 
-                    <ul class="user-details">
-                        <li>
-                            <a title="{% trans "Registered" %}">
-                                <i class="entypo-location"></i>
-                                {{ request.session.user.activation_date }}
-                            </a>
-                        </li>
+                        <h3>{% trans 'Installed applications:' %}</h3>
+                    </div>
 
-                        <li>
-                            <a title="{% trans "e-mail" %}">
-                                <i class="entypo-mail"></i>
-                                {{ request.session.user.email }}
-                            </a>
-                        </li>
-                    </ul>
-
-                    <!-- tabs for the profile links -->
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="{% url 'account' %}">{% trans "Profile" %}</a></li>
-                        <li><a href="{% url 'edit_account' %}">{% trans "Edit Profile" %}</a></li>
-                    </ul>
+                    {% for instaled_app in instaled_apps %}
+                        <div class="col-sm-2">
+                            <ul class="user-details text-center">
+                                <li>
+                                    <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ instaled_app.application.application_name }}/file/icon.svg"
+                                         class="img-rounded panel-heading backup_picture"/>
+                                </li>
+                                <span>{{ instaled_app.application.application_name }}</span>
+                            </ul>
+                        </div>
+                    {% endfor %}
 
                 </div>
 
@@ -118,7 +138,65 @@
 
     </div>
 
-    <script>
+    <div class="row">
+
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h4>
+                            {% trans "Virtual Machine Taks'" %}
+                            <br/>
+                            <small>{% trans "list of task for current virtual machine" %}</small>
+                        </h4>
+                    </div>
+
+                    <div class="panel-options">
+                        <a href="#"><i class="entypo-cog"></i></a>
+                        <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                        <a href="#" data-rel="reload"><i class="entypo-arrows-ccw"></i></a>
+                        <a href="#" data-rel="close"><i class="entypo-cancel"></i></a>
+                    </div>
+                </div>
+
+                <div id="vm_tasks" class="panel-body">
+                    <!-- Generate content -->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h4>
+                            Real Time Monitoring
+                            <br/>
+                            <small>current virtual machine uptime</small>
+                        </h4>
+                    </div>
+
+                    <div class="panel-options">
+                        <a href="#"><i class="entypo-cog"></i></a>
+                        <a href="#" data-rel="collapse"><i class="entypo-down-open"></i></a>
+                        <a href="#" data-rel="reload"><i class="entypo-arrows-ccw"></i></a>
+                        <a href="#" data-rel="close"><i class="entypo-cancel"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel-body no-padding">
+                    <div id="rickshaw-chart-demo-2">
+                        <div id="rickshaw-legend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <script type="text/javascript">
         (function updateVmStatus() {
             ajaxGet('/main/app/environments/vm_status/' + {{ virtual_machine.id }}, function (content) {
                 //onSuccess
@@ -127,6 +205,101 @@
             });
         })();
 
+        jQuery(document).ready(function ($) {
+            $('.pie').sparkline('html', {
+                type: 'pie',
+                borderWidth: 0,
+                sliceColors: ['#3d4554', '#ee4749', '#00b19d']
+            });
+
+
+            $(".chart").sparkline([1, 2, 3, 1], {
+                type: 'pie',
+                barColor: '#485671',
+                height: '110px',
+                barWidth: 10,
+                barSpacing: 2
+            });
+
+            var map = $("#map");
+
+            map.vectorMap({
+                map: 'europe_merc_en',
+                zoomMin: '3',
+                backgroundColor: '#00a651',
+                focusOn: {x: 0.5, y: 0.8, scale: 3}
+            });
+
+
+            // Rickshaw
+            var seriesData = [[], []];
+
+            var random = new Rickshaw.Fixtures.RandomData(50);
+
+            for (var i = 0; i < 90; i++) {
+                random.addData(seriesData);
+            }
+
+            var graph = new Rickshaw.Graph({
+                element: document.getElementById("rickshaw-chart-demo-2"),
+                height: 217,
+                renderer: 'area',
+                stroke: false,
+                preserve: true,
+                series: [{
+                    color: '#359ade',
+                    data: seriesData[0],
+                    name: 'Page Views'
+                }, {
+                    color: '#73c8ff',
+                    data: seriesData[1],
+                    name: 'Unique Users'
+                }, {
+                    color: '#e0f2ff',
+                    data: seriesData[1],
+                    name: 'Bounce Rate'
+                }
+                ]
+            });
+
+            graph.render();
+
+            var hoverDetail = new Rickshaw.Graph.HoverDetail({
+                graph: graph,
+                xFormatter: function (x) {
+                    return new Date(x * 1000).toString();
+                }
+            });
+
+            var legend = new Rickshaw.Graph.Legend({
+                graph: graph,
+                element: document.getElementById('rickshaw-legend')
+            });
+
+            var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+                graph: graph,
+                legend: legend
+            });
+
+            setInterval(function () {
+                random.removeData(seriesData);
+                random.addData(seriesData);
+                graph.update();
+
+            }, 500);
+
+        });
+
+        (function updateVmTasksTimeline() {
+            ajaxGet('/main/app/environments/refresh_tasks/' + {{ virtual_machine.id }}, function (content) {
+                //onSuccess
+                jQuery("#vm_tasks").html(content);
+                setTimeout(updateVmTasksTimeline, 20000);
+            });
+        })();
+
     </script>
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/js/vertical-timeline/css/component.css">
 
 {% endblock %}
