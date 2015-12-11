@@ -1,0 +1,22 @@
+{% load i18n %}
+
+{% if vm_status == 'closed' or vm_status == 'failed' or vm_status == 'saving failed' %}
+    <a href="#" class="user-status is-busy tooltip-primary" data-toggle="tooltip"
+       data-placement="top" data-original-title="VM status: {{ vm_status }}">
+    </a>
+{% elif vm_status == 'init' or vm_status == 'suspend' or vm_status == 'restart' %}
+    <a href="#" class="user-status is-idle tooltip-primary" data-toggle="tooltip"
+       data-placement="top" data-original-title="VM status: {{ vm_status }}">
+    </a>
+{% elif vm_status == 'running' or vm_status == 'running ctx' %}
+    <a href="#" class="user-status is-online tooltip-primary" data-toggle="tooltip"
+       data-placement="top" data-original-title="VM status: {{ vm_status }}">
+    </a>
+{% else %}
+    <a href="#" class="user-status is-offline tooltip-primary" data-toggle="tooltip"
+       data-placement="top" data-original-title="VM status: {{ vm_status }}">
+    </a>
+{% endif %}
+<span style="display: inline"><small><i>{{ vm_status }}</i></small></span>
+
+<!-- VM statuses available classes "is-online", "is-offline", "is-idle", "is-busy" -->

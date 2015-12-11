@@ -22,10 +22,13 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
-from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR
-from core.utils.decorators import django_view, user_permission
+from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR, vm_states
+from core.utils.decorators import django_view, user_permission, vm_permission
 from core.utils.log import error
 from core.utils.messager import get, post
+from database.models.installed_applications import InstalledApplications
+from database.models.template_instances import TemplateInstances
+from database.models.virtual_machines import VirtualMachines
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
 from web_service.forms.enviroment.create_vm import CreateVMForm
@@ -33,6 +36,60 @@ from web_service.views.user.user import generate_active
 
 EXPOSE = 'expose'
 UNEXPOSE = 'unexpose'
+
+
+@django_view
+@user_permission
+def environments_list(request, template_name='app/environment/environments_list.html'):
+    """
+    Shows all virtual machines belong to user.
+    @param request:
+    @param template_name: template to render.
+    @return: view to render
+    """
+    return render_to_response(template_name,
+                              dict(generate_active('manage_env').items()),
+                              context_instance=RequestContext(request))
+
+
+@django_view
+@vm_permission
+def view_environment(request, vm_id, template_name='app/environment/view_environment.html'):
+    """
+    Shows selected virtual machine.
+    @param request:
+    @param vm_id: id of virtual machine.
+    @param template_name: template to render.
+    @return: view to render
+    """
+    selected_vm = vm_id
+    instaled_apps = InstalledApplications.objects.filter(virtual_machine__id=vm_id)
+    workspace_name = instaled_apps[0].workspace
+    virtual_machine = VirtualMachines.objects.get(id=instaled_apps[0].virtual_machine.id)
+    used_template = TemplateInstances.objects.get(template_id=virtual_machine.template_instance.template_id)
+
+    return render_to_response(template_name,
+                              dict({'selected_vm': selected_vm, 'workspace_name': workspace_name,
+                                    'virtual_machine': virtual_machine,
+                                    'used_template': used_template}.items() + generate_active(
+                                  'manage_env').items()),
+                              context_instance=RequestContext(request))
+
+
+@ajax
+@user_permission
+def get_vm_status(request, vm_id, template_name='app/environment/get_vm_status.html'):
+    """
+    Gets status of given virtual machine.
+    @param request:
+    @param vm_id: virtual machine id.
+    @return: status of virtual machine.
+    """
+    vm_status = vm_states.get(int(ast.literal_eval(
+        get('virtual-machines/get-vm-status/?vm_id=%s' % str(vm_id), request_session=request).text)))
+
+    return render_to_response(template_name, dict({'vm_status': vm_status}.items()),
+                              context_instance=RequestContext(request))
 
 
 @django_view
@@ -54,7 +111,7 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
                                   + '&public_ip=%s' % create_vm.get_public_ip()
                                   + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
         print vm
-        return redirect('app_main')
+        return redirect('view_environment')
 
     request.session[JAVA] = []
     request.session[PHP] = []
@@ -207,7 +264,7 @@ def define_environment(request, technology, exposed_ip, template_name='app/envir
     @param request:
     @param technology: selected technology.
     @param template_name: template to render.
-    @return:
+    @return: view to render
     """
     list_application_details = {}
     selected_applications = get_selected_applications(request, technology)
@@ -249,8 +306,8 @@ def summary(request, template_name='app/environment/step_4.html'):
     """
     Display summary for invoice.
     @param request:
-    @param template_name:
-    @return:
+    @param template_name: template to render
+    @return: view to render
     """
 
     return render_to_response(template_name, dict({'exposed': request.session.get('publicIP')}.items()),

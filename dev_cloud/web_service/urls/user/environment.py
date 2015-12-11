@@ -17,10 +17,10 @@
 #
 # @COPYRIGHT_end
 from django.conf.urls import patterns, url, include
-from core.utils.decorators import user_permission
+from core.utils.decorators import user_permission, vm_permission
 from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment, \
     define_environment, summary, validation_process, validation_process_ip, validation_process_resources, \
-    validation_process_ip_pre
+    validation_process_ip_pre, view_environment, environments_list, get_vm_status
 
 main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/$', user_permission(wizard_setup),
@@ -28,7 +28,8 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/technology/(?P<technology>\w+)/$',
                              user_permission(generate_dependencies),
                              name='generate_dependencies'),
-                         url(r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
+                         url(
+                             r'^app/create/environment/customize/(?P<technology>\w+)/(?P<application>[\w\-]+)/(?P<operation>\w+)/$',
                              user_permission(customize_environment), name='customize_environment'),
                          url(r'^app/create/environment/define/(?P<technology>\w+)/(?P<exposed_ip>\w+)/$',
                              user_permission(define_environment), name='define_environment'),
@@ -40,6 +41,11 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/validation_process_ip_pre/(?P<exposed_ip>\w+)/$',
                              user_permission(validation_process_ip_pre), name='validation_process_ip_pre'),
                          url(r'^app/create/environment/validation_process_resources/(?P<template_id>\w+)/$',
-                             user_permission(validation_process_resources), name='validation_process_resources'))
+                             user_permission(validation_process_resources), name='validation_process_resources'),
+                         url(r'^app/environments/$', user_permission(environments_list), name='environments_list'),
+                         url(r'^app/environments/(?P<vm_id>\w+)/$', vm_permission(view_environment),
+                             name='view_environment'),
+                         url(r'^app/environments/vm_status/(?P<vm_id>\w+)/$', user_permission(get_vm_status),
+                             name='get_vm_status'))
 
 urlpatterns = patterns('', url(r'^main/', include(main_patterns)))

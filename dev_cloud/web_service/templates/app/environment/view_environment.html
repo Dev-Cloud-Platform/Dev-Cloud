@@ -1,0 +1,132 @@
+{% extends "app/environment/base.html" %}
+{% load i18n %}
+{% load custom_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Environment" %}{% endblock %}
+
+
+{% block content %}
+
+    <ol class="breadcrumb 2">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <a href="{% url 'environments_list' %}"><i class="entypo-rocket"></i>{% trans "Environments" %}</a>
+        </li>
+        <li class="active">
+            <strong>{{ workspace_name }}</strong>
+        </li>
+    </ol>
+
+    <br/>
+
+    <div class="profile-env">
+
+        <header class="row">
+
+            <div class="col-sm-2">
+
+                <a class="profile-picture">
+                    <img src="{{ STATIC_URL }}app/images/icon-vm.png" class="img-responsive img-circle"/>
+                </a>
+
+            </div>
+
+            <div class="col-sm-7">
+
+                <ul class="profile-info-sections">
+                    <li>
+                        <div class="profile-name">
+                            <strong>
+                                <a>{{ workspace_name }}</a>
+                                <a id="vm_status"> <!-- Generate content --></a>
+                            </strong>
+                            <span><a><i class="entypo-rocket"></i>{% trans 'Workspace' %}</a></span>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="profile-stat">
+                            <h4>{% trans 'Used template: ' %}{{ used_template.template_name }}</h4>
+                            <span>
+                                <a>
+                                    <i class="entypo-gauge"></i>
+                                    {% trans "CPU: " %}{{ used_template.cpu }} {% trans 'cores' %}
+                                </a> <br/>
+                                <a>
+                                    <i class="entypo-progress-3"></i>
+                                    {% trans " RAM memory: " %} {{ used_template.memory }} GB
+                                </a> <br/>
+                                <a>
+                                    <i class="entypo-drive"></i>
+                                    {% trans "HDD space: " %} 10 GB
+                                </a>
+                            </span>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="col-sm-3">
+
+                <div class="profile-buttons">
+                    <a href="#" class="btn btn-danger">
+                        <i class="entypo-cancel"></i>
+                        {% trans 'Destroy Virtual Machine' %}
+                    </a>
+                </div>
+            </div>
+
+        </header>
+
+        <section class="profile-info-tabs">
+
+            <div class="row">
+
+                <div class="col-sm-offset-2 col-sm-10">
+
+                    <ul class="user-details">
+                        <li>
+                            <a title="{% trans "Registered" %}">
+                                <i class="entypo-location"></i>
+                                {{ request.session.user.activation_date }}
+                            </a>
+                        </li>
+
+                        <li>
+                            <a title="{% trans "e-mail" %}">
+                                <i class="entypo-mail"></i>
+                                {{ request.session.user.email }}
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- tabs for the profile links -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="{% url 'account' %}">{% trans "Profile" %}</a></li>
+                        <li><a href="{% url 'edit_account' %}">{% trans "Edit Profile" %}</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <script>
+        (function updateVmStatus() {
+            ajaxGet('/main/app/environments/vm_status/' + {{ virtual_machine.vm_id }}, function (content) {
+                //onSuccess
+                jQuery("#vm_status").html(content);
+                setTimeout(updateVmStatus, 20000);
+            });
+        })();
+
+    </script>
+
+{% endblock %}

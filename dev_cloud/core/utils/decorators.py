@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-import json
 import logging
 import datetime
 
@@ -25,6 +24,7 @@ from django.db import transaction, DatabaseError
 from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
+from django.shortcuts import redirect
 from django.utils.http import urlquote
 from django.utils.translation import ugettext as _
 
@@ -32,7 +32,6 @@ from core.common.states import notification_category
 from core.settings import common
 from core.utils import REDIRECT_FIELD_NAME
 from core.utils.auth import session_key
-from core.utils.python_object_encoder import SetEncoder
 from database.models import Users, Tasks
 from database.models.installed_applications import InstalledApplications
 from database.models.notifications import Notifications
@@ -173,6 +172,37 @@ def user_permission(view_func):
         path = urlquote(request.get_full_path())
         tup = login_url, REDIRECT_FIELD_NAME, path
         return HttpResponseRedirect('%s?%s=%s' % tup)
+
+    return wrap
+
+
+def vm_permission(view_func):
+    """
+    \b Decorator for views vm for allowed users.
+    @param view_func:
+    @return:
+    """
+
+    @user_permission
+    def wrap(request, *args, **kwds):
+        """
+        Returned decorated function.
+        @param request:
+        @param args:
+        @param kwds:
+        @return:
+        """
+        try:
+            installed_app = InstalledApplications.objects.filter(
+                user__id=int(request.session[session_key]), virtual_machine__id=int(kwds.get('vm_id')))[0]
+        except Exception, ex:
+            print str(ex)
+            installed_app = None
+
+        if installed_app:
+            return view_func(request, *args, **kwds)
+
+        return redirect('environments_list')
 
     return wrap
 

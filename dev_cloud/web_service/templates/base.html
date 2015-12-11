@@ -94,7 +94,7 @@
                 </ul>
             </li>
 
-            {% include "app/environment/enviroment_list.html" %}
+            {% include "app/environment/environment_menu_list.html" %}
 
             <li class="{% if mail_box_inbox == 'active' or mail_box_compose == 'active' or mail_box_view == 'active' %}opened active{% endif %}">
                 <a href="{% url 'mail_box' %}">
