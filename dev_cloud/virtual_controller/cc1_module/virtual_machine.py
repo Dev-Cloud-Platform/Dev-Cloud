@@ -152,8 +152,9 @@ class VirtualMachine(object):
         @param vm_ids: list of virtual machines' ids.
         @return:  Status OK if everything goes fine, another way failed status.
         """
+        vm_ids_array = [vm_ids]
         payload = copy.deepcopy(payload_org)
-        payload['vm_ids'] = vm_ids
+        payload['vm_ids'] = vm_ids_array
         vm = requests.post(address_clm + 'user/vm/destroy/', data=json.dumps(payload))
 
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:

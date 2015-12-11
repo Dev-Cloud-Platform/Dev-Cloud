@@ -36,7 +36,7 @@
                     <!-- Single Member -->
                     <div class="member-entry">
 
-                        <a href="{{ environment.virtual_machine }}" class="member-img">
+                        <a href="{% url 'view_environment' environment.virtual_machine %}" class="member-img">
                             <img src="{{ STATIC_URL }}app/images/icon-vm.png" class="img-rounded"/>
                             <i class="entypo-forward"></i>
                         </a>
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <h4>
-                                <a href="{{ environment.virtual_machine }}">{{ environment.workspace }}</a>
+                                <a href="{% url 'view_environment' environment.virtual_machine %}">{{ environment.workspace }}</a>
                             </h4>
                         </div>
 
@@ -68,6 +68,11 @@
                 "bStateSave": true
             });
 
+            {% if destroy_status == 'ok' %}
+                toastr.success('{% trans "Virtual machine destroyed" %}');
+            {% elif destroy_status == 'failed' %}
+                toastr.error('{% trans "Problem with destroy virtual machine" %}');
+            {% endif %}
         });
     </script>
 

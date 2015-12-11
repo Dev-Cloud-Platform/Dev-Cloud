@@ -193,3 +193,17 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(celery.get_ssh_key.apply_async(args=(user_id, key_name)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=['post', 'get'], url_path='destroy-vm')
+    def destroy_virtual_machine(self, request):
+        """
+        Destroys given virtual machine.
+        @param request:
+        @return: Status OK if everything goes fine, another way failed status.
+        """
+        user_id = api_permissions.UsersPermission.get_user(request).id
+        vm_id = request.DATA.get('vm_id', None) or request.query_params.get('vm_id', None)
+        if vm_id:
+            return Response(celery.destroy_virtual_machine.apply_async(args=(user_id, vm_id)).get())
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

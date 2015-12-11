@@ -2,7 +2,7 @@
 {% load form_tags %}
 {% load custom_tags %}
 
-{% if request.session.environments|length >= 1 %}
+{% if request.session.environments != None %}
     <li class="{% if manage_env == 'active' %}opened active{% endif %}">
         <a href="{% url 'app_main' %}">
             <i class="entypo-rocket"></i>
@@ -12,7 +12,7 @@
 
             {% for environment in request.session.environments %}
                 <li class="{% if environment.virtual_machine == selected_vm|to_int %}{{ manage_env }}{% endif %}">
-                    <a href="/main/app/environments/{{ environment.virtual_machine }}">
+                    <a href="{% url 'view_environment' environment.virtual_machine %}">
                         <span>{{ environment.workspace }}</span>
                     </a>
                 </li>

@@ -73,7 +73,7 @@
             <div class="col-sm-3">
 
                 <div class="profile-buttons">
-                    <a href="#" class="btn btn-danger">
+                    <a href="{% url 'destroy_vm' virtual_machine.id %}" class="btn btn-danger">
                         <i class="entypo-cancel"></i>
                         {% trans 'Destroy Virtual Machine' %}
                     </a>
@@ -120,7 +120,7 @@
 
     <script>
         (function updateVmStatus() {
-            ajaxGet('/main/app/environments/vm_status/' + {{ virtual_machine.vm_id }}, function (content) {
+            ajaxGet('/main/app/environments/vm_status/' + {{ virtual_machine.id }}, function (content) {
                 //onSuccess
                 jQuery("#vm_status").html(content);
                 setTimeout(updateVmStatus, 20000);

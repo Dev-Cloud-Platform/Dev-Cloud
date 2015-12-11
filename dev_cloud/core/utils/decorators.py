@@ -195,8 +195,7 @@ def vm_permission(view_func):
         try:
             installed_app = InstalledApplications.objects.filter(
                 user__id=int(request.session[session_key]), virtual_machine__id=int(kwds.get('vm_id')))[0]
-        except Exception, ex:
-            print str(ex)
+        except:
             installed_app = None
 
         if installed_app:

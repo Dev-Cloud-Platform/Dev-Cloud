@@ -17,15 +17,21 @@
 #
 # @COPYRIGHT_end
 import ast
+
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.views.decorators.cache import never_cache
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
+
 from django_ajax.decorators import ajax
+
 from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR, vm_states
-from core.utils.decorators import django_view, user_permission, vm_permission
+from core.utils.auth import session_key
+from core.utils.decorators import django_view, user_permission, vm_permission, update_environment
 from core.utils.log import error
-from core.utils.messager import get, post
+from core.utils.messager import get
 from database.models.installed_applications import InstalledApplications
 from database.models.template_instances import TemplateInstances
 from database.models.virtual_machines import VirtualMachines
@@ -77,7 +83,7 @@ def view_environment(request, vm_id, template_name='app/environment/view_environ
 
 
 @ajax
-@user_permission
+@vm_permission
 def get_vm_status(request, vm_id, template_name='app/environment/get_vm_status.html'):
     """
     Gets status of given virtual machine.
@@ -85,11 +91,37 @@ def get_vm_status(request, vm_id, template_name='app/environment/get_vm_status.h
     @param vm_id: virtual machine id.
     @return: status of virtual machine.
     """
-    vm_status = vm_states.get(int(ast.literal_eval(
-        get('virtual-machines/get-vm-status/?vm_id=%s' % str(vm_id), request_session=request).text)))
+    try:
+        vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
+        vm_status = vm_states.get(int(ast.literal_eval(
+            get('virtual-machines/get-vm-status/?vm_id=%s' % str(vm_id), request_session=request).text)))
 
-    return render_to_response(template_name, dict({'vm_status': vm_status}.items()),
-                              context_instance=RequestContext(request))
+        return render_to_response(template_name, dict({'vm_status': vm_status}.items()),
+                                  context_instance=RequestContext(request))
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
+
+
+@django_view
+@vm_permission
+def destroy_vm(request, vm_id, template_name='app/environment/environments_list.html'):
+    """
+    Destroys selected virtual machine.
+    @param request:
+    @param vm_id: virtual machine id.
+    @param template_name: tempalte to generate.
+    @return: status after destroy virtual machine
+    """
+    try:
+        vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
+        destroy_status = ast.literal_eval(
+            get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
+        update_environment(request)
+
+        return render_to_response(template_name, dict({'destroy_status': destroy_status}.items()),
+                                  context_instance=RequestContext(request))
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
 
 
 @django_view
@@ -110,8 +142,9 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
                                   + '&workspace=%s' % create_vm.get_workspace()
                                   + '&public_ip=%s' % create_vm.get_public_ip()
                                   + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
-        print vm
-        return redirect('view_environment')
+        print str(vm.get('id'))
+        return HttpResponseRedirect(
+            reverse('view_environment', args={'vm_id': str(vm.get('id'))}, kwargs={'vm_id': str(vm.get('id'))}))
 
     request.session[JAVA] = []
     request.session[PHP] = []

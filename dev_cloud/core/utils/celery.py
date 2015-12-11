@@ -24,6 +24,7 @@ import jsonpickle
 from django.utils.translation import ugettext as _
 
 from core.common import states
+from core.common.states import FAILED, OK
 from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 from core.settings.config import SSH_KEY_PATH
@@ -242,5 +243,19 @@ def destroy_virtual_machine(user_id, vm_id, *args):
         if is_timeout:
             break
 
-    virtual_machine = VirtualMachine(user_id)
-    return virtual_machine.destroy(vm_id)
+    try:
+        own_machine = VirtualMachines.objects.get(vm_id=vm_id)
+        installed_apps = InstalledApplications.objects.filter(user__id=int(user_id),
+                                                              virtual_machine__id=int(own_machine.id))
+    except:
+        own_machine = None
+
+    if own_machine:
+        virtual_machine = VirtualMachine(user_id)
+        destroy_status = virtual_machine.destroy(vm_id)
+        if destroy_status == OK:
+            own_machine.delete()
+            installed_apps.delete()
+        return destroy_status
+    else:
+        return FAILED

@@ -86,7 +86,7 @@
                     var bodyRect = document.body.getBoundingClientRect(),
                             elemRect = document.getElementById("scroll_here").getBoundingClientRect(),
                             offset = elemRect.top - bodyRect.top;
-                    var h = offset - 3 * elemRect.height; //get height
+                    var h = offset; // - elemRect.height; //get height
 
                     scrollDown(h);
                 }
