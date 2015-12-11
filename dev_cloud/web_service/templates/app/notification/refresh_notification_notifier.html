@@ -52,12 +52,13 @@
             {% endif %}
 
             <span class="line">
-                            <strong>{{ notification.notification.notification_name }}</strong>
-                        </span>
+                    <strong>{{ notification.notification.notification_information }}</strong><br/>
+                    <small>{{ notification.notification.notification_name }}</small>
+                </span>
 
             <span class="line small">
-                            {{ notification.notification.create_time|naturaltime }}
-                        </span>
+                    {{ notification.notification.create_time|naturaltime }}
+                </span>
             </a>
 
             </li>
