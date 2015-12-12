@@ -79,7 +79,7 @@ def view_environment(request, vm_id, template_name='app/environment/view_environ
                               dict({'selected_vm': selected_vm, 'workspace_name': workspace_name,
                                     'virtual_machine': virtual_machine,
                                     'used_template': used_template,
-                                    'instaled_apps': instaled_apps,
+                                    'installed_apps': instaled_apps,
                                     'vm_tasks': vm_tasks}.items() + generate_active(
                                   'manage_env').items()),
                               context_instance=RequestContext(request))
@@ -115,7 +115,7 @@ def refresh_vm_tasks(request, vm_id, template_name='app/environment/refresh_vm_t
     @param template_name: template to render.
     @return: view to render.
     """
-    vm_tasks = VmTasks.objects.filter(vm__id=vm_id)
+    vm_tasks = VmTasks.objects.filter(vm__id=vm_id).order_by('-create_time')
 
     return render_to_response(template_name, dict({'vm_tasks': vm_tasks}.items()),
                               context_instance=RequestContext(request))
@@ -162,8 +162,7 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
                                   + '&public_ip=%s' % create_vm.get_public_ip()
                                   + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
 
-        return HttpResponseRedirect(
-            reverse('view_environment', args=[str(vm.get('id'))], kwargs={'vm_id': str(vm.get('id'))}))
+        return HttpResponseRedirect(reverse('view_environment', kwargs={'vm_id': str(vm.get('id'))}))
 
     request.session[JAVA] = []
     request.session[PHP] = []

@@ -50,6 +50,6 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/environments/destroy/(?P<vm_id>\w+)/$', vm_permission(destroy_vm),
                              name='destroy_vm'),
                          url(r'^app/environments/refresh_tasks/(?P<vm_id>\w+)/$', vm_permission(refresh_vm_tasks),
-                             name='view_environment'))
+                             name='refresh_vm_tasks'))
 
 urlpatterns = patterns('', url(r'^main/', include(main_patterns)))

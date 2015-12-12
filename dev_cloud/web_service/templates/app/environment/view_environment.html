@@ -118,14 +118,14 @@
                         <h3>{% trans 'Installed applications:' %}</h3>
                     </div>
 
-                    {% for instaled_app in instaled_apps %}
+                    {% for installed_app in installed_apps %}
                         <div class="col-sm-2">
                             <ul class="user-details text-center">
                                 <li>
-                                    <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ instaled_app.application.application_name }}/file/icon.svg"
+                                    <img src="https://manage.jujucharms.com/api/2/charm/trusty/{{ installed_app.application.application_name }}/file/icon.svg"
                                          class="img-rounded panel-heading backup_picture"/>
                                 </li>
-                                <span>{{ instaled_app.application.application_name }}</span>
+                                <span>{{ installed_app.application.application_name }}</span>
                             </ul>
                         </div>
                     {% endfor %}
@@ -206,30 +206,6 @@
         })();
 
         jQuery(document).ready(function ($) {
-            $('.pie').sparkline('html', {
-                type: 'pie',
-                borderWidth: 0,
-                sliceColors: ['#3d4554', '#ee4749', '#00b19d']
-            });
-
-
-            $(".chart").sparkline([1, 2, 3, 1], {
-                type: 'pie',
-                barColor: '#485671',
-                height: '110px',
-                barWidth: 10,
-                barSpacing: 2
-            });
-
-            var map = $("#map");
-
-            map.vectorMap({
-                map: 'europe_merc_en',
-                zoomMin: '3',
-                backgroundColor: '#00a651',
-                focusOn: {x: 0.5, y: 0.8, scale: 3}
-            });
-
 
             // Rickshaw
             var seriesData = [[], []];
