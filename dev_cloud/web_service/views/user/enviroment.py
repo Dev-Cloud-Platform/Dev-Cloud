@@ -70,17 +70,17 @@ def view_environment(request, vm_id, template_name='app/environment/view_environ
     @return: view to render
     """
     selected_vm = vm_id
-    instaled_apps = InstalledApplications.objects.filter(virtual_machine__id=vm_id)
-    workspace_name = instaled_apps[0].workspace
-    virtual_machine = VirtualMachines.objects.get(id=instaled_apps[0].virtual_machine.id)
+    installed_apps = InstalledApplications.objects.filter(virtual_machine__id=vm_id)
+    workspace_name = installed_apps[0].workspace
+    virtual_machine = VirtualMachines.objects.get(id=installed_apps[0].virtual_machine.id)
     used_template = TemplateInstances.objects.get(template_id=virtual_machine.template_instance.template_id)
-    vm_tasks = VmTasks.objects.filter(vm__id=instaled_apps[0].virtual_machine.id)
+    vm_tasks = VmTasks.objects.filter(vm__id=installed_apps[0].virtual_machine.id)
 
     return render_to_response(template_name,
                               dict({'selected_vm': selected_vm, 'workspace_name': workspace_name,
                                     'virtual_machine': virtual_machine,
                                     'used_template': used_template,
-                                    'installed_apps': instaled_apps,
+                                    'installed_apps': installed_apps,
                                     'vm_tasks': vm_tasks}.items() + generate_active(
                                   'manage_env').items()),
                               context_instance=RequestContext(request))
@@ -117,7 +117,7 @@ def refresh_vm_tasks(request, vm_id, template_name='app/environment/refresh_vm_t
     @return: view to render.
     """
     try:
-        vm_tasks = VmTasks.objects.filter(vm__id=vm_id).order_by('-create_time')
+        vm_tasks = VmTasks.objects.filter(vm__id=vm_id).order_by('-task')
     except:
         vm_tasks = None
 
