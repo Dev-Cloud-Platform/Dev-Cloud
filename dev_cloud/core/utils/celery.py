@@ -263,6 +263,8 @@ def destroy_virtual_machine(user_id, vm_id, *args):
         if destroy_status == OK:
             own_machine.delete()
             installed_apps.delete()
-        return destroy_status
+            return OK
+        else:
+            return FAILED
     else:
         return FAILED
