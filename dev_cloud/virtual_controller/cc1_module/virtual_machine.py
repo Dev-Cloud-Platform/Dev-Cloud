@@ -160,7 +160,7 @@ class VirtualMachine(object):
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return OK
         else:
-            error(self.user_id, vm)
+            log.error(self.user_id, vm)
             return FAILED
 
     def detach_vnc(self):
