@@ -130,6 +130,7 @@ def create_virtual_machine(user_id, vm_property, *args):
             virtual_machine = VirtualMachines.objects.create(
                 vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
                 public_ip=public_ip,
+                private_ip=virtual_machine.get_vm_private_ip(vm_id),
                 ssh_key=virtual_machine_form.get_ssh_private_key(),
                 template_instance_id=virtual_machine_form.get_template())
 

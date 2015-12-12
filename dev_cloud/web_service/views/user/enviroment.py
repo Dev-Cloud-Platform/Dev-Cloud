@@ -132,17 +132,16 @@ def destroy_vm(request, vm_id):
     @param vm_id: virtual machine id.
     @return: status after destroy virtual machine
     """
-    try:
-        vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
-        destroy_status = ast.literal_eval(
-            get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
-        update_environment(request)
+    # try:
+    vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
+    destroy_status = ast.literal_eval(
+        get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
+    update_environment(request)
 
-        return redirect('environments_list', destroy_status=destroy_status)
-    except Exception, ex:
-        error(int(request.session[session_key]), str(ex))
-
-    return redirect('environments_list', destroy_status=FAILED)
+    return redirect('environments_list', destroy_status=destroy_status)
+    # except Exception, ex:
+    #     error(int(request.session[session_key]), str(ex))
+    #     return redirect('environments_list', destroy_status=FAILED)
 
 
 @django_view
