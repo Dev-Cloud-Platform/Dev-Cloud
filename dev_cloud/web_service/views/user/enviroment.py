@@ -133,12 +133,25 @@ def destroy_vm(request, vm_id):
     @param vm_id: virtual machine id.
     @return: status after destroy virtual machine
     """
+    return redirect('force_destroy_vm', vm_id=vm_id)
+
+
+@django_view
+@vm_permission
+def force_destroy_vm(request, vm_id):
+    """
+    Force destroys selected virtual machine.
+    @param request:
+    @param vm_id: virtual machine id.
+    @return: status after destroy virtual machine
+    """
     # Dirty Solution
     try:
         vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
-        get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request)
+        destroy_status = ast.literal_eval(
+            get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
         update_environment(request)
-        return redirect('environments_list', destroy_status=OK)
+        return redirect('environments_list', destroy_status=destroy_status)
     except Exception, ex:
         error(int(request.session[session_key]), str(ex))
         update_environment(request)
@@ -196,8 +209,8 @@ def generate_dependencies(request, technology=None, template_name='app/environme
                                   dict(available_technology.items() + generate_active('create_env_own').items()
                                        + {'selected_applications': selected_applications}.items()),
                                   context_instance=RequestContext(request))
-    except:
-        pass
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
 
 
 def update_application(array, application, operation):
