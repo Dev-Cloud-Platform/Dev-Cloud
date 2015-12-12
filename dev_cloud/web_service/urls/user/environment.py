@@ -52,9 +52,6 @@ main_patterns = patterns('web_service.views.user.enviroment',
                              name='get_vm_status'),
                          url(r'^app/environments/destroy/(?P<vm_id>\w+)/$', vm_permission(destroy_vm),
                              name='destroy_vm'),
-                         url(r'^app/environments/destroy/force_destroy/(?P<vm_id>\w+)/$',
-                             vm_permission(force_destroy_vm),
-                             name='force_destroy_vm'),
                          url(r'^app/environments/refresh_tasks/(?P<vm_id>\w+)/$', vm_permission(refresh_vm_tasks),
                              name='refresh_vm_tasks'))
 

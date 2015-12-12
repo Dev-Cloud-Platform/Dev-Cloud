@@ -26,6 +26,7 @@ from django_ajax.decorators import ajax
 from requests import ConnectionError
 
 from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR, vm_states
+from core.utils import celery
 from core.utils.auth import session_key
 from core.utils.decorators import django_view, user_permission, vm_permission, update_environment
 from core.utils.log import error
@@ -133,23 +134,11 @@ def destroy_vm(request, vm_id):
     @param vm_id: virtual machine id.
     @return: status after destroy virtual machine
     """
-    return redirect('force_destroy_vm', vm_id=vm_id)
-
-
-@django_view
-@vm_permission
-def force_destroy_vm(request, vm_id):
-    """
-    Force destroys selected virtual machine.
-    @param request:
-    @param vm_id: virtual machine id.
-    @return: status after destroy virtual machine
-    """
     # Dirty Solution
     try:
         vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
-        destroy_status = ast.literal_eval(
-            get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
+        destroy_status = celery.destroy_virtual_machine.apply_async(
+            args=(int(request.session[session_key]), vm_id)).get()
         update_environment(request)
         return redirect('environments_list', destroy_status=destroy_status)
     except Exception, ex:
