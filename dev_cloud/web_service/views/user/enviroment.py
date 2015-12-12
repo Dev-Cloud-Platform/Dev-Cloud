@@ -133,18 +133,16 @@ def destroy_vm(request, vm_id):
     @param vm_id: virtual machine id.
     @return: status after destroy virtual machine
     """
+    # Dirty Solution
     try:
         vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
-        destroy_status = ast.literal_eval(
-            get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
+        get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request)
         update_environment(request)
-
-        return redirect('environments_list', destroy_status=destroy_status)
+        return redirect('environments_list', destroy_status=OK)
     except Exception, ex:
         error(int(request.session[session_key]), str(ex))
-
-    update_environment(request)
-    return redirect('environments_list')
+        update_environment(request)
+        return redirect('environments_list', destroy_status=FAILED)
 
 
 @django_view
@@ -181,7 +179,7 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
 
 @ajax
 @user_permission
-def generate_dependencies(request, technology, template_name='app/environment/step_2.html'):
+def generate_dependencies(request, technology=None, template_name='app/environment/step_2.html'):
     """
     Generates dependencies for chosen technology.
     @param request:
@@ -189,14 +187,17 @@ def generate_dependencies(request, technology, template_name='app/environment/st
     @param template_name: template to render.
     @return: view to render.
     """
-    selected_applications = get_selected_applications(request, technology)
-    technology_builder = TechnologyBuilder()
-    available_technology = technology_builder.extracts(technology)
+    try:
+        selected_applications = get_selected_applications(request, technology)
+        technology_builder = TechnologyBuilder()
+        available_technology = technology_builder.extracts(technology)
 
-    return render_to_response(template_name,
-                              dict(available_technology.items() + generate_active('create_env_own').items()
-                                   + {'selected_applications': selected_applications}.items()),
-                              context_instance=RequestContext(request))
+        return render_to_response(template_name,
+                                  dict(available_technology.items() + generate_active('create_env_own').items()
+                                       + {'selected_applications': selected_applications}.items()),
+                                  context_instance=RequestContext(request))
+    except:
+        pass
 
 
 def update_application(array, application, operation):
