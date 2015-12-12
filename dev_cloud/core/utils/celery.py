@@ -124,7 +124,7 @@ def create_virtual_machine(user_id, vm_property, *args):
         try:
             virtual_machine = VirtualMachines.objects.create(
                 vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
-                public_ip=virtual_machine_form.get_public_ip(),
+                public_ip=virtual_machine.get_vm_public_ip(vm_id),
                 ssh_key=virtual_machine_form.get_ssh_private_key(),
                 template_instance_id=virtual_machine_form.get_template())
 
@@ -191,6 +191,13 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
     @param applications: list of applications.
     @return:
     """
+    try:
+        VmTasks.objects.create(
+            vm_id=VirtualMachines.objects.get(vm_id=vm_serializer_data.get('vm_id')).id,
+            task_id=args[0].get(TASK_ID))
+    except Exception, ex:
+        error(args[0], _("Database - Problem with initialize virtual machine") + str(ex))
+
     is_timeout = False
     current_time = 0
     virtual_machine = VirtualMachine(user_id)
@@ -216,13 +223,6 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         ssh.close_connection()
     else:
         raise Exception
-
-    try:
-        VmTasks.objects.create(
-            vm_id=VirtualMachines.objects.get(vm_id=vm_serializer_data.get('vm_id')).id,
-            task_id=args[0].get(TASK_ID))
-    except Exception, ex:
-        error(args[0], _("Database - Problem with initialize virtual machine") + str(ex))
 
 
 @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
