@@ -23,6 +23,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
+from requests import ConnectionError
 
 from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR, vm_states
 from core.utils.auth import session_key
@@ -139,9 +140,11 @@ def destroy_vm(request, vm_id):
         update_environment(request)
 
         return redirect('environments_list', destroy_status=destroy_status)
-    except Exception, ex:
-        error(int(request.session[session_key]), str(ex))
-        return redirect('environments_list', destroy_status=FAILED)
+    except ConnectionError, e:
+        error(int(request.session[session_key]), str(e))
+
+    update_environment(request)
+    return redirect('environments_list')
 
 
 @django_view

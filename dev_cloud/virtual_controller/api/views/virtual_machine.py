@@ -16,21 +16,14 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-import ast
-import json
 import jsonpickle
 from rest_framework import viewsets, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
-from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, FAILED
 
+from core.common.states import PUBLIC_IP_LIMIT, CM_ERROR, UNKNOWN_ERROR, FAILED
 from core.utils import celery
-from core.utils.decorators import manual_transaction
-from core.utils.exception import DevCloudException
 from core.utils.log import error
-from core.utils.python_object_encoder import SetEncoder
-from database.models.applications import Applications
-from database.models.installed_applications import InstalledApplications
 from database.models.virtual_machines import VirtualMachines
 from virtual_controller.api.permissions import base_permissions as api_permissions
 from virtual_controller.api.serializers.virtual_machines_serializer import VirtualMachinesSerializer
@@ -194,16 +187,16 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @list_route(methods=['post, get'], url_path='destroy-vm')
+    @list_route(methods=['post', 'get'], url_path='destroy-vm')
     def destroy_virtual_machine(self, request):
         """
         Destroys given virtual machine.
         @param request:
         @return: Status OK if everything goes fine, another way failed status.
         """
-        user_id = api_permissions.UsersPermission.get_user(request).id
         vm_id = request.DATA.get('vm_id', None) or request.query_params.get('vm_id', None)
         if vm_id:
+            user_id = api_permissions.UsersPermission.get_user(request).id
             return Response(celery.destroy_virtual_machine.apply_async(args=(user_id, vm_id)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
