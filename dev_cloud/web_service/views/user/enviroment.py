@@ -140,8 +140,8 @@ def destroy_vm(request, vm_id):
         update_environment(request)
 
         return redirect('environments_list', destroy_status=destroy_status)
-    except ConnectionError, e:
-        error(int(request.session[session_key]), str(e))
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
 
     update_environment(request)
     return redirect('environments_list')
