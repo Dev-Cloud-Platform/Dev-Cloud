@@ -25,7 +25,7 @@ from django.utils.translation import ugettext as _
 import time
 
 from core.common import states
-from core.common.states import FAILED, OK
+from core.common.states import FAILED, OK, NOT_ALLOWED
 from core.settings.common import settings, WAIT_TIME, LOOP_TIME
 from core.settings.common import BROKER_URL, CELERY_RESULT_BACKEND
 from core.settings.config import SSH_KEY_PATH
@@ -52,6 +52,7 @@ CREATE_VM = _('Create new virtual machine')
 GENERATE_SSH = _('Generate new SSH key pair')
 INIT_VM = _('Initialize virtual machine')
 DESTROY_VM = _('Destroy virtual machine')
+INITIALIZE_VNC = _('Initialize VNC connection')
 
 app = Celery('core.utils', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['core.utils'])
 
@@ -258,7 +259,7 @@ def destroy_virtual_machine(user_id, vm_id, *args):
         installed_apps = None
         own_machine = None
 
-    if installed_apps:
+    if virtual_machine.check_vm_property(user_id, vm_id):
         virtual_machine = VirtualMachine(user_id)
         destroy_status = virtual_machine.destroy(vm_id)
         if destroy_status == OK:
@@ -269,3 +270,27 @@ def destroy_virtual_machine(user_id, vm_id, *args):
             return FAILED
     else:
         return FAILED
+
+
+@app.task(trail=True, name='core.utils.tasks.get_vnc')
+@dev_cloud_task(INITIALIZE_VNC)
+def get_vnc(user_id, vm_id, *args):
+    """
+    Gets VNC data to connect.
+    @param user_id: id of caller.
+    @param vm_id: id of virtual machine.
+    @return: Dict of data contains host, port and password.
+    """
+    try:
+        VmTasks.objects.create(
+            vm_id=VirtualMachines.objects.get(vm_id=vm_id).id,
+            task_id=args[0].get(TASK_ID))
+    except Exception, ex:
+        error(args[0], _("Database - Problem with initialize VNC") + str(ex))
+
+    virtual_machine = VirtualMachine(user_id)
+
+    if virtual_machine.check_vm_property(user_id, vm_id):
+        return virtual_machine.get_no_vnc_data(vm_id)
+    else:
+        return NOT_ALLOWED

@@ -148,6 +148,26 @@ def destroy_vm(request, vm_id):
 
 
 @django_view
+@vm_permission
+def show_vnc(request, vm_id, template_name='app/environment/novnc.html'):
+    """
+    Shows VNC.
+    @param request:
+    @param vm_id: virtual machine id.
+    @param template_name: template to generate
+    @return: view to generate.
+    """
+    try:
+        vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
+        vnc_dict = ast.literal_eval(
+            get('virtual-machines/get-vnc-data/?vm_id=%s' % str(vm_id), request_session=request).text)
+
+        return render_to_response(template_name, vnc_dict, context_instance=RequestContext(request))
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
+
+
+@django_view
 @csrf_protect
 @user_permission
 def wizard_setup(request, template_name='app/environment/wizard_setup.html'):

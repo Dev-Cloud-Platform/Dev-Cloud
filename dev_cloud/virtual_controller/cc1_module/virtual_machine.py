@@ -23,6 +23,7 @@ import requests
 from core.common.states import OK, STATUS, FAILED, DATA
 from core.settings.config import VM_IMAGE_NAME
 from core.utils import log
+from database.models import VirtualMachines, InstalledApplications
 from virtual_controller.cc1_module import address_clm, payload as payload_org
 from virtual_controller.cc1_module.logger import error
 from virtual_controller.cc1_module.master_user import MasterUser
@@ -45,7 +46,7 @@ class VirtualMachine(object):
     public_ip_id = None
     iso_list = None
     disk_list = None
-    vnc = None
+    vnc = True
     groups = None
     count = 1
     user_data = None
@@ -156,8 +157,6 @@ class VirtualMachine(object):
         payload = copy.deepcopy(payload_org)
         payload['vm_ids'] = vm_ids_array
         vm = requests.post(address_clm + 'user/vm/destroy/', data=json.dumps(payload))
-        print "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        print vm.text
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return OK
         else:
@@ -181,6 +180,7 @@ class VirtualMachine(object):
         payload['vm_id'] = vm_id
 
         vm = requests.post(address_clm + 'user/vm/get_by_id/', data=json.dumps(payload))
+        print vm.text
         if vm.status_code == 200 and json.loads(vm.text).get(STATUS) == OK:
             return json.loads(vm.text).get(DATA)
         else:
@@ -266,3 +266,42 @@ class VirtualMachine(object):
             return virtual_machine.get('leases')[0].get('public_ip').get('address')
         else:
             return virtual_machine
+
+    @classmethod
+    def get_no_vnc_data(cls, vm_id):
+        """
+        Gets VNC data.
+        @param vm_id: id of virtual machine.
+        @return: Dict of data contains host, port and password.
+        """
+        virtual_machine = cls.get_by_id(vm_id)
+
+        if virtual_machine != FAILED:
+            # Gets information about VNC
+            vnc_endpoint = virtual_machine.get('novnc_endpoint').split(':')
+            vnc_host = vnc_endpoint[0]
+            vnc_port = vnc_endpoint[1]
+            vnc_pass = virtual_machine.get('vnc_passwd')
+            vnc_data = {'vnc_host': vnc_host, 'vnc_port': vnc_port, 'vnc_password': vnc_pass, 'vmid': vm_id}
+            return vnc_data
+        else:
+            return virtual_machine
+
+    @staticmethod
+    def check_vm_property(user_id, vm_id):
+        """
+        Checks if given virtual machine belong to user.
+        @param user_id: id user.
+        @param vm_id:  virtual machine id.
+        @return: True if virtual machine belong to user, False if not.
+        """
+        try:
+            own_machine = VirtualMachines.objects.get(vm_id=vm_id)
+            installed_apps = InstalledApplications.objects.filter(user__id=int(user_id),
+                                                                  virtual_machine__id=int(own_machine.id)).count()
+            if installed_apps >= 1:
+                return True
+        except Exception, ex:
+            error(user_id, _("Database - Problem with check vm property") + str(ex))
+
+        return False

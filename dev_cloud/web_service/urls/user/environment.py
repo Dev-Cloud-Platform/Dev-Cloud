@@ -20,7 +20,8 @@ from django.conf.urls import patterns, url, include
 from core.utils.decorators import user_permission, vm_permission
 from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment, \
     define_environment, summary, validation_process, validation_process_ip, validation_process_resources, \
-    validation_process_ip_pre, view_environment, environments_list, get_vm_status, destroy_vm, refresh_vm_tasks
+    validation_process_ip_pre, view_environment, environments_list, get_vm_status, destroy_vm, refresh_vm_tasks, \
+    show_vnc
 
 main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/$', user_permission(wizard_setup),
@@ -52,6 +53,8 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/environments/destroy/(?P<vm_id>\w+)/$', vm_permission(destroy_vm),
                              name='destroy_vm'),
                          url(r'^app/environments/refresh_tasks/(?P<vm_id>\w+)/$', vm_permission(refresh_vm_tasks),
-                             name='refresh_vm_tasks'))
+                             name='refresh_vm_tasks'),
+                         url(r'^app/environments/show_vm/vnc/(?P<vm_id>\w+)/$', vm_permission(show_vnc),
+                             name='show_vnc'))
 
 urlpatterns = patterns('', url(r'^main/', include(main_patterns)))

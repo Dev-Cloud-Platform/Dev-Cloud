@@ -200,3 +200,17 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(celery.destroy_virtual_machine.apply_async(args=(user_id, vm_id)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=['get'], url_path='get-vnc-data')
+    def get_vnc_data(self, request):
+        """
+        Returns data for VNC connection.
+        @param request:
+        @return: Dict of data contains host, port and password.
+        """
+        vm_id = request.DATA.get('vm_id', None) or request.query_params.get('vm_id', None)
+        if vm_id:
+            user_id = api_permissions.UsersPermission.get_user(request).id
+            return Response(celery.get_vnc.apply_async(args=(user_id, vm_id)).get())
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
