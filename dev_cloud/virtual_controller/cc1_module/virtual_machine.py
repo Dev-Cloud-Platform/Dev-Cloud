@@ -156,7 +156,8 @@ class VirtualMachine(object):
         payload = copy.deepcopy(payload_org)
         payload['vm_ids'] = vm_ids_array
         vm = requests.post(address_clm + 'user/vm/destroy/', data=json.dumps(payload))
-
+        print "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        print vm.text
         if vm.status_code == 200 and ast.literal_eval(vm.text).get(STATUS) == OK:
             return OK
         else:
