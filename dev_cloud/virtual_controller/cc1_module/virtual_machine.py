@@ -244,7 +244,7 @@ class VirtualMachine(object):
         @return: private ip address of virtual machine.
         """
         virtual_machine = cls.get_by_id(vm_id)
-        print virtual_machine
+
         if virtual_machine != FAILED:
             # Gets information about private IP
             return virtual_machine.get('leases')[0].get('address')
@@ -256,12 +256,12 @@ class VirtualMachine(object):
         """
         Gets public IP address caller's VM.
         @param vm_id: id of virtual machine.
-        @return: private ip address of virtual machine.
+        @return: public ip address of virtual machine.
         """
         virtual_machine = cls.get_by_id(vm_id)
 
         if virtual_machine != FAILED:
-            # Gets information about private IP
+            # Gets information about public IP
             return virtual_machine.get('leases')[0].get('public_ip').get('address')
         else:
             return virtual_machine

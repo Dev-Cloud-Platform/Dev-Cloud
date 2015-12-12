@@ -21,7 +21,7 @@ import ast
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.decorators.cache import never_cache
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
@@ -46,15 +46,16 @@ UNEXPOSE = 'unexpose'
 
 @django_view
 @user_permission
-def environments_list(request, template_name='app/environment/environments_list.html'):
+def environments_list(request, destroy_status=None, template_name='app/environment/environments_list.html'):
     """
     Shows all virtual machines belong to user.
     @param request:
+    @param destroy_status: Status of destroy machine, if was called.
     @param template_name: template to render.
     @return: view to render
     """
     return render_to_response(template_name,
-                              dict(generate_active('manage_env').items()),
+                              dict({'destroy_status': destroy_status}.items() + generate_active('manage_env').items()),
                               context_instance=RequestContext(request))
 
 
@@ -115,7 +116,10 @@ def refresh_vm_tasks(request, vm_id, template_name='app/environment/refresh_vm_t
     @param template_name: template to render.
     @return: view to render.
     """
-    vm_tasks = VmTasks.objects.filter(vm__id=vm_id).order_by('-create_time')
+    try:
+        vm_tasks = VmTasks.objects.filter(vm__id=vm_id).order_by('-create_time')
+    except:
+        vm_tasks = None
 
     return render_to_response(template_name, dict({'vm_tasks': vm_tasks}.items()),
                               context_instance=RequestContext(request))
@@ -123,7 +127,7 @@ def refresh_vm_tasks(request, vm_id, template_name='app/environment/refresh_vm_t
 
 @django_view
 @vm_permission
-def destroy_vm(request, vm_id, template_name='app/environment/environments_list.html'):
+def destroy_vm(request, vm_id):
     """
     Destroys selected virtual machine.
     @param request:
@@ -137,8 +141,7 @@ def destroy_vm(request, vm_id, template_name='app/environment/environments_list.
             get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
         update_environment(request)
 
-        return render_to_response(template_name, dict({'destroy_status': destroy_status}.items()),
-                                  context_instance=RequestContext(request))
+        return redirect('environments_list', destroy_status=destroy_status)
     except Exception, ex:
         error(int(request.session[session_key]), str(ex))
 
@@ -162,7 +165,7 @@ def wizard_setup(request, template_name='app/environment/wizard_setup.html'):
                                   + '&public_ip=%s' % create_vm.get_public_ip()
                                   + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
 
-        return HttpResponseRedirect(reverse('view_environment', kwargs={'vm_id': str(vm.get('id'))}))
+        return redirect('view_environment', vm_id=str(vm.get('id')))
 
     request.session[JAVA] = []
     request.session[PHP] = []

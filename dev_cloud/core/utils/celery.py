@@ -122,9 +122,14 @@ def create_virtual_machine(user_id, vm_property, *args):
 
     if vm_id:
         try:
+            if virtual_machine_form.get_public_ip() != 'False':
+                public_ip = virtual_machine.get_vm_public_ip(vm_id)
+            else:
+                public_ip = virtual_machine_form.get_public_ip()
+
             virtual_machine = VirtualMachines.objects.create(
                 vm_id=vm_id, disk_space=virtual_machine_form.get_disk_space(),
-                public_ip=virtual_machine.get_vm_public_ip(vm_id),
+                public_ip=public_ip,
                 ssh_key=virtual_machine_form.get_ssh_private_key(),
                 template_instance_id=virtual_machine_form.get_template())
 
