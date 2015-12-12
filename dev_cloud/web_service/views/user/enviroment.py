@@ -137,8 +137,8 @@ def destroy_vm(request, vm_id):
     # Dirty Solution
     try:
         vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
-        destroy_status = celery.destroy_virtual_machine.apply_async(
-            args=(int(request.session[session_key]), vm_id)).get()
+        destroy_status = ast.literal_eval(
+            get('virtual-machines/destroy-vm/?vm_id=%s' % str(vm_id), request_session=request).text)
         update_environment(request)
         return redirect('environments_list', destroy_status=destroy_status)
     except Exception, ex:

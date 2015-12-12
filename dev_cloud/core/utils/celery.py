@@ -22,6 +22,7 @@ import ast
 from celery import Celery
 import jsonpickle
 from django.utils.translation import ugettext as _
+import time
 
 from core.common import states
 from core.common.states import FAILED, OK
@@ -259,6 +260,7 @@ def destroy_virtual_machine(user_id, vm_id, *args):
 
     if installed_apps:
         virtual_machine = VirtualMachine(user_id)
+        time.sleep(2)
         destroy_status = virtual_machine.destroy(vm_id)
         if destroy_status == OK:
             own_machine.delete()
