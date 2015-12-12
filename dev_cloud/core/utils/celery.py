@@ -253,9 +253,10 @@ def destroy_virtual_machine(user_id, vm_id, *args):
         installed_apps = InstalledApplications.objects.filter(user__id=int(user_id),
                                                               virtual_machine__id=int(own_machine.id))
     except:
+        installed_apps = None
         own_machine = None
 
-    if own_machine:
+    if installed_apps:
         virtual_machine = VirtualMachine(user_id)
         destroy_status = virtual_machine.destroy(vm_id)
         if destroy_status == OK:
