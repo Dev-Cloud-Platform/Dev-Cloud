@@ -98,6 +98,7 @@
     <script type="text/javascript">
         function showAjaxModal(user_id)
         {
+            jQuery('html, body').animate({scrollTop: 0}, 'slow');
             jQuery('#modal-7').modal('show', {backdrop: 'static'});
             ajaxGet('/main/app/user_activation/' + user_id, function(content){
                 //onSuccess

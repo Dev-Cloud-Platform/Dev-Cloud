@@ -194,7 +194,7 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @list_route(methods=['post', 'get'], url_path='destroy-vm')
+    @list_route(methods=['get'], url_path='destroy-vm')
     def destroy_virtual_machine(self, request):
         """
         Destroys given virtual machine.

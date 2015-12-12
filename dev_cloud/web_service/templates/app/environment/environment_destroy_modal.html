@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load form_tags %}
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog">
+        <div class="panel panel-danger">
+
+            <div class="panel-heading">
+                <div class="panel-title">
+                    {% trans "Are You sure to destroy virtual machine?" %}
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <a href="{% url 'destroy_vm' virtual_machine.id %}" type="submit"
+                   class="btn btn-danger">{% trans 'Destroy' %}</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal 7 (Ajax Modal)-->
+<div class="modal fade" id="modal-7">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Dynamic Content</h4>
+            </div>
+
+            <div class="modal-body">
+
+                Content is loading...
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

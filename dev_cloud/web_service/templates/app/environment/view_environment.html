@@ -98,7 +98,9 @@
             <div class="col-sm-2">
 
                 <div class="profile-buttons">
-                    <a href="{% url 'destroy_vm' virtual_machine.id %}" class="btn btn-danger">
+                    <a href="javascript:;"
+                       onclick="jQuery('#modal').modal('show', {backdrop: 'static'}); jQuery('html, body').animate({scrollTop: 0}, 'slow');"
+                       class="btn btn-danger">
                         <i class="entypo-cancel"></i>
                         {% trans 'Destroy' %}
                     </a>
@@ -278,4 +280,10 @@
 
     <link rel="stylesheet" href="{{ STATIC_URL }}app/js/vertical-timeline/css/component.css">
 
+
+
+{% endblock %}
+
+{% block modal %}
+    {% include "app/environment/environment_destroy_modal.html" %}
 {% endblock %}
