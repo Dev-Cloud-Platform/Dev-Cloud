@@ -79,14 +79,18 @@
                                     <i class="entypo-monitor"></i>
                                     {% trans "VNC" %}
                                 </a><br/>
-                                <a>
+                                {% if virtual_machine.public_ip != 'False' %}
+                                    <a href="http://{{ virtual_machine.public_ip }}" target="_blank">
                                     <i class="entypo-globe"></i>
-                                    {% if virtual_machine.public_ip != 'False' %}
                                         {{ virtual_machine.public_ip }}
-                                    {% else %}
-                                        {% trans "No public IP" %}
-                                    {% endif %}
                                 </a>
+                                {% else %}
+                                    <a>
+                                        <i class="entypo-globe"></i>
+                                        {% trans "No public IP" %}
+                                    </a>
+                                {% endif %}
+
                             </span>
                         </div>
                     </li>
@@ -277,6 +281,7 @@
                 setTimeout(updateVmTasksTimeline, 20000);
             });
         })();
+
 
     </script>
 
