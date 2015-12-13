@@ -370,7 +370,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_IMPORTS = ('core.utils',)
-CELERY_ACKS_LATE = True
 
 # Configuration for SSH tasks
 WAIT_TIME = 10 * 60

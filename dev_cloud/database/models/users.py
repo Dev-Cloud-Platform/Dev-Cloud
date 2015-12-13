@@ -25,6 +25,7 @@ import StringIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from django.db import models
+from django.utils import timezone
 
 from core.utils.exception import DevCloudException
 
@@ -40,13 +41,13 @@ class Users(models.Model):
     name = models.CharField(max_length=45, blank=True)
     lastname = models.CharField(max_length=45, blank=True)
     email = models.CharField(unique=True, max_length=255)
-    create_time = models.DateTimeField(blank=True, null=True)
+    create_time = models.DateTimeField(blank=True, null=True, default=timezone.now)
     language = models.CharField(max_length=45, blank=True)
     picture = models.ImageField(blank=True, upload_to=get_upload_path)
     activation_key = models.CharField(max_length=255, blank=True)
     is_active = models.IntegerField(blank=True)
     is_superuser = models.BooleanField(blank=True)
-    last_activity = models.DateTimeField(blank=True, null=True)
+    last_activity = models.DateTimeField(blank=True, null=True, default=timezone.now)
 
     class Meta:
         managed = False

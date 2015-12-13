@@ -233,7 +233,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         raise Exception
 
 
-@app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
+# @app.task(trail=False, ignore_result=True, name='core.utils.tasks.destroy_virtual_machine')
 @dev_cloud_task(DESTROY_VM)
 def destroy_virtual_machine(user_id, vm_id, *args):
     """
