@@ -264,6 +264,12 @@ def destroy_virtual_machine(user_id, vm_id, *args):
         destroy_status = virtual_machine.destroy(vm_id)
         if destroy_status == OK:
             if own_machine.public_ip != "False":
+                while virtual_machine.get_vm_status(vm_id) != \
+                        [key for key, value in states.vm_states.iteritems() if value == 'closed'][0]:
+                    current_time += 1
+                    is_timeout = SSHConnector.timeout(WAIT_TIME, 1, current_time)
+                    if is_timeout:
+                        break
                 release(user_id, own_machine.public_ip)
             own_machine.delete()
             installed_apps.delete()
