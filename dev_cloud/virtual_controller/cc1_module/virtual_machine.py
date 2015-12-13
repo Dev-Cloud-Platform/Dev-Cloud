@@ -172,9 +172,9 @@ class VirtualMachine(object):
     @classmethod
     def get_by_id(cls, vm_id):
         """
-
-        @param vm_id:
-        @return:
+        Gets information data for current virtual machine.
+        @param vm_id: virtual machine id.
+        @return: Data about virtual machine, or failed.
         """
         payload = copy.deepcopy(payload_org)
         payload['vm_id'] = vm_id
