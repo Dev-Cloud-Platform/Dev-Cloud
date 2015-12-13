@@ -21,11 +21,9 @@ import random
 import re
 from smtplib import SMTPRecipientsRefused
 import string
-import datetime
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-
 from django.db import DatabaseError
 from django.utils.translation import ugettext as _
 
@@ -160,7 +158,7 @@ def notify_all_superusers(user):
                     notification_information="Registered as " + user.name + " " + user.lastname,
                     category=notification_category['registered_new_user'],
                     is_read=False,
-                    create_time=datetime.datetime.now(),
+                    create_time=timezone.now(),
                     user_id=superuser.id
                 )
         except DatabaseError:

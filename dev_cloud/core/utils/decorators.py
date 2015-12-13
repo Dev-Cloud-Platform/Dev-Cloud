@@ -17,7 +17,6 @@
 #
 # @COPYRIGHT_end
 import logging
-import datetime
 
 from django.contrib.messages import success
 from django.db import transaction, DatabaseError
@@ -25,6 +24,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext as _
 
@@ -342,7 +342,7 @@ class dev_cloud_task(object):
 
             try:
                 self.task = Tasks.objects.create(task_name=self.task_name, is_processing=True,
-                                                 create_time=datetime.datetime.now(), user_id=args[0])
+                                                 create_time=timezone.now(), user_id=args[0])
                 context = {TASK_ID: self.task.id}
                 args = args + (context,)
             except DatabaseError:
@@ -365,7 +365,7 @@ class dev_cloud_task(object):
                             notification_information="Finished " + self.task_name,
                             category=notification_category['successfully_task'],
                             is_read=False,
-                            create_time=datetime.datetime.now(),
+                            create_time=timezone.now(),
                             user_id=args[0]
                         )
                     except DatabaseError:
@@ -386,7 +386,7 @@ class dev_cloud_task(object):
                             notification_information=_("Failure of ") + self.task_name + _(". Reason ") + str(ex),
                             category=notification_category['failure_task'],
                             is_read=False,
-                            create_time=datetime.datetime.now(),
+                            create_time=timezone.now(),
                             user_id=args[0]
                         )
                     except DatabaseError:
