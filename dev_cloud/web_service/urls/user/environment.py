@@ -21,7 +21,7 @@ from core.utils.decorators import user_permission, vm_permission
 from web_service.views.user.enviroment import wizard_setup, generate_dependencies, customize_environment, \
     define_environment, summary, validation_process, validation_process_ip, validation_process_resources, \
     validation_process_ip_pre, view_environment, environments_list, get_vm_status, destroy_vm, refresh_vm_tasks, \
-    show_vnc, get_cpu_load
+    show_vnc, get_cpu_load, get_ssh_key
 
 main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/create/environment/$', user_permission(wizard_setup),
@@ -57,6 +57,8 @@ main_patterns = patterns('web_service.views.user.enviroment',
                          url(r'^app/environments/show_vm/vnc/(?P<vm_id>\w+)/$', vm_permission(show_vnc),
                              name='show_vnc'),
                          url(r'^app/environments/show_vm/cpu_load/(?P<vm_id>\w+)/$', vm_permission(get_cpu_load),
-                             name='get_cpu_load'))
+                             name='get_cpu_load'),
+                         url(r'^app/environments/show_vm/get_ssh_key/(?P<vm_id>\w+)/$', vm_permission(get_ssh_key),
+                             name='get_ssh_key'))
 
 urlpatterns = patterns('', url(r'^main/', include(main_patterns)))

@@ -18,15 +18,14 @@
 # @COPYRIGHT_end
 import ast
 
+from django.http import HttpResponse
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+from django.template import RequestContext, Context, loader
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
-from requests import ConnectionError
 
 from core.common.states import OK, FAILED, UNKNOWN_ERROR, CM_ERROR, vm_states
-from core.utils import celery
 from core.utils.auth import session_key
 from core.utils.decorators import django_view, user_permission, vm_permission, update_environment
 from core.utils.log import error
@@ -180,6 +179,30 @@ def get_cpu_load(request, vm_id):
         vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
         return ast.literal_eval(
             get('virtual-machines/get-cpu-load/?vm_id=%s' % str(vm_id), request_session=request).text)
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
+
+
+@django_view
+@vm_permission
+def get_ssh_key(request, vm_id):
+    """
+    Gets Private SSH key to virtual machine.
+    @param request:
+    @param vm_id:  virtual machine id.
+    @return: Private SSH key.
+    """
+    try:
+        virtual_machine = VirtualMachines.objects.get(id=vm_id)
+        installed_apps = InstalledApplications.objects.filter(virtual_machine__id=vm_id)
+        workspace_name = installed_apps[0].workspace
+
+        # Create the HttpResponse object with the appropriate SSH key pem header.
+        response = HttpResponse(content_type='application/x-pem-file')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % workspace_name
+        response.write(virtual_machine.ssh_key.replace('\\n', '\n').replace('"', ''))
+        return response
+
     except Exception, ex:
         error(int(request.session[session_key]), str(ex))
 

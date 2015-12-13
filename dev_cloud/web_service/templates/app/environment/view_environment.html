@@ -71,7 +71,7 @@
                         <div class="profile-stat">
                             <h5>{% trans "Connection" %}</h5>
                             <span>
-                                <a>
+                                <a href="{% url 'get_ssh_key' virtual_machine.id %}">
                                     <i class="entypo-key"></i>
                                     {% trans "Get ssh key" %}
                                 </a> <br/>
