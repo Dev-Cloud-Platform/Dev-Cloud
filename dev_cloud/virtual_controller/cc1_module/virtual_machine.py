@@ -180,7 +180,7 @@ class VirtualMachine(object):
         payload['vm_id'] = vm_id
 
         vm = requests.post(address_clm + 'user/vm/get_by_id/', data=json.dumps(payload))
-        print vm.text
+
         if vm.status_code == 200 and json.loads(vm.text).get(STATUS) == OK:
             return json.loads(vm.text).get(DATA)
         else:

@@ -263,6 +263,8 @@ def destroy_virtual_machine(user_id, vm_id, *args):
         virtual_machine = VirtualMachine(user_id)
         destroy_status = virtual_machine.destroy(vm_id)
         if destroy_status == OK:
+            if VirtualMachines.public_ip != "False":
+                release(user_id, VirtualMachines.public_ip)
             own_machine.delete()
             installed_apps.delete()
             return OK
