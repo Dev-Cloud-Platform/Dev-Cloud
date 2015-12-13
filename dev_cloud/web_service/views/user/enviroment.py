@@ -167,6 +167,23 @@ def show_vnc(request, vm_id, template_name='app/environment/novnc.html'):
         error(int(request.session[session_key]), str(ex))
 
 
+@ajax
+@vm_permission
+def get_cpu_load(request, vm_id):
+    """
+    Gets CPU load.
+    @param request:
+    @param vm_id:  virtual machine id.
+    @return: CPU load dict.
+    """
+    try:
+        vm_id = VirtualMachines.objects.get(id=vm_id).vm_id
+        return ast.literal_eval(
+            get('virtual-machines/get-cpu-load/?vm_id=%s' % str(vm_id), request_session=request).text)
+    except Exception, ex:
+        error(int(request.session[session_key]), str(ex))
+
+
 @django_view
 @csrf_protect
 @user_permission

@@ -287,6 +287,20 @@ class VirtualMachine(object):
         else:
             return virtual_machine
 
+    @classmethod
+    def get_cpu_load(cls, vm_id):
+        """
+        Gets CPU load data.
+        @param vm_id: virtual machine id.
+        @return: Dict of data contains CPU load for 1, 5, 15 minutes.
+        """
+        virtual_machine = cls.get_by_id(vm_id)
+
+        if virtual_machine != FAILED:
+            return virtual_machine.get('cpu_load')
+        else:
+            return virtual_machine
+
     @staticmethod
     def check_vm_property(user_id, vm_id):
         """

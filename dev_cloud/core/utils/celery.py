@@ -294,3 +294,19 @@ def get_vnc(user_id, vm_id, *args):
         return virtual_machine.get_no_vnc_data(vm_id)
     else:
         return NOT_ALLOWED
+
+
+@app.task(trail=True, name='core.utils.tasks.get_cpu_load')
+def get_cpu_load(user_id, vm_id, *args):
+    """
+    Gets CPU load data.
+    @param user_id: id of caller.
+    @param vm_id: id of virtual machine.
+    @return: Dict of data contains CPU load for 1, 5, 15 minutes.
+    """
+    virtual_machine = VirtualMachine(user_id)
+
+    if virtual_machine.check_vm_property(user_id, vm_id):
+        return virtual_machine.get_cpu_load(vm_id)
+    else:
+        return NOT_ALLOWED

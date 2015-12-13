@@ -214,3 +214,17 @@ class VirtualMachineList(viewsets.ReadOnlyModelViewSet):
             return Response(celery.get_vnc.apply_async(args=(user_id, vm_id)).get())
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=['get'], url_path='get-cpu-load')
+    def get_cpu_load(self, request):
+        """
+        Returns data for CPU load.
+        @param request:
+        @return: Dict of data contains CPU load for 1, 5, 15 minutes.
+        """
+        vm_id = request.DATA.get('vm_id', None) or request.query_params.get('vm_id', None)
+        if vm_id:
+            user_id = api_permissions.UsersPermission.get_user(request).id
+            return Response(celery.get_cpu_load.apply_async(args=(user_id, vm_id)).get())
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

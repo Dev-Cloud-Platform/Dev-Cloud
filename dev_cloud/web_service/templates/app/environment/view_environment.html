@@ -200,7 +200,7 @@
 
     <script type="text/javascript">
         (function updateVmStatus() {
-            ajaxGet('/main/app/environments/vm_status/' + {{ virtual_machine.id }}, function (content) {
+            ajaxGet('{% url "get_vm_status" virtual_machine.id %}', function (content) {
                 //onSuccess
                 jQuery("#vm_status").html(content);
                 setTimeout(updateVmStatus, 20000);
@@ -210,13 +210,12 @@
         jQuery(document).ready(function ($) {
 
             // Rickshaw
-            var seriesData = [[], []];
+            var seriesData = [[], [], []];
+            var globalIterator = 0;
 
-            var random = new Rickshaw.Fixtures.RandomData(50);
-
-            for (var i = 0; i < 90; i++) {
-                random.addData(seriesData);
-            }
+            seriesData[0].push({x: 0, y: 0});
+            seriesData[1].push({x: 0, y: 0});
+            seriesData[2].push({x: 0, y: 0});
 
             var graph = new Rickshaw.Graph({
                 element: document.getElementById("rickshaw-chart-demo-2"),
@@ -227,19 +226,18 @@
                 series: [{
                     color: '#359ade',
                     data: seriesData[0],
-                    name: 'Page Views'
+                    name: 'CPU 1 min'
                 }, {
                     color: '#73c8ff',
-                    data: seriesData[1],
-                    name: 'Unique Users'
+                    data: seriesData[0],
+                    name: 'CPU 5 min'
                 }, {
                     color: '#e0f2ff',
-                    data: seriesData[1],
-                    name: 'Bounce Rate'
+                    data: seriesData[0],
+                    name: 'CPU 15 min'
                 }
                 ]
             });
-
             graph.render();
 
             var hoverDetail = new Rickshaw.Graph.HoverDetail({
@@ -259,17 +257,21 @@
                 legend: legend
             });
 
-            setInterval(function () {
-                random.removeData(seriesData);
-                random.addData(seriesData);
-                graph.update();
-
-            }, 500);
-
+            (function updateCpuLoad() {
+                ajaxGet('{% url "get_cpu_load" virtual_machine.id %}', function (content) {
+                    //onSuccess
+                    seriesData[0].push({x: globalIterator++, y: parseFloat(content["60"])});
+                    seriesData[1].push({x: globalIterator++, y: parseFloat(content["300"])});
+                    seriesData[2].push({x: globalIterator++, y: parseFloat(content["900"])});
+                    globalIterator++;
+                    graph.update();
+                    setTimeout(updateCpuLoad, 1000);
+                });
+            })();
         });
 
         (function updateVmTasksTimeline() {
-            ajaxGet('/main/app/environments/refresh_tasks/' + {{ virtual_machine.id }}, function (content) {
+            ajaxGet('{% url "refresh_vm_tasks" virtual_machine.id %}', function (content) {
                 //onSuccess
                 jQuery("#vm_tasks").html(content);
                 setTimeout(updateVmTasksTimeline, 20000);
