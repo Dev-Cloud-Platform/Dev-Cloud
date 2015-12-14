@@ -379,7 +379,7 @@ def customize_environment(request, technology, application, operation):
 @user_permission
 def define_environment(request, technology, exposed_ip, template_name='app/environment/step_3.html'):
     """
-
+    Defines template for needed requirements.
     @param request:
     @param technology: selected technology.
     @param template_name: template to render.
@@ -428,7 +428,7 @@ def summary(request, template_name='app/environment/step_4.html'):
     @param template_name: template to render
     @return: view to render
     """
-
+    print "test"
     return render_to_response(template_name, dict({'exposed': request.session.get('publicIP')}.items()),
                               context_instance=RequestContext(request))
 
@@ -548,12 +548,42 @@ def customize_predefined_environment(request, application, operation):
 @ajax
 @user_permission
 @never_cache
-def get_selected_application(request, application, exposed_ip, template_name='app/environment/predefined/step_2.html'):
+def define_predefined_environment(request, application, exposed_ip,
+                                  template_name='app/environment/predefined/step_2.html'):
     """
-
+    Defines template for needed requirements.
     @param request:
-    @param application:
-    @param exposed_ip:
-    @param template_name:
-    @return:
+    @param application: given application.
+    @param exposed_ip: status about exposed IP True/False
+    @param template_name: template to rencer
+    @return: view to render
     """
+    list_application_details = {}
+    application_details = get('applications/get-application/?application=' + application)
+    if application_details.status_code == 200:
+        list_application_details = dict({application: ast.literal_eval(application_details.text)}.items())
+    else:
+        error(request.session['user']['user_id'], "Problem with request: " + application_details.url)
+
+    requirements = calculate_requirements(list_application_details)
+    proposed_template = get_proper_template(requirements)
+
+    exposed_status = None
+
+    if exposed_ip == EXPOSE:
+        # Check if is possible to obtain public ip.
+        # After discussion with supervisor,
+        # check possibility of obtain ip will be checked
+        # after pass form to create vm.
+        exposed_status = True
+
+    if exposed_ip == UNEXPOSE:
+        exposed_status = False
+
+    print requirements
+
+    return render_to_response(template_name,
+                              dict({'requirements': requirements, 'template': proposed_template,
+                                    'list_of_templates': get_list_of_templates(),
+                                    'exposed_status': exposed_status}.items()),
+                              context_instance=RequestContext(request))

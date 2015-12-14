@@ -4,8 +4,18 @@
 
 function preCustomize() {
     var application = $(".switch-on :input").val();
+    setApplications(application);
     customize(application, 'add');
     styleLoad();
+}
+
+
+function customize(application, operation) {
+    ajaxGet('/main/app/create/environment/predefined/customize/' + getApplications()
+        + '/' + operation, function (content) {
+        //onSuccess
+        setApplications(application);
+    });
 }
 
 
@@ -15,19 +25,10 @@ function getPublicIP() {
 }
 
 
-function customize(application, operation) {
-    ajaxGet('/main/app/create/environment/customize/' + getTechnology()
-        + '/' + application + '/' + operation, function (content) {
-        //onSuccess
-        setApplications(content);
-    });
-}
-
-
 function summary() {
     ajaxGet('/main/app/create/environment/summary/', function (content) {
         //onSuccess
-        jQuery('#step4').html(content);
+        jQuery('#step3').html(content);
         printInvoiceTemplate(template);
         printInvoicePublicIP();
         printInvoiceDate();
@@ -67,17 +68,17 @@ function printInvoicePublicIP() {
 }
 
 
-function defineEnvironment(technology) {
+function defineEnvironment(application) {
     if (!jQuery('#loadObject').length) {
-        jQuery('#step3').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
+        jQuery('#step2').prepend('<div id="loadObject" class="row" style="clear:both"><div class="col-md-12" style="margin-left: auto; ' +
             'margin-right: auto; width: 1%;"><img src="/static/app/images/ajax-loader.gif" /></div></div>');
     }
-    ajaxGet('/main/app/create/environment/define/' + technology + '/' + getIP(), function (content) {
+    ajaxGet('/main/app/create/environment/predefined/define/' + application + '/' + getIP(), function (content) {
         //onSuccess
         show_loading_bar({
             pct: 78,
             finish: function (pct) {
-                jQuery('#step3').html(content);
+                jQuery('#step2').html(content);
                 var template = document.getElementById("template").value;
                 var requirements = document.getElementById("requirements").value
                 setTemplate(template);
@@ -199,15 +200,19 @@ function getIP() {
 
 
 function buildAll() {
-    var current_application = $(".switch-on :input").val();
-
-    if (current_application != null) {
+    if (getApplications == null) {
         preCustomize();
     }
 
-    if (getApplications() != null) {
-        defineEnvironment(getTechnology());
-        getPublicIP();
+    if (getApplications != null) {
+        show_loading_bar({
+            pct: 78,
+            finish: function (pct) {
+                defineEnvironment(getApplications());
+                getPublicIP();
+                hide_loading_bar();
+            }
+        });
     }
 
     if (getApplications() != null && getTemplate() != null) {
