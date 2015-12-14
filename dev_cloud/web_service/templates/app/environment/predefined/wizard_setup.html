@@ -1,0 +1,189 @@
+{% extends "app/environment/base.html" %}
+{% load i18n %}
+{% load form_tags %}
+
+{% block title %}{{ block.super }} | {% trans "Predefined environment" %}{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb 2 hidden-print">
+        <li>
+            <a href="{% url 'app_main' %}"><i class="entypo-home"></i>{% trans "Home" %}</a>
+        </li>
+        <li class="active">
+            <strong>{% trans "Wizard setup" %}</strong>
+        </li>
+    </ol>
+
+    <h2 class="hidden-print">{% trans "Wizard setup" %}</h2>
+
+    <br/>
+
+    <div class="well well-sm hidden-print">
+        <h4>{% trans "Please fill the details to create new environment." %}</h4>
+    </div>
+
+
+    <form id="rootwizard-2" method="post" action="" class="form-wizard validate">
+        {% csrf_token %}
+        <div class="steps-progress hidden-print">
+            <div class="progress-indicator"></div>
+        </div>
+
+        <ul class="hidden-print">
+            <li class="active">
+                <a href="#tab2-1" onclick="buildAll()" data-toggle="tab"><span>1</span>{% trans "Select applcation" %}
+                </a>
+            </li>
+            <li>
+                <a href="#tab2-2" onclick="buildAll()" data-toggle="tab"><span>2</span>{% trans "Define environment" %}
+                </a>
+            </li>
+            <li>
+                <a href="#tab2-3" onclick="buildAll()" data-toggle="tab"><span>3</span>{% trans "Deploy" %}</a>
+            </li>
+        </ul>
+
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab2-1">
+                <div class="row panel panel-primary">
+
+                    <div class="col-sm-1"></div>
+
+                    <div class="col-sm-offset-4 col-sm-2">
+                        <div class="pager">
+                            <a class="member-img">
+                                <img src="https://api.jujucharms.com/charmstore/v4/trusty/juju-gui-41/icon.svg"
+                                     class="img-rounded panel-heading backup_picture"
+                                     data-toggle="popover" data-trigger="hover" data-placement="top"
+                                     data-original-title="{% trans "Juju GUI" %}"
+                                     data-content="{% trans 'Web GUI for Juju' %}"/>
+                            </a>
+
+                            <div id="switch" class="make-switch is-radio switch-small" onclick="generateDependencies()">
+                                <input type="radio" name="radio1" data-validate="required"
+                                       value="juju-gui"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-1"></div>
+
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab2-2">
+
+                {# Auto generate content #}
+
+            </div>
+
+            <div class="tab-pane" id="tab2-3">
+
+                <strong>{% trans "Define environment" %}</strong>
+                <br/>
+                <br/>
+
+                <div class="row">
+
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="control-label" for="full_name">{% trans "Environment Name" %}</label>
+                            <input class="form-control" name="full_name" id="full_name" data-validate="required"
+                                   placeholder="Your full name"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label" for="full_name">{% trans "Public IP" %}</label>
+                            </br>
+                            <div id="ip" class="make-switch" data-on="success" data-off="info" onclick="getPublicIP()">
+                                <input type="checkbox" value="expose">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step3">
+                        {# Auto generate content #}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab2-4">
+
+                <div class="row">
+
+                    <div id="step4">
+                        {# Auto generate content #}
+                    </div>
+
+                </div>
+
+                <div class="row hidden-print">
+
+                    <br class="hidden-print"/>
+
+                    <div class="form-group">
+                        <div class="checkbox checkbox-replace">
+                            <input type="checkbox" name="chk-rules" id="chk-rules" data-validate="required"
+                                   data-message-message="{% trans "You must accept rules in order to complete this registration." %}">
+                            <label for="chk-rules">{% trans "By create new environment, I accept terms and conditions." %}</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <button type="submit" class="btn btn-primary">{% trans "Finish Registration" %}</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <ul class="pager wizard hidden-print">
+                <li class="previous">
+                    <a href="javascript:;" onclick="buildAll()"><i class="entypo-left-open"></i> {% trans "Previous" %}
+                    </a>
+                </li>
+
+                <li class="next">
+                    <a href="javascript:;" onclick="buildAll()">{% trans "Next" %} <i class="entypo-right-open"></i></a>
+                </li>
+            </ul>
+        </div>
+
+    </form>
+
+    <script src="{{ STATIC_URL }}app/js/predefined-dev-cloud-wizard.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.bootstrap.wizard.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.validate.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.inputmask.bundle.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/bootstrap-datepicker.js"></script>
+    <script src="{{ STATIC_URL }}app/js/bootstrap-switch.min.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.multi-select.js"></script>
+    <script src="{{ STATIC_URL }}app/js/jquery.peity.min.js"></script>
+
+{% endblock %}
+
+{% block modal %}
+
+    <!-- Modal 7 (Ajax Modal)-->
+    <div class="modal fade" id="modal-7">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">{% trans "Validation Process" %}</h4>
+                </div>
+
+                <div class="modal-body">
+                    {# Auto generate content #}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

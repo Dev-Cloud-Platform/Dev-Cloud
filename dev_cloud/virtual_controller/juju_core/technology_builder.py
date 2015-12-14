@@ -24,6 +24,7 @@ NODEJS = 'node'
 PHP = 'php'
 PYTHON = 'python'
 RUBY = 'ruby'
+PREDEFINED = 'predefined'
 
 
 class TechnologyBuilder(ListView):

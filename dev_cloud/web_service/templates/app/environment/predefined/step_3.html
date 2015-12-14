@@ -1,0 +1,154 @@
+{% load i18n %}
+{% load form_tags %}
+
+<br class="hidden-print"/>
+
+<div class="invoice">
+
+    <div class="row">
+
+        <div class="col-sm-6 invoice-left">
+
+            <a href="#">
+                <img src="{{ STATIC_URL }}app/images/logo-invoice.png"/>
+            </a>
+
+        </div>
+
+        <div class="col-sm-6 invoice-right">
+
+            <h3>INVOICE NO. #5652256</h3>
+            <span id="invoice-date">
+
+            </span>
+        </div>
+
+    </div>
+
+
+    <hr class="margin"/>
+
+
+    <div class="row">
+
+        <div class="col-sm-3 invoice-left">
+
+            <h4>Client</h4>
+            {{ request.session.user.first }} {{ request.session.user.last }}
+            <br/>
+            {{ request.session.user.email }}
+
+        </div>
+
+        <div class="col-sm-3 invoice-left">
+            <h4>&nbsp;</h4>
+        </div>
+
+
+        <div class="col-md-6 invoice-right">
+
+            <h4>{% trans "Payment Details:" %}</h4>
+            <strong>{% trans "NIP:" %}</strong> 542554(DEMO)78
+            <br/>
+            <strong>{% trans "Account Name" %}:</strong> DevCloud
+            <br/>
+            <strong>{% trans "SWIFT code:" %}</strong> 45454DEMO545DEMO
+
+        </div>
+
+    </div>
+
+    <div class="margin"></div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th class="text-center">#</th>
+            <th width="60%">{% trans "Product" %}</th>
+            <th>{% trans "Quantity" %}</th>
+            <th>{% trans "Price" %}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td class="text-center">1</td>
+            <td>{% trans "HDD Storage - Basic Pack 10 GB" %}</td>
+            <td>1</td>
+            <td class="text-right">$0,00</td>
+        </tr>
+        <tr>
+            <td class="text-center">2</td>
+            <td>{% trans "Virtual machine: " %}<span id="template-selected"><br/></span></td>
+            <td>1</td>
+            <td class="text-right">$0,00</td>
+        </tr>
+        <tr id="public-ip"></tr>
+        </tbody>
+    </table>
+
+    <div class="margin"></div>
+
+    <div class="row">
+
+        <div class="col-sm-6">
+
+            <div class="invoice-left">
+                Instytut Fizyki Jądrowej
+                <br/>
+                im. Henryka Niewodniczańskiego Polskiej Akademii Nauk
+                <br/>
+                Radzikowskiego 152
+                <br/>
+                31-342 Kraków
+                <br/>
+                Poland
+                <br/>
+                DevCloudPlatform@gmail.com
+            </div>
+
+        </div>
+
+        <div class="col-sm-6">
+
+            <div class="invoice-right">
+
+                <ul class="list-unstyled">
+                    <li>
+                        {% trans "Sub - Total amount:" %}
+                        <strong>$0,00</strong>
+                    </li>
+                    <li>
+                        VAT:
+                        <strong>23%</strong>
+                    </li>
+                    <li>
+                        {% trans "Discount:" %}
+                        -----
+                    </li>
+                    <li>
+                        {% trans "Grand Total:" %}
+                        <strong>$0,00</strong>
+                    </li>
+                </ul>
+
+                <br/>
+
+                <a href="javascript:window.print();" class="btn btn-primary btn-icon icon-left hidden-print">
+                    {% trans "Print Invoice" %}
+                    <i class="entypo-doc-text"></i>
+                </a>
+
+                &nbsp;
+
+                <a href="mailbox-compose.html" class="btn btn-success btn-icon icon-left hidden-print">
+                    {% trans "Send Invoice" %}
+                    <i class="entypo-mail"></i>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

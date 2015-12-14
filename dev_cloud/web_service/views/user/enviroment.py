@@ -21,7 +21,7 @@ import ast
 from django.http import HttpResponse
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext, Context, loader
+from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django_ajax.decorators import ajax
 
@@ -35,7 +35,8 @@ from database.models.template_instances import TemplateInstances
 from database.models.virtual_machines import VirtualMachines
 from database.models.vm_tasks import VmTasks
 from virtual_controller.cc1_module.public_ip import NONE_AVAILABLE_PUBLIC_IP
-from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON
+from virtual_controller.juju_core.technology_builder import TechnologyBuilder, JAVA, PHP, NODEJS, RUBY, PYTHON, \
+    PREDEFINED
 from web_service.forms.enviroment.create_vm import CreateVMForm
 from web_service.views.user.user import generate_active
 
@@ -501,3 +502,58 @@ def validation_process(request, template, exposed_ip, template_name='app/environ
     return render_to_response(template_name,
                               dict({"ip_to_validate": ip_to_validate, "template_name": template}.items()),
                               context_instance=RequestContext(request))
+
+
+@django_view
+@csrf_protect
+@user_permission
+def view_predefined(request, template_name='app/environment/predefined/wizard_setup.html'):
+    """
+    Prepares properties for create new environment.
+    @param request:
+    @param template_name: template to render.
+    @return: view to render.
+    """
+    if request.method == 'POST':
+        # Do creating virtual machine
+        create_vm = CreateVMForm(request)
+        vm = ast.literal_eval(get('virtual-machines/create-vm/?applications=%s' % create_vm.get_applications()
+                                  + '&template_id=%s' % create_vm.get_template()
+                                  + '&workspace=%s' % create_vm.get_workspace()
+                                  + '&public_ip=%s' % create_vm.get_public_ip()
+                                  + '&disk_space=%s' % create_vm.get_disk_space(), request_session=request).text)
+
+        return redirect('view_environment', vm_id=str(vm.get('id')))
+
+    request.session[PREDEFINED] = []
+
+    return render_to_response(template_name,
+                              dict(generate_active('create_env_pre').items()),
+                              context_instance=RequestContext(request))
+
+
+@ajax
+@user_permission
+def customize_predefined_environment(request, application, operation):
+    """
+    Customizes environment.
+    @param request:
+    @param application:  application to add or to remove.
+    @param operation: tring with command if contains remove then removes, or add then adds.
+    @return:
+    """
+    update_application(request.session.get(PREDEFINED, []), application, operation)
+
+
+@ajax
+@user_permission
+@never_cache
+def get_selected_application(request, application, exposed_ip, template_name='app/environment/predefined/step_2.html'):
+    """
+
+    @param request:
+    @param application:
+    @param exposed_ip:
+    @param template_name:
+    @return:
+    """
