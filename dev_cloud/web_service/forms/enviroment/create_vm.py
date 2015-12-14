@@ -136,19 +136,19 @@ class CreateVMForm(object):
         if technology == JAVA:
             selected_applications = request.session.get(JAVA, [])
 
-        if technology == PHP:
+        elif technology == PHP:
             selected_applications = request.session.get(PHP, [])
 
-        if technology == RUBY:
+        elif technology == RUBY:
             selected_applications = request.session.get(RUBY, [])
 
-        if technology == NODEJS:
+        elif technology == NODEJS:
             selected_applications = request.session.get(NODEJS, [])
 
-        if technology == PYTHON:
+        elif technology == PYTHON:
             selected_applications = request.session.get(PYTHON, [])
 
-        if technology == PREDEFINED:
+        else:
             selected_applications = request.session.get(PREDEFINED, [])
 
         return selected_applications

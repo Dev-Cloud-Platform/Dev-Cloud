@@ -301,6 +301,9 @@ def get_selected_applications(request, technology):
     if technology == PYTHON:
         selected_applications = request.session.get(PYTHON, [])
 
+    if technology == PREDEFINED:
+        selected_applications = request.session.get(PREDEFINED, [])
+
     return selected_applications
 
 
@@ -428,7 +431,6 @@ def summary(request, template_name='app/environment/step_4.html'):
     @param template_name: template to render
     @return: view to render
     """
-    print "test"
     return render_to_response(template_name, dict({'exposed': request.session.get('publicIP')}.items()),
                               context_instance=RequestContext(request))
 
@@ -544,6 +546,8 @@ def customize_predefined_environment(request, application, operation):
     """
     update_application(request.session.get(PREDEFINED, []), application, operation)
 
+    return get_selected_applications(request, PREDEFINED)
+
 
 @ajax
 @user_permission
@@ -579,8 +583,6 @@ def define_predefined_environment(request, application, exposed_ip,
 
     if exposed_ip == UNEXPOSE:
         exposed_status = False
-
-    print requirements
 
     return render_to_response(template_name,
                               dict({'requirements': requirements, 'template': proposed_template,
