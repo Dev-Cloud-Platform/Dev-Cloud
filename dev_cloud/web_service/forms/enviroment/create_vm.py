@@ -20,7 +20,7 @@ import ast
 from core.common.states import FAILED
 from core.utils import celery
 from core.utils.messager import get
-from virtual_controller.juju_core.technology_builder import JAVA, PHP, RUBY, NODEJS, PYTHON
+from virtual_controller.juju_core.technology_builder import JAVA, PHP, RUBY, NODEJS, PYTHON, PREDEFINED
 
 
 class CreateVMForm(object):
@@ -147,6 +147,9 @@ class CreateVMForm(object):
 
         if technology == PYTHON:
             selected_applications = request.session.get(PYTHON, [])
+
+        if technology == PREDEFINED:
+            selected_applications = request.session.get(PREDEFINED, [])
 
         return selected_applications
 
