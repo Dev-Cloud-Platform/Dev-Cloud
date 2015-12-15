@@ -129,37 +129,37 @@ class SSHConnector(object):
         for name, service in services.iteritems():
             if service.get('units'):
                 units = service['units']
-                unit_machines = ", ".join([u['machine'] for u in units.values()])
-                num_of_units = str(len(service['units'].values()))
-                open_ports = " ".join(
-                    [p.split('/')[0] for p in service['units']
-                        .values()[0]
-                        .get('open-ports', [])]
-                ) or "none"
+                # unit_machines = ", ".join([u['machine'] for u in units.values()])
+                # num_of_units = str(len(service['units'].values()))
+                # open_ports = " ".join(
+                #     [p.split('/')[0] for p in service['units']
+                #         .values()[0]
+                #         .get('open-ports', [])]
+                # ) or "none"
                 machine = machines[service['units'].values()[0]['machine']]
-                agent_state = machine['agent-state']
+                agent_state = service['units'].values()[0].get('agent-state')
                 public_address = service['units'].values()[0].get('public-address')
                 instance_id = machine['instance-id']
                 machine_number = units.values()[0]['machine']
-                exposed = "[exposed]" if service['exposed'] else ""
-                unit_plural = "s" if len(units) > 1 else ""
-                relations = ", ".join(service.get('relations', {}).keys())
+                # exposed = "[exposed]" if service['exposed'] else ""
+                # unit_plural = "s" if len(units) > 1 else ""
+                # relations = ", ".join(service.get('relations', {}).keys())
                 if name == application:
                     if agent_state == 'started':
                         juju_instance = JujuInstance()
                         juju_instance.name = name
                         juju_instance.units = units
-                        juju_instance.unit_machines = unit_machines
-                        juju_instance.num_of_units = num_of_units
-                        juju_instance.open_ports = open_ports
+                        # juju_instance.unit_machines = unit_machines
+                        # juju_instance.num_of_units = num_of_units
+                        # juju_instance.open_ports = open_ports
                         juju_instance.machine = machine
                         juju_instance.agent_state = agent_state
                         juju_instance.public_address = public_address
                         juju_instance.instance_id = instance_id
                         juju_instance.machine_number = machine_number
-                        juju_instance.exposed = exposed
-                        juju_instance.unit_plural = unit_plural
-                        juju_instance.relations = relations
+                        # juju_instance.exposed = exposed
+                        # juju_instance.unit_plural = unit_plural
+                        # juju_instance.relations = relations
                         return juju_instance
                     else:
                         current_time += LOOP_TIME
