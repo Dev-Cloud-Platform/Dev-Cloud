@@ -17,6 +17,7 @@
 #
 # @COPYRIGHT_end
 from django.views.generic.list import ListView
+from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 from database.models.applications import Applications
 
 JAVA = 'java'
@@ -28,7 +29,6 @@ PREDEFINED = 'predefined'
 
 
 class TechnologyBuilder(ListView):
-
     model = Applications
 
     def __java_configuration(self):
@@ -163,3 +163,20 @@ class TechnologyBuilder(ListView):
             application_NoSQL_list.append(application_NoSQL)
 
         return {'applications_NoSQL': application_NoSQL_list}
+
+    @staticmethod
+    def run_extra_options(juju_instance):
+        """
+        Install and run predefined configuration for technology.
+        @param juju_instance: Data about status of installing application
+        @return: Procedure to run on virtual machine.
+        """
+        if juju_instance == 'juju-gui':
+            command = 'echo ' + VM_IMAGE_ROOT_PASSWORD + \
+                      '| sudo -S iptables -t nat -I PREROUTING ' \
+                      '-p tcp -i eth0 --dport 80 -j DNAT --to ' + juju_instance.public_address + ':80 ' \
+                                                                                                 '&& sudo iptables -t nat -I PREROUTING ' \
+                                                                                                 '-p tcp -i eth0 --dport 443 -j DNAT --to ' + juju_instance.public_address + ':443 ' \
+                                                                                                                                                                             '&& sudo iptables -A FORWARD -p tcp -d ' + juju_instance.public_address + ' --dport 80 -j ACCEPT' \
+                                                                                                                                                                                                                                                       '&& sudo iptables -A FORWARD -p tcp -d ' + juju_instance.public_address + ' --dport 443 -j ACCEPT'
+            return command

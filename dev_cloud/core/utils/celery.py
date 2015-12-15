@@ -18,6 +18,7 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 import ast
+import StringIO
 
 from celery import Celery
 import jsonpickle
@@ -44,6 +45,7 @@ from virtual_controller.cc1_module.public_ip import PoolIP
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
 from virtual_controller.juju_core.juju_installation_procedure import init_juju_on_vm
 from virtual_controller.juju_core.ssh_connector import SSHConnector
+from virtual_controller.juju_core.technology_builder import TechnologyBuilder
 
 REQUEST_IP = _('Request new IP')
 RELEASE_IP = _('Release IP')
@@ -199,9 +201,10 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
     @param applications: list of applications.
     @return:
     """
+    vm_model = VirtualMachines.objects.get(vm_id=vm_serializer_data.get('vm_id'))
     try:
         VmTasks.objects.create(
-            vm_id=VirtualMachines.objects.get(vm_id=vm_serializer_data.get('vm_id')).id,
+            vm_id=vm_model.id,
             task_id=args[0].get(TASK_ID))
     except Exception, ex:
         error(args[0], _("Database - Problem with initialize virtual machine") + str(ex))
@@ -221,12 +224,17 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         #                        ROOT, SSH_KEY_PATH, VM_IMAGE_ROOT_PASSWORD)
         ssh = SSHConnector(virtual_machine.get_vm_private_ip(vm_serializer_data.get('vm_id')), ROOT,
                            SSH_KEY_PATH)
+        # ssh_key = StringIO.StringIO()
+        # ssh_key.write(vm_model.ssh_key.replace('\\n', '\n').replace('"', ''))
+        # ssh = SSHConnector(vm_model.public_ip, ROOT, '/home/m4gik/.ssh/DevCloud')
 
         ssh.exec_task(init_juju_on_vm)
 
         for application in ast.literal_eval(applications):
             app = Applications.objects.get(application_name=application)
             ssh.call_remote_command(app.instalation_procedure)
+            juju_instance = ssh.check_juju_status(application)
+            ssh.call_remote_command(TechnologyBuilder.run_extra_options(juju_instance))
 
         ssh.close_connection()
     else:
