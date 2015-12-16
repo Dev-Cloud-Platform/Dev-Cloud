@@ -167,5 +167,3 @@ class SSHConnector(object):
                         if is_timeout:
                             break
                         cls.check_juju_status(application)
-
-        return None
