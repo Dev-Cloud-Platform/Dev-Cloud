@@ -126,7 +126,8 @@ class SSHConnector(object):
             error(None, "Juju environment is bootstraped, no services deployed yet.")
 
         current_time = 0
-        for name, service in services.iteritems():
+        juju_instance = JujuInstance()
+        for name, service in services.items():
             if service.get('units'):
                 units = service['units']
                 unit_machines = ", ".join([u['machine'] for u in units.values()])
@@ -146,8 +147,7 @@ class SSHConnector(object):
                 relations = ", ".join(service.get('relations', {}).keys())
                 if name == application:
                     if agent_state == 'started':
-                        juju_instance = JujuInstance()
-                        juju_instance.name = name
+                        juju_instance.name = application
                         juju_instance.units = units
                         juju_instance.unit_machines = unit_machines
                         juju_instance.num_of_units = num_of_units
@@ -160,10 +160,11 @@ class SSHConnector(object):
                         juju_instance.exposed = exposed
                         juju_instance.unit_plural = unit_plural
                         juju_instance.relations = relations
-                        return juju_instance
                     else:
                         current_time += LOOP_TIME
                         is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
                         if is_timeout:
                             break
                         cls.check_juju_status(application)
+
+        return juju_instance
