@@ -33,8 +33,12 @@ class TestJujuInstance(unittest.TestCase):
     def testString(self):
         juju_instance = JujuInstance()
         juju_instance.name = "test"
+        self.helpTest(juju_instance)
         self.assertEqual(juju_instance.name, 'test')
 
+    @staticmethod
+    def helpTest(juju_instance):
+        print str(juju_instance.__dict__)
 
 if __name__ == '__main__':
     if is_running_under_teamcity():

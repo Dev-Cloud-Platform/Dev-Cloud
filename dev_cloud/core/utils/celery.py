@@ -151,7 +151,7 @@ def create_virtual_machine(user_id, vm_property, *args):
     return vm_id
 
 
-@app.task(trail=True, name='core.utils.tasks.get_virtual_machine_status')
+# @app.task(trail=True, name='core.utils.tasks.get_virtual_machine_status')
 def get_virtual_machine_status(user_id, vm_id, *args):
     """
     Gets requested caller's virtual machine.
@@ -312,7 +312,7 @@ def get_vnc(user_id, vm_id, *args):
         return NOT_ALLOWED
 
 
-@app.task(trail=True, name='core.utils.tasks.get_cpu_load')
+# @app.task(trail=True, name='core.utils.tasks.get_cpu_load')
 def get_cpu_load(user_id, vm_id, *args):
     """
     Gets CPU load data.
