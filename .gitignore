@@ -1,4 +1,5 @@
 # Avoid project configuration
 .idea
-dev_cloud/core/settings/config.py
+/dev_cloud/core/settings/_config.py
+
 
