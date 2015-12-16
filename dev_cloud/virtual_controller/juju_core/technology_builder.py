@@ -171,7 +171,6 @@ class TechnologyBuilder(ListView):
         @param juju_instance: Data about status of installing application
         @return: Procedure to run on virtual machine.
         """
-        print str(juju_instance.__dict__)
         if juju_instance.name == 'juju-gui':
             command = 'echo ' + VM_IMAGE_ROOT_PASSWORD + \
                       '| sudo -S iptables -t nat -I PREROUTING ' \

@@ -18,12 +18,10 @@
 # @COPYRIGHT_end
 from __future__ import absolute_import
 import ast
-import StringIO
 
 from celery import Celery
 import jsonpickle
 from django.utils.translation import ugettext as _
-import time
 
 from core.common import states
 from core.common.states import FAILED, OK, NOT_ALLOWED
@@ -45,7 +43,6 @@ from virtual_controller.cc1_module.public_ip import PoolIP
 from virtual_controller.cc1_module.virtual_machine import VirtualMachine
 from virtual_controller.juju_core.juju_installation_procedure import init_juju_on_vm
 from virtual_controller.juju_core.ssh_connector import SSHConnector
-from virtual_controller.juju_core.technology_builder import TechnologyBuilder
 
 REQUEST_IP = _('Request new IP')
 RELEASE_IP = _('Release IP')
@@ -233,8 +230,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         for application in ast.literal_eval(applications):
             app = Applications.objects.get(application_name=application)
             ssh.call_remote_command(app.instalation_procedure)
-            juju_instance = ssh.check_juju_status(application)
-            ssh.call_remote_command(TechnologyBuilder.run_extra_options(juju_instance))
+            ssh.check_juju_status(application)
 
         ssh.close_connection()
     else:

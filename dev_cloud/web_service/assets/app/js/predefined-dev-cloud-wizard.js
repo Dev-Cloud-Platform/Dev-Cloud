@@ -20,7 +20,7 @@ function customize(application, operation) {
 
 
 function getPublicIP() {
-    var ip = ($("#ip .switch-on :input").val() === undefined) ? 'unexpose' : $("#ip .switch-on :input").val();
+    var ip = (jQuery("#ip .switch-on :input").val() === undefined) ? 'unexpose' : jQuery("#ip .switch-on :input").val();
     setIP(ip);
 }
 
