@@ -25,7 +25,7 @@ from fabric.network import disconnect_all
 from core.settings.common import LOOP_TIME, WAIT_TIME
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 from core.utils.log import error
-from virtual_controller.juju_core.juju_instance import JujuInstance
+from dev_cloud.virtual_controller.juju_core.juju_instance import JujuInstance
 
 
 class SSHConnector(object):
@@ -119,8 +119,8 @@ class SSHConnector(object):
                   "During call 'juju status --format=json' except problem with obtain information from remote server"
                   + str(ex))
 
-        services = status.get('services')
-        machines = status.get('machines')
+        services = status.get('services', '')
+        machines = status.get('machines', '')
 
         if len(machines) <= 1:
             error(None, "Juju environment is bootstraped, no services deployed yet.")

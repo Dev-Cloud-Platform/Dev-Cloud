@@ -16,6 +16,29 @@
 # limitations under the License.
 #
 # @COPYRIGHT_end
-from django.test import TestCase
 
 # Create your tests here.
+import unittest
+from teamcity import is_running_under_teamcity
+from teamcity.unittestpy import TeamcityTestRunner
+from dev_cloud.virtual_controller.juju_core.juju_instance import JujuInstance
+
+
+class TestJujuInstance(unittest.TestCase):
+    def testNone(self):
+        juju_instance = JujuInstance()
+        juju_instance.name = None
+        self.assertEqual(juju_instance.name, None)
+
+    def testString(self):
+        juju_instance = JujuInstance()
+        juju_instance.name = "test"
+        self.assertEqual(juju_instance.name, 'test')
+
+
+if __name__ == '__main__':
+    if is_running_under_teamcity():
+        runner = TeamcityTestRunner()
+    else:
+        runner = unittest.TextTestRunner()
+    unittest.main(testRunner=runner)
