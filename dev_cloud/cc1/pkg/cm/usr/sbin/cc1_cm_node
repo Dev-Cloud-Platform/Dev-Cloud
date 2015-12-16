@@ -1,0 +1,138 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# @cond LICENSE
+#
+# Copyright [2010-2013] Institute of Nuclear Physics PAN, Krakow, Poland
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+# @endcond LICENSE
+"""
+@author Maciej Nabozny <mn@mnabozny.pl>
+"""
+
+import sys
+
+sys.path.append('/usr/lib/cc1/')
+from common.utils import DefaultHelpParser
+from cm.tools.node import *
+
+
+def node_add(args):
+    sys.exit(add(address=args.node_address, username=args.username, transport=args.transport, driver=args.driver,
+                 suffix=args.suffix, cpu=args.cpu, memory=args.memory, disk=args.disk) or 0)
+
+
+def node_start(args):
+    r = start() or 0
+    sys.exit(r)
+
+
+def node_exec(args):
+    sys.exit(node_exec(" ".join(args.cmd), state=args.state) or 0)
+
+
+def node_install(args):
+    sys.exit(install(args.node_id, distribution=args.distribution, ssh_key_path=args.key, force_keys=False) or 0)
+
+
+def node_configure(args):
+    sys.exit(configure(args.node_id, args.interfaces) or 0)
+
+
+def node_check(args):
+    sys.exit(check(args.node_id) or 0)
+
+
+def node_remove(args):
+    sys.exit(remove(args.node_id) or 0)
+
+
+if __name__ == "__main__":
+    ERROR_CODES = {
+        'ssh_key': 1,
+        'node_not_found': 1,
+        'node_install': 1,
+        'not_implemented': 1,
+        'ssh_key': 1,
+
+        'cli_unhandled': 99,
+        'unhandled': 100
+    }
+    parser = DefaultHelpParser(description="")
+
+    subparsers = parser.add_subparsers()
+
+    parser_add = subparsers.add_parser('add', help='add node')
+    parser_add.add_argument('node_address', type=str,
+                            help='Node IP address')
+    parser_add.add_argument('cpu', type=str,
+                            help='Number of CPUs available on the node')
+    parser_add.add_argument('memory', type=str,
+                            help='Amount of memory (RAM) available on the node')
+    parser_add.add_argument('disk', type=str,
+                            help='Amount of disk space available on the node')
+    parser_add.add_argument('-u', '--username', type=str, default='cc1',
+                            help='cc1 user on node (default=cc1)')
+    parser_add.add_argument('-t', '--transport', type=str, default='ssh',
+                            help='libvirt connection tranport (default=ssh)')
+    parser_add.add_argument('-d', '--driver', type=str, default='qemu',
+                            help='libvirt driver (e.g. qemu), used to obtain libvirt xml template (default=qemu)')
+    parser_add.add_argument('-s', '--suffix', type=str, default='/system',
+                            help='libvirt connection suffix (eg. /system for qemu) (default=/system)')
+    parser_add.set_defaults(func=node_add)
+
+    parser_start = subparsers.add_parser('start', help='start all nodes')
+    parser_start.set_defaults(func=node_start)
+
+    parser_node_exec = subparsers.add_parser('node_exec',
+                                             help="executes command on all nodes in given state.\nAvailable states: \nall\n%s" %
+                                                  '\n'.join([state for state in node_states.keys()]))
+    parser_node_exec.add_argument('cmd', type=str, nargs='+', help="command to be called on nodes")
+    parser_node_exec.add_argument('-s', '--state', type=str, default='all',
+                                  help="state by which nodes will be filtered")
+    parser_node_exec.set_defaults(func=node_exec)
+
+    parser_install = subparsers.add_parser('install',
+                                           help='installs required packages on node (depends on distribution, e.g. debian, redhat)')
+    parser_install.add_argument('node_id', type=int)
+    parser_install.add_argument('-d', '--distribution', type=str, default='debian',
+                                help="Distribution present on node (default=debian)")
+    parser_install.add_argument('-k', '--key', type=str, default=None,
+                                help="Path to SSH which should be used when connecting to node (default= ~/.ssh/id_rsa if not present defaults to password authentication) " \
+                                     "if specified but incorrect (file does not exist, or can not be read, or can not grant authorization) then command will fail")
+    parser_install.set_defaults(func=node_install)
+
+    parser_configure = subparsers.add_parser('configure', help='configures all daemons and services on node')
+    parser_configure.add_argument('node_id', type=int, help="Id of the node which should be configured")
+    parser_configure.add_argument('interfaces', type=str, help="comma separated list of interfaces: eg. eth0,eth1")
+    parser_configure.set_defaults(func=node_configure)
+
+    parser_check = subparsers.add_parser('check', help='validates all daemons and services on node')
+    parser_check.add_argument('node_id', type=int, help="Id of the node which should be validated")
+    parser_check.set_defaults(func=node_check)
+
+    parser_check = subparsers.add_parser('remove',
+                                         help='Remove node identified by node_id from cm database, all services and daemons remain')
+    parser_check.add_argument('node_id', type=int, help="Id of the node which should be removed")
+    parser_check.set_defaults(func=node_remove)
+
+    args = parser.parse_args()
+    try:
+        args.func(args)
+    except CLICMException as e:
+        print >> sys.stderr, "[ERROR] %s" % e.message
+        sys.exit(ERROR_CODES.get(e.error_code, ERROR_CODES['cli_unhandled']))
+    except Exception as e:
+        print >> sys.stderr, "[ERROR] %s" % str(e)
+        sys.exit(ERROR_CODES['unhandled'])

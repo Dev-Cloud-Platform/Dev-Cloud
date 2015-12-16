@@ -1,0 +1,11 @@
+Package: cc1-clm
+Version: BUILD_NUMBER
+Architecture: amd64
+Bugs: mailto:cc1@cloud.ifj.edu.pl
+Maintainer: Maciej Nabozny <mn@mnabozny.pl>
+Depends: cc1-common, fabric, openssh-server, python-psycopg2, postgresql, python-requests, apache2, libapache2-mod-wsgi, apache2-threaded-dev, python-django-south, python-django, python-django-typed-models
+Conflicts: cc1-system-clm-v1.7
+Section: cc1
+Priority: optional
+Homepage: http://cc1.ifj.edu.pl
+Description: CC1 Private Cloud node configuration package

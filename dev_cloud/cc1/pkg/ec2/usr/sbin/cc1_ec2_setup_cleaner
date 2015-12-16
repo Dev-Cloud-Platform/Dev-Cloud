@@ -1,0 +1,63 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# @cond LICENSE
+#
+# Copyright [2010-2013] Institute of Nuclear Physics PAN, Krakow, Poland
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+# @endcond LICENSE
+
+# TODO zaleznosc od python-crontab
+
+"""
+@author Łukasz Chrząszcz <l.chrzaszcz@gmail.com>
+"""
+import sys
+from crontab import CronTab
+
+cmd = '/usr/lib/cc1/ec2/cleaner.py'
+comment = 'CC1 Cleaner'
+
+
+def enable():
+    cc1_crontab = CronTab(user='cc1')
+    cmds = [comm for comm in cc1_crontab.find_command(cmd)]
+
+    if not len(cmds):
+        print "EC2: Adding CRON job"
+        cc1_cleaner_job = cc1_crontab.new(command=cmd, comment=comment)
+        cc1_cleaner_job.every().day()
+        cc1_cleaner_job.enable()
+        cc1_crontab.write()
+    else:
+        print "EC2: Job already in CRON"
+
+
+def disable():
+    cc1_crontab = CronTab(user='cc1')
+    cmds = [comm for comm in cc1_crontab.find_command(cmd)]
+    for comm in cmds:
+        cc1_crontab.remove(comm)
+
+    cc1_crontab.write()
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2 and sys.argv[1] == 'enable':
+        sys.exit(enable())
+    elif len(sys.argv) == 2 and sys.argv[1] == 'disable':
+        sys.exit(disable())
+    else:
+        print "Usage:   %s [enable|disable]" % sys.argv[0]
+        sys.exit(1)

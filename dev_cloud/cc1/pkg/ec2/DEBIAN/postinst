@@ -1,0 +1,42 @@
+#!/usr/bin/python
+
+import os
+import sys
+import subprocess
+import logging
+from distutils.dir_util import mkpath
+
+if __name__ == '__main__':
+    if 'configure' in sys.argv:
+        print "EC2: Installing python packages"
+        subprocess.call("pip install python-crontab --upgrade", shell=True)
+
+        print "EC2: Removing old .pyc files"
+        subprocess.call("find /usr/lib/cc1/ec2 -name '*.pyc' -exec rm {} \\;", shell=True)
+        subprocess.call("find /etc/cc1/ec2 -name '*.pyc' -exec rm {} \\;", shell=True)
+
+        log_file = open('/var/log/cc1/ec2_install.log', 'a')
+
+        print "EC2: Creating cc1 user"
+        r = subprocess.call('cc1_setup_user create', shell=True, stdout=log_file, stderr=log_file)
+
+        print "EC2: Changing permissions"
+        subprocess.call("chown -R cc1:cc1 /usr/lib/cc1/ec2/", shell=True, stderr=log_file, stdout=log_file)
+        subprocess.call("chown -R cc1:cc1 /usr/lib/cc1/ec2/", shell=True, stderr=log_file, stdout=log_file)
+        subprocess.call("chown -R cc1:cc1 /etc/cc1/ec2/", shell=True, stderr=log_file, stdout=log_file)
+        subprocess.call("chmod u+x /usr/lib/cc1/ec2/cleaner.py", shell=True, stderr=log_file, stdout=log_file)
+
+        print "EC2: Creating default config"
+        r = subprocess.call('cc1_ec2_setup_config configure', shell=True, stdout=log_file, stderr=log_file)
+
+        print "EC2: Adding apache vhost"
+        r = subprocess.call('cc1_ec2_setup_apache enable', shell=True, stdout=log_file, stderr=log_file)
+
+        print "EC2: Configuring cron"
+        r = subprocess.call('cc1_ec2_setup_cleaner enable', shell=True, stdout=log_file, stderr=log_file)
+
+        log_file.close()
+        sys.exit(0)
+    else:
+        print "Use cc1 tools (cc1_...) to reconfigure services!"
+        sys.exit(1)

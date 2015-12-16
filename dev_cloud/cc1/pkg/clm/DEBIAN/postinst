@@ -1,0 +1,61 @@
+#!/usr/bin/python
+
+import sys
+
+sys.path.append("/usr/lib/cc1")
+from common.utils import subcall
+
+if __name__ == '__main__':
+    if 'configure' in sys.argv:
+        print "CLM: Removing old .pyc files"
+        subcall("find /usr/lib/cc1/clm -name '*.pyc' -exec rm {} \\;")
+        subcall("find /etc/cc1/clm -name '*.pyc' -exec rm {} \\;")
+
+        log = open('/var/log/cc1/clm_install.log', 'a')
+
+        print "CLM: Creating cc1 user"
+        r = subcall('cc1_setup_user create', std_log=log, err_log=log, err_exit=False)
+
+        print "CLM: Changing permissions"
+
+        subcall("chown -R cc1:cc1 /var/log/cc1/clm/", std_log=log, err_log=log, err_exit=False)
+        subcall("chown -R cc1:cc1 /var/lib/cc1/clm/", std_log=log, err_log=log, err_exit=False)
+        subcall("chown -R cc1:cc1 /etc/cc1/clm/clm/", std_log=log, err_log=log, err_exit=False)
+
+        print "CLM: Creating default config"
+        r = subcall('cc1_setup_config configure clm', std_log=log, err_log=log, err_exit=False)
+
+        print "CLM: Configuring database"
+        r = subcall('cc1_setup_db_psql create clm', std_log=log, err_log=log, err_exit=False)
+        if r > 0:
+            print "ERROR: Cannot create database. Migrate it manually"
+            sys.exit(0)
+
+        r = subcall('su cc1 -c "/usr/sbin/cc1_manage_db clm syncdb"', std_log=log, err_log=log, err_exit=False)
+        if r > 0:
+            print "ERROR: Cannot sync database. Migrate it manually"
+            sys.exit(0)
+
+        r = subcall('su cc1 -c "/usr/sbin/cc1_manage_db clm migrate"', std_log=log, err_log=log, err_exit=False)
+        if r > 0:
+            print "ERROR: Cannot migrate database. Migrate it manually"
+            sys.exit(0)
+
+        # Check if database has at least one user (not new installation):
+        r = subcall('su cc1 -c \'cd ; psql -A -t -c "SELECT count(id) FROM clm_user;" -L out clm\' | grep "^0$"',
+                    err_exit=False)
+        if r == 0:
+            print "CLM: Installing database initial data"
+            r = subcall('su cc1 -c "/usr/sbin/cc1_manage_db clm loaddata /usr/lib/cc1/clm/initial_data.json"',
+                        std_log=log, err_log=log, err_exit=False)
+        else:
+            print "CLM: Database already installed"
+
+        print "CLM: Adding apache vhost"
+        r = subcall('cc1_setup_apache enable clm', std_log=log, err_log=log)
+        log.close()
+        sys.exit(0)
+
+    else:
+        print "Use cc1 tools (cc1_...) to reconfigure services!"
+        sys.exit(1)

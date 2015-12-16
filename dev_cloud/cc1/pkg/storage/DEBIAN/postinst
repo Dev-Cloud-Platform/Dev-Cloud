@@ -1,0 +1,23 @@
+#!/usr/bin/python
+
+import sys
+import fabric.api
+
+if __name__ == '__main__':
+    if 'configure' in sys.argv:
+        exports = open('/etc/exports', 'r').readlines()
+        for line in exports:
+            if '/var/lib/cc1/storage' in line:
+                print "STORAGE: Storage alredy exported!"
+                sys.exit(0)
+
+        f = open('/etc/exports', 'a')
+        f.write('/var/lib/cc1/storage *(rw,sync,subtree_check,crossmnt)\n')
+        f.close()
+
+        fabric.api.local('exportfs -a')
+        fabric.api.local('cc1_setup_user create')
+        sys.exit(0)
+    else:
+        print "Use cc1 tools (cc1_...) to reconfigure services!"
+        sys.exit(0)

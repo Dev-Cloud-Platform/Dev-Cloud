@@ -1,0 +1,8 @@
+{% load i18n %}
+{% trans "New user account awaiting activation." %}
+
+{% trans "Username:" %} {{ login }}
+{% trans "First name:" %} {{ first }}
+{% trans "Last name:" %} {{ last }}
+{% trans "Organization:" %} {{ organization }}
+{% trans "Email:" %} {{ email }}
