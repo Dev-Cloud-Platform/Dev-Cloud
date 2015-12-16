@@ -25,7 +25,7 @@ from fabric.network import disconnect_all
 from core.settings.common import LOOP_TIME, WAIT_TIME
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 from core.utils.log import error
-from dev_cloud.virtual_controller.juju_core.juju_instance import JujuInstance
+from virtual_controller.juju_core.juju_instance import JujuInstance
 
 
 class SSHConnector(object):

@@ -180,3 +180,6 @@ class TechnologyBuilder(ListView):
                                                                                                                                                                              '&& sudo iptables -A FORWARD -p tcp -d ' + juju_instance.public_address + ' --dport 80 -j ACCEPT' \
                                                                                                                                                                                                                                                        '&& sudo iptables -A FORWARD -p tcp -d ' + juju_instance.public_address + ' --dport 443 -j ACCEPT'
             return command
+
+        else:
+            return ''
