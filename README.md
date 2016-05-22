@@ -1,4 +1,4 @@
-Dev-Cloud  ![alt logo](https://raw.githubusercontent.com/Dev-Cloud-Platform/Dev-Cloud/dev/dev_cloud/web_service/assets/main/images/logo.png)
+![alt logo](https://raw.githubusercontent.com/Dev-Cloud-Platform/Dev-Cloud/dev/dev_cloud/web_service/assets/main/images/logo-invoice.png)
 ================
 
 #Python implementation of a Dev Cloud System as aPaaS functionality for Cracow Cloud One System#
@@ -36,6 +36,8 @@ In order to prepare a virtual machine according to user demand and its managemen
 These containers are elements system Linux, which provide system virtualization, allowing commissioning many isolated systems controlled by a host system which is superior.
 To create a system was used technologies like Python with the Django framework, Juju, Celery with Redis server, TeamCity server and Apache.
 The system beyond the graphical development environment used to control the platform from the browser website also provides an API that allows to manage by HTTP request.
+
+***
 
 Projekt  skupia się na nowoczesnej technologii będącej usługą platformy aplikacyjnej.
 Temat pracy skupia się na nowoczesnej technologii będącej usługą platformy aplikacyjnej.

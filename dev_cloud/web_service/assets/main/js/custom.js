@@ -122,8 +122,7 @@ $(document).foundation();
 
 })(jQuery);
 
-<
-script >
+
 (function (i, s, o, g, r, a, m) {
     i['GoogleAnalyticsObject'] = r;
     i[r] = i[r] || function () {
@@ -138,6 +137,3 @@ script >
 
 ga('create', 'UA-76978555-1', 'auto');
 ga('send', 'pageview');
-
-</
-script >
