@@ -1,4 +1,4 @@
-![alt logo](https://raw.githubusercontent.com/Dev-Cloud-Platform/Dev-Cloud/dev/dev_cloud/web_service/assets/main/images/logo-invoice.png)
+![alt logo](https://raw.githubusercontent.com/Dev-Cloud-Platform/Dev-Cloud/dev/dev_cloud/web_service/assets/app/images/logo-invoice.png)
 ================
 
 #Python implementation of a Dev Cloud System as aPaaS functionality for Cracow Cloud One System#
@@ -39,6 +39,7 @@ The system beyond the graphical development environment used to control the plat
 
 ***
 
+#Abstrakt#
 Projekt  skupia się na nowoczesnej technologii będącej usługą platformy aplikacyjnej.
 Temat pracy skupia się na nowoczesnej technologii będącej usługą platformy aplikacyjnej.
 Umożliwia ona użytkownikowi utworzenie zdefiniowanych narzędzi na wirtualnych maszynach
