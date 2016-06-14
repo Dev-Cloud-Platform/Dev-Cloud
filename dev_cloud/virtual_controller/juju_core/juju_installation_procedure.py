@@ -33,7 +33,7 @@ def init_juju_on_vm():
     Exec procedure on remote server to initialize juju environment.
     """
     SSHConnector.check_status(
-        run('echo ' + VM_IMAGE_ROOT_PASSWORD + ' | sudo juju generate-config && sudo juju switch local',
+        run('echo ' + VM_IMAGE_ROOT_PASSWORD + ' | sudo -S juju generate-config && sudo juju switch local',
             warn_only=True,
             stderr=sys.stderr,
             combine_stderr=True)
