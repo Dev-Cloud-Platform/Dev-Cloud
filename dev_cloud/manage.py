@@ -33,11 +33,6 @@ if __name__ == "__main__":
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.%s" % sys.argv[1])
 
-    if sys.argv[2] == 'test':
-        import django.core.management.commands.runserver as runserver
-
-        runserver.DEFAULT_PORT = "8888"
-
     from django.core.management import execute_from_command_line
 
     args = sys.argv[:]
