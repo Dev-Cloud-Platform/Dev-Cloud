@@ -230,7 +230,7 @@ def init_virtual_machine(user_id, vm_serializer_data, applications, *args):
         for application in ast.literal_eval(applications):
             app = Applications.objects.get(application_name=application)
             ssh.call_remote_command(app.instalation_procedure)
-            ssh.check_juju_status(application)
+            ssh.check_juju_status(application, user_id)
 
         ssh.close_connection()
     else:

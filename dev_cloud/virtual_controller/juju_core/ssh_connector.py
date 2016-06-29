@@ -26,6 +26,8 @@ from fabric.network import disconnect_all
 from core.settings.common import LOOP_TIME, WAIT_TIME
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
 from core.utils.log import error
+from core.utils.registration import mail
+from database.models import Users
 from virtual_controller.juju_core.juju_instance import JujuInstance
 from virtual_controller.juju_core.technology_builder import TechnologyBuilder
 
@@ -106,7 +108,7 @@ class SSHConnector(object):
         disconnect_all()
 
     @classmethod
-    def check_juju_status(cls, application):
+    def check_juju_status(cls, application, user_id):
         """
         Checks installation status of given application.
         @param application: current installing application.
@@ -163,6 +165,8 @@ class SSHConnector(object):
                         juju_instance.unit_plural = unit_plural
                         juju_instance.relations = relations
                         cls.call_remote_command(TechnologyBuilder.run_extra_options(juju_instance))
+                        mail.send_contact_message(Users.objects.get(id=user_id),
+                                                  cls.call_remote_command("juju api-info --password password"))
                     else:
                         current_time += LOOP_TIME
                         is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
