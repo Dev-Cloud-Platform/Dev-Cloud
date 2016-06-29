@@ -194,6 +194,25 @@ def send_contact_message(subject, msg):
     send(common.EMAIL, message, subject)
 
 
+def send_juju_message(message, user, dev_cloud_data):
+    """
+    @parameter{activation_key,string} activation key to be sent
+    @parameter{user,string} username of the user to activate
+    @parameter{dev_cloud_data}
+
+    Sends email with activation key to registred user.
+    """
+    dev_cloud_dict = {'message': message,
+                      'site': dev_cloud_data['site_domain'],
+                      'site_name': dev_cloud_data['site_name']}
+
+    subject = render_from_template_to_string('account_msg/juju_message_subject', dev_cloud_dict)
+    subject = ''.join(subject.splitlines())
+    message = render_from_template_to_string('account_msg/juju_message', dev_cloud_dict)
+
+    send(user.email, message, subject)
+
+
 def render_from_template_to_string(template_filename, dev_cloud_dict={}):
     """
     @parameter{template_filename,string} path to template of the email

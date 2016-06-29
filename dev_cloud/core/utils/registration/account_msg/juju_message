@@ -1,0 +1,10 @@
+{% extends "theme.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Information from JuJu GUI" %}
+{% endblock %}
+
+{% block content %}
+    {{ message }}
+{% endblock %}

@@ -22,6 +22,7 @@ import sys
 
 from fabric.api import execute, run, env
 from fabric.network import disconnect_all
+from core.settings import config
 
 from core.settings.common import LOOP_TIME, WAIT_TIME
 from core.settings.config import VM_IMAGE_ROOT_PASSWORD
@@ -165,8 +166,8 @@ class SSHConnector(object):
                         juju_instance.unit_plural = unit_plural
                         juju_instance.relations = relations
                         cls.call_remote_command(TechnologyBuilder.run_extra_options(juju_instance))
-                        mail.send_contact_message(Users.objects.get(id=user_id),
-                                                  cls.call_remote_command("juju api-info --password password"))
+                        mail.send_juju_message(cls.call_remote_command("juju api-info --password password"),
+                                               Users.objects.get(id=user_id), config.DEV_CLOUD_DATA)
                     else:
                         current_time += LOOP_TIME
                         is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
