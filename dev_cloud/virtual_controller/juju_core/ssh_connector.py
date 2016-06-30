@@ -173,4 +173,4 @@ class SSHConnector(object):
                         is_timeout = SSHConnector.timeout(WAIT_TIME, LOOP_TIME, current_time)
                         if is_timeout:
                             break
-                        cls.check_juju_status(application)
+                        cls.check_juju_status(application, user_id)
