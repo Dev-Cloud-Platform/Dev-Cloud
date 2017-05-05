@@ -23,7 +23,7 @@
 ### Throughput Graph
 [![Throughput Graph](https://graphs.waffle.io/dev-cloud-platform/dev-cloud/throughput.svg)](https://waffle.io/dev-cloud-platform/dev-cloud/metrics) 
 
-#About#
+### About
 The project focuses on modern technology which is an application platform as a service.
 It allows the user to create defined tools for virtual machines located on the Web. 
 These tools are suitable applications which gives possibility to run the software dedicated for specific languages programming. 
@@ -39,7 +39,7 @@ The system beyond the graphical development environment used to control the plat
 
 ***
 
-#Abstrakt#
+### Abstrakt
 Projekt  skupia się na nowoczesnej technologii będącej usługą platformy aplikacyjnej.
 Temat pracy skupia się na nowoczesnej technologii będącej usługą platformy aplikacyjnej.
 Umożliwia ona użytkownikowi utworzenie zdefiniowanych narzędzi na wirtualnych maszynach
