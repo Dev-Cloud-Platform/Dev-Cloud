@@ -1,7 +1,7 @@
 ![alt logo](https://raw.githubusercontent.com/Dev-Cloud-Platform/Dev-Cloud/dev/dev_cloud/web_service/assets/app/images/logo-invoice.png)
 ================
 
-#Python implementation of a Dev Cloud System as aPaaS functionality for Cracow Cloud One System#
+# Python implementation of a Dev Cloud System as aPaaS functionality for Cracow Cloud One System #
     Copyright (C) 2016 Michał Szczygieł     <michal.szczygiel@wp.pl>
 
     This program is free software: you can redistribute it and_or modify
